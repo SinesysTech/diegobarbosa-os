@@ -2,7 +2,7 @@ import { Suspense } from "react";
 import { ListaDocumentosClient } from "./client-page";
 
 export const metadata = {
-  title: "Documentos de Assinatura Digital | Zattar Advogados",
+  title: "Documentos de Assinatura Digital | Diego Barbosa Soluções Jurídicas",
   description: "Lista de documentos enviados para assinatura digital",
 };
 

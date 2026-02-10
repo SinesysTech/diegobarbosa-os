@@ -10,14 +10,9 @@ interface TrustBarProps {
 
 export function TrustBar({ className }: TrustBarProps) {
   return (
-    <section
-      className={cn(
-        "border-y border-border bg-card",
-        className
-      )}
-    >
+    <section className={cn("border-y border-slate-200 bg-white", className)}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:divide-x divide-border">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:divide-x divide-slate-200">
           {STATS.map((stat, index) => (
             <div
               key={index}
@@ -38,16 +33,16 @@ export function TrustBar({ className }: TrustBarProps) {
                       />
                     ))}
                   </div>
-                  <p className="text-sm text-muted-foreground uppercase tracking-wide">
+                  <p className="text-sm text-slate-500 uppercase tracking-wide">
                     Avaliação {stat.value}
                   </p>
                 </>
               ) : (
                 <>
-                  <p className="text-3xl font-bold text-foreground mb-1">
+                  <p className="text-3xl font-bold text-brand-navy mb-1">
                     {stat.value}
                   </p>
-                  <p className="text-sm text-muted-foreground uppercase tracking-wide">
+                  <p className="text-sm text-slate-500 uppercase tracking-wide">
                     {stat.label}
                   </p>
                 </>

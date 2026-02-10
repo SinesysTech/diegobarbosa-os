@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { MaterialIcon } from "./material-icon";
@@ -10,12 +11,24 @@ interface HeaderProps {
 }
 
 export function Header({ className }: HeaderProps) {
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 20);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   return (
     <header
       className={cn(
-        "fixed w-full top-0 z-50",
-        "bg-white/90 dark:bg-background/90 backdrop-blur-md",
-        "border-b border-border",
+        "fixed w-full top-0 z-50 transition-all duration-300",
+        isScrolled
+          ? "bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-sm"
+          : "bg-transparent border-transparent",
         className
       )}
     >
@@ -23,10 +36,10 @@ export function Header({ className }: HeaderProps) {
         <div className="flex justify-between items-center h-20">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2 cursor-pointer">
-            <div className="bg-primary/10 p-2 rounded-lg">
-              <MaterialIcon name="gavel" className="text-primary" />
+            <div className="w-8 h-8 bg-brand-blue rounded-lg flex items-center justify-center text-white font-bold text-xl">
+              D
             </div>
-            <span className="font-bold text-xl tracking-tight text-foreground">
+            <span className="font-bold text-xl tracking-tight text-brand-navy">
               {BRAND.name}
             </span>
           </Link>
@@ -38,7 +51,7 @@ export function Header({ className }: HeaderProps) {
                 key={link.href}
                 href={link.href}
                 className={cn(
-                  "text-muted-foreground hover:text-primary",
+                  "text-slate-600 hover:text-brand-blue",
                   "transition-colors font-medium"
                 )}
               >
@@ -53,12 +66,13 @@ export function Header({ className }: HeaderProps) {
               href="#contato"
               className={cn(
                 "hidden sm:inline-flex items-center justify-center",
-                "px-5 py-2.5 border border-transparent text-sm font-medium rounded-lg",
-                "text-primary bg-primary/10 hover:bg-primary/20",
-                "transition-all duration-200 cursor-pointer"
+                "px-5 py-2.5 text-sm font-bold rounded-lg",
+                "text-white bg-brand-blue hover:bg-blue-700",
+                "shadow-lg shadow-brand-blue transition-all duration-200",
+                "hover:-translate-y-0.5 cursor-pointer"
               )}
             >
-              Entrar em Contato
+              Fale Conosco
             </Link>
           </div>
         </div>

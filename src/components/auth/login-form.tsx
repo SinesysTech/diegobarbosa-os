@@ -86,7 +86,7 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
       <div className="mb-10 flex justify-center lg:hidden">
         <Image
           src="/logos/logomarca-light.svg"
-          alt="Zattar Advogados"
+          alt="Diego Barbosa Soluções Jurídicas"
           width={200}
           height={30}
           className="h-auto w-[200px] object-contain dark:hidden"
@@ -94,7 +94,7 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
         />
         <Image
           src="/logos/logomarca-dark.svg"
-          alt="Zattar Advogados"
+          alt="Diego Barbosa Soluções Jurídicas"
           width={200}
           height={30}
           className="hidden h-auto w-[200px] object-contain dark:block"

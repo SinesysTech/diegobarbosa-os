@@ -95,7 +95,7 @@ export function CpfHeroForm() {
             </h1>
 
             <p className="text-lg md:text-xl leading-relaxed tracking-tight text-muted-foreground max-w-2xl text-center">
-              Acesse de forma rápida e segura o andamento de seus processos no escritório Zattar Advogados.
+              Acesse de forma rápida e segura o andamento de seus processos no escritório Diego Barbosa Soluções Jurídicas.
             </p>
           </div>
           

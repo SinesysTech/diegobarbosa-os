@@ -85,7 +85,7 @@ export function WelcomeStep({ documento, onNext }: WelcomeStepProps) {
         {/* Document Card */}
         <PublicDocumentCard
           fileName={fileName}
-          sender="Zattar Advogados"
+          sender="Diego Barbosa Soluções Jurídicas"
           date={formattedDate}
         />
 

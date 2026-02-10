@@ -16,7 +16,7 @@ function GoogleTestimonialCard({
   if (testimonial.type !== "google") return null;
 
   return (
-    <div className="bg-card p-8 rounded-2xl shadow-sm border border-border flex flex-col h-full hover:-translate-y-1 transition-transform duration-300">
+    <div className="bg-white p-8 rounded-2xl shadow-sm border border-slate-100 flex flex-col h-full hover:-translate-y-1 transition-transform duration-300">
       {/* Header */}
       <div className="flex items-center gap-3 mb-4">
         <div
@@ -28,7 +28,7 @@ function GoogleTestimonialCard({
           {testimonial.avatar}
         </div>
         <div>
-          <h5 className="font-bold text-foreground text-sm">{testimonial.name}</h5>
+          <h5 className="font-bold text-brand-navy text-sm">{testimonial.name}</h5>
           <div className="flex text-yellow-400 text-xs">
             {[...Array(testimonial.rating)].map((_, i) => (
               <MaterialIcon
@@ -40,7 +40,7 @@ function GoogleTestimonialCard({
             ))}
           </div>
         </div>
-        {/* Google Logo Placeholder */}
+        {/* Google Logo */}
         <div className="ml-auto opacity-50">
           <svg className="h-5 w-auto" viewBox="0 0 24 24">
             <path
@@ -64,12 +64,12 @@ function GoogleTestimonialCard({
       </div>
 
       {/* Text */}
-      <p className="text-muted-foreground text-sm leading-relaxed italic">
+      <p className="text-slate-600 text-sm leading-relaxed italic">
         &quot;{testimonial.text}&quot;
       </p>
 
       {/* Date */}
-      <div className="mt-auto pt-4 text-xs text-muted-foreground">
+      <div className="mt-auto pt-4 text-xs text-slate-400">
         {testimonial.date}
       </div>
     </div>
@@ -86,8 +86,8 @@ function WhatsAppTestimonialCard({
   return (
     <div
       className={cn(
-        "p-6 rounded-2xl shadow-sm border border-border flex flex-col h-full relative overflow-hidden",
-        "bg-[#e5ddd5] dark:bg-[#0b141a]"
+        "p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-col h-full relative overflow-hidden",
+        "bg-[#e5ddd5]"
       )}
     >
       {/* WhatsApp Background Pattern */}
@@ -100,9 +100,9 @@ function WhatsAppTestimonialCard({
 
       {/* Message Bubble */}
       <div className="relative z-10">
-        <div className="bg-white dark:bg-[#202c33] p-4 rounded-tr-xl rounded-bl-xl rounded-br-xl shadow-sm max-w-[90%] mb-2">
-          <p className="text-foreground text-sm">{testimonial.text}</p>
-          <div className="text-[10px] text-muted-foreground text-right mt-1 flex items-center justify-end gap-1">
+        <div className="bg-white p-4 rounded-tr-xl rounded-bl-xl rounded-br-xl shadow-sm max-w-[90%] mb-2">
+          <p className="text-brand-navy text-sm">{testimonial.text}</p>
+          <div className="text-[10px] text-slate-400 text-right mt-1 flex items-center justify-end gap-1">
             {testimonial.time}
             <MaterialIcon name="done_all" className="text-blue-400 text-sm" />
           </div>
@@ -110,10 +110,10 @@ function WhatsAppTestimonialCard({
 
         {/* Client Info */}
         <div className="flex items-center gap-3 mt-4 px-2">
-          <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center">
-            <MaterialIcon name="person" className="text-primary text-sm" />
+          <div className="w-8 h-8 rounded-full bg-brand-blue/20 flex items-center justify-center">
+            <MaterialIcon name="person" className="text-brand-blue text-sm" />
           </div>
-          <div className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+          <div className="text-xs font-medium text-slate-500 uppercase tracking-wide">
             {testimonial.name} (Cliente)
           </div>
         </div>
@@ -124,20 +124,21 @@ function WhatsAppTestimonialCard({
 
 export function Testimonials({ className }: TestimonialsProps) {
   return (
-    <section className={cn("py-24 bg-background", className)}>
+    <section
+      id="depoimentos"
+      className={cn("py-20 lg:py-24 bg-brand-light", className)}
+    >
       <div className="max-w-7xl mx-auto px-4 md:px-8">
         {/* Section Header */}
         <div className="text-center mb-12">
-          <span className="text-primary font-semibold tracking-wider uppercase text-sm mb-2 block">
+          <span className="text-brand-blue font-semibold tracking-wider uppercase text-sm mb-2 block">
             Prova Social
           </span>
-          <h2 className="text-3xl font-bold text-foreground">
-            O que dizem nossos clientes
-          </h2>
+          <h2 className="text-landing-h2">O que dizem nossos clientes</h2>
         </div>
 
         {/* Testimonials Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {TESTIMONIALS.map((testimonial) =>
             testimonial.type === "google" ? (
               <GoogleTestimonialCard key={testimonial.id} testimonial={testimonial} />

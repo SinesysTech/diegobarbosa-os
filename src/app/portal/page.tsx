@@ -1,6 +1,6 @@
 import { CpfHeroForm } from './feature';
 import Image from "next/image";
-import { BackgroundPattern } from "@/components/website/ui/background-pattern";
+import { BackgroundPattern } from "./components";
 
 export default function Home() {
   return (
@@ -15,14 +15,14 @@ export default function Home() {
         <div className="relative w-50 md:w-[320px] h-12 md:h-16">
           <Image
             src="/logos/logomarca-light.svg"
-            alt="Logo Zattar Advogados"
+            alt="Logo Diego Barbosa Soluções Jurídicas"
             fill
             className="object-contain object-center dark:hidden"
             priority
           />
           <Image
             src="/logos/logomarca-dark.svg"
-            alt="Logo Zattar Advogados"
+            alt="Logo Diego Barbosa Soluções Jurídicas"
             fill
             className="object-contain object-center hidden dark:block"
             priority
@@ -39,7 +39,7 @@ export default function Home() {
 
       {/* Footer */}
       <footer className="relative z-10 w-full py-6 shrink-0 text-center text-sm text-muted-foreground">
-        <p>&copy; {new Date().getFullYear()} Zattar Advogados. Todos os direitos reservados.</p>
+        <p>&copy; {new Date().getFullYear()} Diego Barbosa Soluções Jurídicas. Todos os direitos reservados.</p>
       </footer>
     </div>
   );

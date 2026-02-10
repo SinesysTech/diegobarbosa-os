@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { headers } from "next/headers";
-import { Inter, Montserrat, Geist_Mono } from "next/font/google";
+import { Inter, Montserrat, Geist_Mono, Playfair_Display } from "next/font/google";
 import { CSPNonceMeta } from "@/lib/csp/csp-nonce-meta";
 import RootLayoutClient from "./layout-client";
 import "./globals.css";
@@ -12,10 +12,17 @@ const inter = Inter({
   display: "swap",
 });
 
-// Fonte Heading (Títulos/Marca)
+// Fonte Heading (Títulos/Marca) - Portal/App
 const montserrat = Montserrat({
   subsets: ["latin"],
   variable: "--font-montserrat",
+  display: "swap",
+});
+
+// Fonte Serif (Headlines Landing Page) - Autoridade/LegalTech
+const playfairDisplay = Playfair_Display({
+  subsets: ["latin"],
+  variable: "--font-playfair",
   display: "swap",
 });
 
@@ -28,14 +35,14 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "Zattar Advogados",
-    template: "%s | Zattar Advogados",
+    default: "Diego Barbosa Soluções Jurídicas",
+    template: "%s | Diego Barbosa Soluções Jurídicas",
   },
   description: "Gestão Jurídica Inteligente",
   manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
-    title: "Zattar",
+    title: "Diego Barbosa",
     statusBarStyle: "default",
   },
   icons: {
@@ -67,7 +74,7 @@ export default async function RootLayout({
         <CSPNonceMeta nonce={nonce} />
       </head>
       <body
-        className={`${inter.variable} ${montserrat.variable} ${geistMono.variable} antialiased font-sans bg-background text-foreground`}
+        className={`${inter.variable} ${montserrat.variable} ${playfairDisplay.variable} ${geistMono.variable} antialiased font-sans bg-background text-foreground`}
       >
         <RootLayoutClient nonce={nonce}>{children}</RootLayoutClient>
       </body>

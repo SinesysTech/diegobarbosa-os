@@ -13,19 +13,14 @@ export function Footer({ className }: FooterProps) {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer
-      className={cn(
-        "bg-slate-900 text-slate-300 pt-16 pb-8",
-        className
-      )}
-    >
+    <footer className={cn("bg-brand-navy text-slate-300 pt-16 pb-8", className)}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
           {/* Brand Column */}
           <div className="col-span-1 md:col-span-2">
             {/* Logo */}
             <div className="flex items-center gap-2 mb-6">
-              <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center text-white font-bold text-xl">
+              <div className="w-8 h-8 bg-brand-blue rounded-lg flex items-center justify-center text-white font-bold text-xl">
                 D
               </div>
               <span className="font-semibold text-xl text-white tracking-tight">
@@ -53,7 +48,7 @@ export function Footer({ className }: FooterProps) {
                 <li key={link.label}>
                   <Link
                     href={link.href}
-                    className="hover:text-primary transition-colors"
+                    className="hover:text-brand-blue transition-colors"
                   >
                     {link.label}
                   </Link>
@@ -70,7 +65,7 @@ export function Footer({ className }: FooterProps) {
                 <li key={link.label}>
                   <Link
                     href={link.href}
-                    className="hover:text-primary transition-colors"
+                    className="hover:text-brand-blue transition-colors"
                   >
                     {link.label}
                   </Link>

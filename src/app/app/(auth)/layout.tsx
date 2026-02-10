@@ -45,7 +45,7 @@ export default function AuthLayout({
         <div className="relative z-10 flex w-full flex-col items-center justify-center px-12">
           <Image
             src="/logos/logomarca-dark.svg"
-            alt="Zattar Advogados"
+            alt="Diego Barbosa Soluções Jurídicas"
             width={260}
             height={40}
             className="h-auto w-[260px] object-contain"
@@ -60,7 +60,7 @@ export default function AuthLayout({
         {/* Copyright */}
         <div className="absolute bottom-6 left-0 right-0 text-center">
           <p className="text-xs text-sidebar-foreground/25">
-            &copy; {new Date().getFullYear()} Zattar Advogados. Todos os direitos reservados.
+            &copy; {new Date().getFullYear()} Diego Barbosa Soluções Jurídicas. Todos os direitos reservados.
           </p>
         </div>
       </div>

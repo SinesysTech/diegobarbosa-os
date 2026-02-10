@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Meu Processo - Zattar Advogados",
+  title: "Meu Processo - Diego Barbosa Soluções Jurídicas",
   description: "Acompanhe seus processos de forma simples e segura",
 };
 

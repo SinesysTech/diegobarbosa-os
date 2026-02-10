@@ -34,7 +34,7 @@ export function PublicPageShell({
           <div className="flex items-center">
             <Image
               src="/logos/logomarca-light-500x200.svg"
-              alt="Zattar Advogados"
+              alt="Diego Barbosa Soluções Jurídicas"
               width={150}
               height={60}
               className="h-10 w-auto dark:hidden"
@@ -42,7 +42,7 @@ export function PublicPageShell({
             />
             <Image
               src="/logos/logomarca-dark-500x200.svg"
-              alt="Zattar Advogados"
+              alt="Diego Barbosa Soluções Jurídicas"
               width={150}
               height={60}
               className="h-10 w-auto hidden dark:block"

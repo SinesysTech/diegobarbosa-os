@@ -94,7 +94,7 @@ export default function AjudaPage() {
         <div className="prose prose-neutral dark:prose-invert max-w-none">
           <p>
             O <strong>Sinesys</strong> é um sistema de gestão jurídica desenvolvido
-            para o escritório Zattar Advogados, com foco em automação de captura de
+            para o escritório Diego Barbosa Soluções Jurídicas, com foco em automação de captura de
             dados do PJE (Processo Judicial Eletrônico) dos Tribunais Regionais do
             Trabalho (TRT).
           </p>

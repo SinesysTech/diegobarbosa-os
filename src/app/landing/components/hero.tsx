@@ -12,19 +12,18 @@ interface HeroProps {
 export function Hero({ className }: HeroProps) {
   return (
     <section
+      id="inicio"
       className={cn(
-        "relative pt-32 pb-20 lg:pt-40 lg:pb-28 overflow-hidden",
+        "relative pt-32 pb-16 lg:pt-40 lg:pb-24 min-h-[85vh] overflow-hidden bg-brand-light",
         className
       )}
     >
       {/* Hero Pattern Background */}
       <div
-        className="absolute inset-0 z-0 opacity-10"
+        className="absolute inset-0 z-0 opacity-[0.03]"
         style={{
-          backgroundColor: "hsl(var(--background))",
-          backgroundImage: `radial-gradient(hsl(var(--primary)) 0.5px, transparent 0.5px), radial-gradient(hsl(var(--primary)) 0.5px, hsl(var(--background)) 0.5px)`,
-          backgroundSize: "20px 20px",
-          backgroundPosition: "0 0, 10px 10px",
+          backgroundImage: `radial-gradient(var(--brand-blue) 1px, transparent 1px)`,
+          backgroundSize: "24px 24px",
         }}
       />
 
@@ -33,20 +32,20 @@ export function Hero({ className }: HeroProps) {
           {/* Text Content */}
           <div className="max-w-2xl">
             {/* Badge */}
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 mb-6">
-              <span className="flex h-2 w-2 rounded-full bg-primary" />
-              <span className="text-xs font-semibold text-primary uppercase tracking-wide">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-50 border border-blue-100 mb-6">
+              <span className="flex h-2 w-2 rounded-full bg-brand-blue animate-pulse" />
+              <span className="text-xs font-semibold text-brand-blue uppercase tracking-wide">
                 Direito Descomplicado
               </span>
             </div>
 
-            {/* Headline */}
-            <h1 className="text-4xl lg:text-6xl font-extrabold text-foreground tracking-tight leading-[1.15] mb-6">
+            {/* Headline - Serif for Authority */}
+            <h1 className="text-landing-h1 mb-6">
               Seus direitos não precisam ser{" "}
-              <span className="text-primary relative inline-block">
+              <span className="text-brand-blue relative inline-block">
                 complicados.
                 <svg
-                  className="absolute w-full h-3 -bottom-1 left-0 text-primary/20"
+                  className="absolute w-full h-3 -bottom-1 left-0 text-brand-blue/20"
                   preserveAspectRatio="none"
                   viewBox="0 0 100 10"
                 >
@@ -60,8 +59,8 @@ export function Hero({ className }: HeroProps) {
               </span>
             </h1>
 
-            {/* Subheadline */}
-            <p className="text-lg text-muted-foreground mb-8 leading-relaxed max-w-lg">
+            {/* Subheadline - Sans for Clarity */}
+            <p className="text-landing-lead mb-8 max-w-lg">
               Resolvemos problemas de voo, questões trabalhistas e direitos do
               consumidor. Tudo digital, sem burocracia e com a agilidade que
               você merece.
@@ -73,17 +72,17 @@ export function Hero({ className }: HeroProps) {
                 href="#analise"
                 className={cn(
                   "inline-flex justify-center items-center",
-                  "px-8 py-4 border border-transparent text-base font-semibold rounded-xl",
-                  "text-primary-foreground bg-primary hover:bg-primary/90",
-                  "shadow-lg shadow-primary/30 hover:shadow-primary/40",
-                  "transition-all duration-200 transform hover:-translate-y-0.5 cursor-pointer"
+                  "px-8 py-4 text-base font-bold rounded-lg",
+                  "text-white bg-brand-blue hover:bg-blue-700",
+                  "shadow-xl shadow-brand-blue",
+                  "transition-all duration-200 transform hover:-translate-y-0.5 active:scale-95 cursor-pointer"
                 )}
               >
                 Analisar meu Caso Grátis
-                <MaterialIcon name="arrow_forward" className="ml-2 text-sm" />
+                <MaterialIcon name="arrow_forward" className="ml-2 text-lg" />
               </Link>
-              <div className="flex items-center gap-3 px-4 py-2 text-muted-foreground text-sm">
-                <MaterialIcon name="verified" className="text-green-500" />
+              <div className="flex items-center gap-3 px-4 py-2 text-slate-500 text-sm">
+                <MaterialIcon name="verified" className="text-brand-green text-xl" />
                 <span>Sem custo inicial</span>
               </div>
             </div>
@@ -92,10 +91,10 @@ export function Hero({ className }: HeroProps) {
           {/* Hero Image */}
           <div className="relative lg:h-[600px] flex items-center justify-center">
             {/* Gradient Blur */}
-            <div className="absolute inset-0 bg-gradient-to-tr from-primary/20 to-transparent rounded-full blur-3xl opacity-60 transform translate-x-10 translate-y-10" />
+            <div className="absolute inset-0 bg-gradient-to-tr from-blue-100 to-transparent rounded-full blur-3xl opacity-60 transform translate-x-10 translate-y-10" />
 
             {/* Image Container */}
-            <div className="relative w-full max-w-md lg:max-w-full aspect-[4/5] lg:aspect-auto h-full rounded-2xl overflow-hidden shadow-2xl border-4 border-card">
+            <div className="relative w-full max-w-md lg:max-w-full aspect-[4/5] lg:aspect-auto h-full rounded-2xl overflow-hidden shadow-2xl border-4 border-white">
               <Image
                 src="https://lh3.googleusercontent.com/aida-public/AB6AXuCTvWERiRaPSkirzaCxaQ1pjuGNeYpCsf59zrVBe7Y2RNo-eK9YoMDaSeTpms6i7GRLfTbdJujkyFjfDbl0AJC5YEdoOZ3jRdy1hSKL5JFmAY_Yhy_veUk7ib-oLuMPR0DtAbl711oXfRLtwyMRNSGrLxp-yXo9NXLQnpZhX_sXH6p6ieb__Ecv_Vg3u9Q2P3b869aLyjMRYD2ZsxmbgVe96jivuUhQbsyB4mIFWXao66Wuozk0mU_bPtYiYvbngB0iOb2mqxN9TQvs"
                 alt="Pessoa sorrindo ao conferir o celular, representando resolução jurídica fácil"
@@ -105,16 +104,16 @@ export function Hero({ className }: HeroProps) {
               />
 
               {/* Floating Card 1 - Status */}
-              <div className="absolute bottom-8 left-8 bg-card p-4 rounded-xl shadow-lg border border-border max-w-xs animate-fade-in-up">
+              <div className="absolute bottom-8 left-8 bg-white p-4 rounded-xl shadow-lg border border-slate-100 max-w-xs">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center text-green-600">
+                  <div className="w-10 h-10 rounded-full bg-emerald-50 flex items-center justify-center text-brand-green">
                     <MaterialIcon name="check" className="text-lg" />
                   </div>
                   <div>
-                    <p className="text-xs text-muted-foreground uppercase font-semibold">
+                    <p className="text-xs text-slate-500 uppercase font-semibold">
                       Status do Processo
                     </p>
-                    <p className="text-sm font-bold text-foreground">
+                    <p className="text-sm font-bold text-brand-navy">
                       Indenização Aprovada
                     </p>
                   </div>
@@ -122,10 +121,10 @@ export function Hero({ className }: HeroProps) {
               </div>
 
               {/* Floating Card 2 - Badge */}
-              <div className="absolute top-12 -right-6 lg:-right-12 bg-card p-3 rounded-lg shadow-lg border border-border hidden sm:block rotate-3">
+              <div className="absolute top-12 -right-6 lg:-right-12 bg-white p-3 rounded-lg shadow-lg border border-slate-100 hidden sm:block rotate-3">
                 <div className="flex items-center gap-2">
-                  <MaterialIcon name="thumb_up" className="text-primary text-xl" />
-                  <span className="text-sm font-bold text-foreground">
+                  <MaterialIcon name="thumb_up" className="text-brand-blue text-xl" />
+                  <span className="text-sm font-bold text-brand-navy">
                     Simples assim!
                   </span>
                 </div>

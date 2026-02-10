@@ -200,7 +200,7 @@ export function SuccessStep({
           Este documento foi assinado eletronicamente em conformidade com a MP
           2.200-2/2001.
         </p>
-        <p className="mt-2">&copy; {new Date().getFullYear()} Zattar Advogados. Todos os direitos reservados.</p>
+        <p className="mt-2">&copy; {new Date().getFullYear()} Diego Barbosa Soluções Jurídicas. Todos os direitos reservados.</p>
       </footer>
 
       {/* CSS para animação loading */}

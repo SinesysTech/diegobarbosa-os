@@ -1,18 +1,19 @@
 /**
- * SINESYS DESIGN SYSTEM - FUNDAÇÃO
- * 
+ * DIEGO BARBOSA DESIGN SYSTEM - FUNDAÇÃO
+ *
  * Hierarquia de Tokens:
- * 1. Brand Tokens (--color-brand-*): Cores da marca Zattar
+ * 1. Brand Tokens (--brand-*): Cores da marca Diego Barbosa
  * 2. Semantic Tokens (--color-*): Mapeamento shadcn/ui
  * 3. Component Tokens: Derivados dos semânticos
- * 
+ *
  * Regras Críticas para Agentes:
- * - NUNCA use valores OKLCH diretos no código (use variáveis)
- * - Sidebar SEMPRE usa tokens --sidebar-* (escura em ambos os temas)
- * - Primary = Zattar Purple (CTAs, links, foco)
- * - Highlight = Action Orange (badges de status, alertas de ação)
- * 
- * @see .qoder/rules/design-system-foundation.md
+ * - NUNCA use valores HEX/OKLCH diretos no código (use variáveis)
+ * - Landing Page usa tokens --brand-* (navy, blue, green, light)
+ * - Portal/App usa tokens semânticos (primary, secondary, etc.)
+ * - Primary = Electric Blue #2563EB (CTAs, links, foco)
+ * - Success = Emerald Green #10B981 (WhatsApp, sucesso)
+ *
+ * @see docs/design-system/MASTER.md
  */
 @import "tailwindcss";
 
@@ -86,12 +87,19 @@
 
   /* --- 7. Tipografia & Layout --- */
   --font-sans: var(--font-inter);
-  --font-heading: var(--font-montserrat); /* Títulos */
+  --font-heading: var(--font-montserrat); /* Títulos Portal/App */
+  --font-serif: var(--font-playfair); /* Headlines Landing (Autoridade) */
   --font-mono: var(--font-geist-mono);
 
   --radius-lg: var(--radius);
   --radius-md: calc(var(--radius) - 2px);
   --radius-sm: calc(var(--radius) - 4px);
+
+  /* --- 8. Brand Colors (Landing Page - LegalTech) --- */
+  --color-brand-navy: var(--brand-navy);
+  --color-brand-blue: var(--brand-blue);
+  --color-brand-green: var(--brand-green);
+  --color-brand-light: var(--brand-light);
 
   /* Breakpoints Customizados (Opcional, mas útil para mobile-first preciso) */
   --breakpoint-xs: 480px;
@@ -103,10 +111,21 @@
   /* Configuração Global */
   --radius: 0.5rem; /* 8px -> Visual Tech/Sharp */
 
-  /* ZATTAR LIGHT MODE */
+  /* =============================================================================
+   * BRAND COLORS (Landing Page - LegalTech)
+   * =============================================================================
+   * Estas cores são usadas na Landing Page para criar a experiência "LegalTech".
+   * @see docs/design-system/MASTER.md
+   */
+  --brand-navy: #0F172A;  /* Authority, Seriousness - Headlines, Footer */
+  --brand-blue: #2563EB;  /* Technology, Speed - CTAs, Links, Active */
+  --brand-green: #10B981; /* Resolution, Relief - Success, WhatsApp */
+  --brand-light: #F4F6F8; /* Modernity, Comfort - Page Background */
+
+  /* LIGHT MODE */
   /* Fundo Off-White para evitar fadiga visual */
   --background: oklch(0.96 0.01 270);
-  /* Texto Charcoal (quase preto) para alto contraste */
+  /* Texto Navy para alto contraste */
   --foreground: oklch(0.24 0 0);
 
   /* Cards Brancos Puros */
@@ -116,8 +135,8 @@
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.24 0 0);
 
-  /* Primary: Zattar Purple */
-  --primary: oklch(0.45 0.25 285);
+  /* Primary: Electric Blue #2563EB (LegalTech) */
+  --primary: oklch(0.53 0.24 260);
   --primary-foreground: oklch(1 0 0);
 
   /* Secondary: Cinza muito suave para fundos de apoio */
@@ -145,29 +164,29 @@
   /* Mesmo no light mode, a sidebar mantém a identidade premium escura */
   --sidebar: oklch(0.24 0 0);
   --sidebar-foreground: oklch(0.98 0 0);
-  --sidebar-primary: oklch(0.45 0.25 285);
+  --sidebar-primary: oklch(0.53 0.24 260);
   --sidebar-primary-foreground: oklch(1 0 0);
   --sidebar-accent: oklch(0.32 0 0); /* Hover na sidebar */
   --sidebar-accent-foreground: oklch(1 0 0);
   --sidebar-border: oklch(1 0 0 / 0.1);
-  --sidebar-ring: oklch(0.45 0.25 285);
+  --sidebar-ring: oklch(0.53 0.24 260);
 
   /* CORES DA MARCA & GRÁFICOS */
-  --brand: oklch(0.45 0.25 285);
-  --highlight: oklch(0.68 0.22 45); /* Action Orange */
+  --brand: oklch(0.53 0.24 260); /* Electric Blue */
+  --highlight: oklch(0.68 0.16 165); /* Emerald Green */
 
-  --chart-1: oklch(0.45 0.25 285); /* Roxo */
-  --chart-2: oklch(0.68 0.22 45); /* Laranja */
+  --chart-1: oklch(0.53 0.24 260); /* Blue */
+  --chart-2: oklch(0.68 0.16 165); /* Green */
   --chart-3: oklch(0.24 0 0); /* Charcoal */
   --chart-4: oklch(0.65 0.18 150); /* Verde Complementar */
   --chart-5: oklch(0.6 0 0); /* Cinza Médio */
 
   /* SEMANTIC STATUS COLORS */
-  --success: oklch(0.65 0.18 145);           /* Green */
+  --success: oklch(0.68 0.16 165);           /* Emerald Green #10B981 */
   --success-foreground: oklch(0.98 0 0);
   --warning: oklch(0.75 0.18 85);            /* Amber */
   --warning-foreground: oklch(0.2 0 0);
-  --info: oklch(0.6 0.18 250);               /* Blue */
+  --info: oklch(0.53 0.24 260);               /* Electric Blue #2563EB */
   --info-foreground: oklch(0.98 0 0);
 
   /* SURFACE TOKENS (Layering) */
@@ -177,8 +196,8 @@
 }
 
 .dark {
-  /* ZATTAR DARK MODE */
-  /* Fundo Deep Charcoal */
+  /* DARK MODE */
+  /* Fundo Deep Charcoal (Brand Navy) */
   --background: oklch(0.18 0 0);
   --foreground: oklch(0.98 0 0);
 
@@ -189,8 +208,8 @@
   --popover: oklch(0.24 0 0);
   --popover-foreground: oklch(0.98 0 0);
 
-  /* Primary: Roxo ligeiramente mais claro para contraste */
-  --primary: oklch(0.55 0.25 285);
+  /* Primary: Electric Blue ligeiramente mais claro para contraste */
+  --primary: oklch(0.58 0.22 260);
   --primary-foreground: oklch(1 0 0);
 
   --secondary: oklch(0.3 0 0);
@@ -212,29 +231,29 @@
   /* Sidebar Dark (Mantém consistência, ajusta apenas bordas/contraste) */
   --sidebar: oklch(0.18 0 0);
   --sidebar-foreground: oklch(0.98 0 0);
-  --sidebar-primary: oklch(0.55 0.25 285);
+  --sidebar-primary: oklch(0.58 0.22 260);
   --sidebar-primary-foreground: oklch(1 0 0);
   --sidebar-accent: oklch(0.28 0 0);
   --sidebar-accent-foreground: oklch(0.98 0 0);
   --sidebar-border: oklch(1 0 0 / 0.1);
-  --sidebar-ring: oklch(0.55 0.25 285);
+  --sidebar-ring: oklch(0.58 0.22 260);
 
   /* Cores de Marca Dark */
-  --brand: oklch(0.55 0.25 285);
-  --highlight: oklch(0.68 0.22 45);
+  --brand: oklch(0.58 0.22 260); /* Electric Blue */
+  --highlight: oklch(0.72 0.14 165); /* Emerald Green */
 
-  --chart-1: oklch(0.55 0.25 285);
-  --chart-2: oklch(0.68 0.22 45);
+  --chart-1: oklch(0.58 0.22 260); /* Blue */
+  --chart-2: oklch(0.72 0.14 165); /* Green */
   --chart-3: oklch(0.4 0 0);
   --chart-4: oklch(0.65 0.18 150);
   --chart-5: oklch(0.5 0 0);
 
   /* SEMANTIC STATUS COLORS (Dark) */
-  --success: oklch(0.7 0.18 145);
+  --success: oklch(0.72 0.14 165);           /* Emerald Green */
   --success-foreground: oklch(0.98 0 0);
   --warning: oklch(0.78 0.16 85);
   --warning-foreground: oklch(0.15 0 0);
-  --info: oklch(0.65 0.18 250);
+  --info: oklch(0.58 0.22 260);              /* Electric Blue */
   --info-foreground: oklch(0.98 0 0);
 
   /* SURFACE TOKENS (Dark) */
@@ -408,19 +427,46 @@
    * Use estas classes para tipografia fluida com responsividade automática.
    */
 
-  /* Display Headings (Hero, Landing) */
+  /* Display Headings (Hero, Landing) - Serif for Authority */
   .text-display-1 {
     font-size: clamp(2.25rem, 5vw, 3.75rem); /* 36px → 60px */
     line-height: 1.1;
     letter-spacing: -0.02em;
-    @apply font-heading font-bold text-foreground;
+    font-family: var(--font-serif), serif;
+    @apply font-bold text-foreground;
   }
 
   .text-display-2 {
     font-size: clamp(1.875rem, 4vw, 3rem); /* 30px → 48px */
     line-height: 1.15;
     letter-spacing: -0.02em;
-    @apply font-heading font-bold text-foreground;
+    font-family: var(--font-serif), serif;
+    @apply font-bold text-foreground;
+  }
+
+  /* Landing Page Headlines (Serif - LegalTech Authority) */
+  .text-landing-h1 {
+    font-size: clamp(2.5rem, 6vw, 4rem); /* 40px → 64px */
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    font-family: var(--font-serif), serif;
+    @apply font-bold;
+    color: var(--brand-navy);
+  }
+
+  .text-landing-h2 {
+    font-size: clamp(1.875rem, 4vw, 2.5rem); /* 30px → 40px */
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+    font-family: var(--font-serif), serif;
+    @apply font-bold;
+    color: var(--brand-navy);
+  }
+
+  /* Landing Page Body (Sans - LegalTech Clarity) */
+  .text-landing-lead {
+    @apply text-lg md:text-xl leading-relaxed;
+    color: #475569; /* slate-600 */
   }
 
   /* Page Headings (Semantic aliases using direct Tailwind classes) */
@@ -664,6 +710,57 @@
   }
   .bg-surface-3 {
     background-color: var(--surface-3);
+  }
+
+  /* =============================================================================
+   * BRAND UTILITIES (Landing Page - LegalTech)
+   * =============================================================================
+   */
+
+  /* Brand Background Colors */
+  .bg-brand-navy {
+    background-color: var(--brand-navy);
+  }
+  .bg-brand-blue {
+    background-color: var(--brand-blue);
+  }
+  .bg-brand-green {
+    background-color: var(--brand-green);
+  }
+  .bg-brand-light {
+    background-color: var(--brand-light);
+  }
+
+  /* Brand Text Colors */
+  .text-brand-navy {
+    color: var(--brand-navy);
+  }
+  .text-brand-blue {
+    color: var(--brand-blue);
+  }
+  .text-brand-green {
+    color: var(--brand-green);
+  }
+
+  /* Brand Border Colors */
+  .border-brand-blue {
+    border-color: var(--brand-blue);
+  }
+  .border-brand-green {
+    border-color: var(--brand-green);
+  }
+
+  /* Brand Shadows */
+  .shadow-brand-blue {
+    box-shadow: 0 10px 30px -10px rgba(37, 99, 235, 0.3);
+  }
+  .shadow-brand-green {
+    box-shadow: 0 10px 30px -10px rgba(16, 185, 129, 0.3);
+  }
+
+  /* Font Serif Utility */
+  .font-serif {
+    font-family: var(--font-serif), serif;
   }
 }
 
