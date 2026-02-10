@@ -1,27 +1,48 @@
-"use client";
+import type { Metadata } from "next";
+import {
+  Header,
+  Hero,
+  TrustBar,
+  Services,
+  HowItWorks,
+  WhyUs,
+  Testimonials,
+  Cta,
+  Footer,
+} from "./landing/components";
 
-import Header from "@/components/website/header";
-import Hero from "@/components/website/hero";
-import DireitosEssenciais from "@/components/website/direitos-essenciais";
-import EtapasProcessuais from "@/components/website/etapas-processuais";
-import Depoimentos from "@/components/website/depoimentos";
-import QuemSomos from "@/components/website/quem-somos";
-import ConsultoriaEmpresarial from "@/components/website/consultoria-empresarial";
-import Footer from "@/components/website/ui/footer";
-import ChatwootWidget from "@/components/website/chatwoot-widget";
+export const metadata: Metadata = {
+  title: "Diego Barbosa - Soluções Jurídicas",
+  description:
+    "Soluções jurídicas modernas e digitais. Resolvemos problemas de voo, trabalhistas e de consumo de forma 100% online.",
+  keywords: [
+    "advogado",
+    "direito do consumidor",
+    "direito trabalhista",
+    "problemas com voo",
+    "indenização",
+    "advocacia digital",
+  ],
+  openGraph: {
+    title: "Diego Barbosa - Soluções Jurídicas",
+    description:
+      "Resolvemos problemas de voo, questões trabalhistas e direitos do consumidor. Tudo digital, sem burocracia.",
+    type: "website",
+  },
+};
 
-export default function Home() {
+export default function LandingPage() {
   return (
-    <main className="min-h-screen">
+    <main className="scroll-smooth">
       <Header />
       <Hero />
-      <DireitosEssenciais />
-      <EtapasProcessuais />
-      <Depoimentos />
-      <QuemSomos />
-      <ConsultoriaEmpresarial />
+      <TrustBar />
+      <Services />
+      <HowItWorks />
+      <WhyUs />
+      <Testimonials />
+      <Cta />
       <Footer />
-      <ChatwootWidget />
     </main>
   );
 }

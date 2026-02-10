@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+
+<html class="scroll-smooth" lang="pt-BR"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Diego Barbosa - Soluções Jurídicas</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#2463eb",
+                        "primary-dark": "#1d4ed8",
+                        "background-light": "#f6f6f8",
+                        "background-dark": "#111621",
+                        "emerald-brand": "#10B981",
+                        "emerald-dark": "#059669",
+                        "navy-footer": "#0f172a", 
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "2xl": "1rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        .timeline-connector {
+            position: absolute;
+            top: 2rem; 
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background-color: #e5e7eb;
+            z-index: 0;
+        }
+        .timeline-connector-active {
+            background-color: #2463eb;
+            width: 0%; 
+            transition: width 1s ease-in-out;
+            animation: fillLine 2s forwards;
+        }
+        @keyframes fillLine {
+            from { width: 0%; }
+            to { width: 100%; }
+        }
+        /* Custom scrollbar for testimonials if needed */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-800 dark:text-slate-200 font-display antialiased selection:bg-primary selection:text-white">
+<!-- Hero/Header Placeholder for context (Not explicitly requested but good for structure) -->
+<header class="w-full py-6 px-4 md:px-8 max-w-7xl mx-auto flex justify-between items-center">
+<div class="flex items-center gap-2">
+<div class="w-8 h-8 bg-primary rounded-lg flex items-center justify-center text-white font-bold text-xl">D</div>
+<span class="font-semibold text-lg tracking-tight">Diego Barbosa</span>
+</div>
+<nav class="hidden md:flex gap-6 text-sm font-medium text-slate-500">
+<a class="hover:text-primary transition-colors" href="#">Áreas de Atuação</a>
+<a class="hover:text-primary transition-colors" href="#">Sobre</a>
+<a class="hover:text-primary transition-colors" href="#">Contato</a>
+</nav>
+<button class="bg-primary hover:bg-primary-dark text-white px-5 py-2 rounded-lg text-sm font-medium transition-colors shadow-sm shadow-primary/30">
+            Fale Conosco
+        </button>
+</header>
+<main class="space-y-24 pb-24">
+<!-- 'Como Funciona' Section: Timeline -->
+<section class="w-full px-4 md:px-8 max-w-7xl mx-auto mt-16">
+<div class="text-center mb-16">
+<span class="text-primary font-semibold tracking-wider uppercase text-sm mb-2 block">Nosso Método</span>
+<h2 class="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white mb-4">Como resolvemos seu problema</h2>
+<p class="text-slate-500 dark:text-slate-400 max-w-2xl mx-auto">Um processo simplificado e transparente para garantir que você tenha acesso aos seus direitos sem burocracia desnecessária.</p>
+</div>
+<div class="relative max-w-5xl mx-auto py-8">
+<!-- Connector Line Background -->
+<div class="hidden md:block absolute top-12 left-[10%] right-[10%] h-0.5 bg-slate-200 dark:bg-slate-700 z-0"></div>
+<!-- Active Line Overlay (Simulated progress) -->
+<div class="hidden md:block absolute top-12 left-[10%] w-[80%] h-0.5 bg-gradient-to-r from-primary to-primary/30 z-0 opacity-80"></div>
+<div class="grid grid-cols-1 md:grid-cols-4 gap-8 relative z-10">
+<!-- Step 1 -->
+<div class="flex flex-col items-center text-center group">
+<div class="w-24 h-24 rounded-full bg-white dark:bg-slate-800 border-4 border-slate-100 dark:border-slate-700 group-hover:border-primary/20 transition-all duration-300 flex items-center justify-center mb-6 shadow-sm relative">
+<span class="absolute -top-2 -right-2 w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center font-bold text-sm shadow-md">1</span>
+<span class="material-icons-outlined text-4xl text-primary">chat</span>
+</div>
+<h3 class="text-lg font-bold text-slate-900 dark:text-white mb-2">Relate seu caso</h3>
+<p class="text-sm text-slate-500 dark:text-slate-400 leading-relaxed px-2">Conte sua história através do nosso formulário ou WhatsApp de forma segura.</p>
+</div>
+<!-- Step 2 -->
+<div class="flex flex-col items-center text-center group">
+<div class="w-24 h-24 rounded-full bg-white dark:bg-slate-800 border-4 border-slate-100 dark:border-slate-700 group-hover:border-primary/20 transition-all duration-300 flex items-center justify-center mb-6 shadow-sm relative">
+<span class="absolute -top-2 -right-2 w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center font-bold text-sm shadow-md">2</span>
+<span class="material-icons-outlined text-4xl text-primary">manage_search</span>
+</div>
+<h3 class="text-lg font-bold text-slate-900 dark:text-white mb-2">Análise Especializada</h3>
+<p class="text-sm text-slate-500 dark:text-slate-400 leading-relaxed px-2">Nossa equipe avalia a viabilidade do seu direito em até 24 horas.</p>
+</div>
+<!-- Step 3 -->
+<div class="flex flex-col items-center text-center group">
+<div class="w-24 h-24 rounded-full bg-white dark:bg-slate-800 border-4 border-slate-100 dark:border-slate-700 group-hover:border-primary/20 transition-all duration-300 flex items-center justify-center mb-6 shadow-sm relative">
+<span class="absolute -top-2 -right-2 w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center font-bold text-sm shadow-md">3</span>
+<span class="material-icons-outlined text-4xl text-primary">gavel</span>
+</div>
+<h3 class="text-lg font-bold text-slate-900 dark:text-white mb-2">Ação Jurídica</h3>
+<p class="text-sm text-slate-500 dark:text-slate-400 leading-relaxed px-2">Iniciamos o processo administrativo ou judicial necessário.</p>
+</div>
+<!-- Step 4 -->
+<div class="flex flex-col items-center text-center group">
+<div class="w-24 h-24 rounded-full bg-white dark:bg-slate-800 border-4 border-slate-100 dark:border-slate-700 group-hover:border-emerald-brand/20 transition-all duration-300 flex items-center justify-center mb-6 shadow-sm relative">
+<span class="absolute -top-2 -right-2 w-8 h-8 rounded-full bg-emerald-brand text-white flex items-center justify-center font-bold text-sm shadow-md">4</span>
+<span class="material-icons-outlined text-4xl text-emerald-brand">account_balance_wallet</span>
+</div>
+<h3 class="text-lg font-bold text-slate-900 dark:text-white mb-2">Receba seu Direito</h3>
+<p class="text-sm text-slate-500 dark:text-slate-400 leading-relaxed px-2">Acompanhe tudo online e receba sua indenização diretamente.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- 'Por que nós?' Section: Feature List -->
+<section class="w-full bg-white dark:bg-slate-900 py-20 border-y border-slate-100 dark:border-slate-800">
+<div class="max-w-7xl mx-auto px-4 md:px-8 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+<div class="space-y-8">
+<div>
+<span class="text-primary font-semibold tracking-wider uppercase text-sm mb-2 block">Diferenciais</span>
+<h2 class="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white mb-6">Advocacia moderna,<br/> sem gravata apertada.</h2>
+<p class="text-slate-500 dark:text-slate-400 text-lg">Esqueça a burocracia dos escritórios tradicionais. Utilizamos tecnologia para agilizar seu processo e manter você informado a cada passo.</p>
+</div>
+<ul class="space-y-6 mt-8">
+<li class="flex items-start gap-4 p-4 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+<div class="flex-shrink-0 w-8 h-8 rounded-full bg-emerald-brand/10 flex items-center justify-center mt-1">
+<span class="material-icons-outlined text-emerald-brand text-xl">check</span>
+</div>
+<div>
+<h4 class="font-bold text-slate-900 dark:text-white text-lg">Atendimento 100% Online</h4>
+<p class="text-slate-500 dark:text-slate-400 text-sm mt-1">Resolva tudo pelo celular, sem precisar se deslocar até um escritório físico.</p>
+</div>
+</li>
+<li class="flex items-start gap-4 p-4 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+<div class="flex-shrink-0 w-8 h-8 rounded-full bg-emerald-brand/10 flex items-center justify-center mt-1">
+<span class="material-icons-outlined text-emerald-brand text-xl">check</span>
+</div>
+<div>
+<h4 class="font-bold text-slate-900 dark:text-white text-lg">Linguagem Simples</h4>
+<p class="text-slate-500 dark:text-slate-400 text-sm mt-1">Explicamos cada etapa de forma clara. Sem "juridiquês" complicado.</p>
+</div>
+</li>
+<li class="flex items-start gap-4 p-4 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+<div class="flex-shrink-0 w-8 h-8 rounded-full bg-emerald-brand/10 flex items-center justify-center mt-1">
+<span class="material-icons-outlined text-emerald-brand text-xl">check</span>
+</div>
+<div>
+<h4 class="font-bold text-slate-900 dark:text-white text-lg">Transparência Total</h4>
+<p class="text-slate-500 dark:text-slate-400 text-sm mt-1">Acesso em tempo real ao andamento do seu caso através do nosso portal.</p>
+</div>
+</li>
+</ul>
+</div>
+<div class="relative h-full min-h-[500px] rounded-2xl overflow-hidden shadow-2xl bg-slate-100 dark:bg-slate-800 group">
+<!-- Abstract representation of transparency and tech -->
+<div class="absolute inset-0 bg-gradient-to-br from-primary/10 to-transparent"></div>
+<img alt="Handshake over a clean meeting table representing trust" class="w-full h-full object-cover opacity-90 group-hover:scale-105 transition-transform duration-700" data-alt="Modern professional handshake meeting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA--tzSDYKlQZEEvKhD4nbyPZ_EHTuJ8tdD05dbqneBxu5YBxUCBVdhta4ljYdpY2oYw9euq3QzKLrO4O-dwzLCtSjIzaeISV9abFRfJ_atPyYqHk-3sx7hb4Wf9AXAYhAbILfAvKlWRJBTduJYDduEfknMqEOQxbyDJZb89RFOjG7xwGzFY0YK1jpn-VAsqf5GYpv7t_jSTMGDjsKFg-IWVC7Qrp-Kr6878YS6P56t97zeqa-ntkFRUnoIqT8jKD6P1yuYq8JPk2ST"/>
+<div class="absolute bottom-8 left-8 right-8 bg-white/95 dark:bg-slate-800/95 backdrop-blur-sm p-6 rounded-xl shadow-lg border border-slate-100 dark:border-slate-700">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center text-primary">
+<span class="material-icons-outlined">verified_user</span>
+</div>
+<div>
+<div class="text-sm font-semibold text-slate-500 dark:text-slate-400">Taxa de Sucesso</div>
+<div class="text-2xl font-bold text-slate-900 dark:text-white">98.5%</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Testimonials Section -->
+<section class="w-full px-4 md:px-8 max-w-7xl mx-auto">
+<div class="text-center mb-12">
+<span class="text-primary font-semibold tracking-wider uppercase text-sm mb-2 block">Prova Social</span>
+<h2 class="text-3xl font-bold text-slate-900 dark:text-white">O que dizem nossos clientes</h2>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<!-- Card 1: Google Style -->
+<div class="bg-white dark:bg-slate-800 p-8 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 flex flex-col h-full hover:-translate-y-1 transition-transform duration-300">
+<div class="flex items-center gap-3 mb-4">
+<div class="w-10 h-10 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center font-bold text-sm">M</div>
+<div>
+<h5 class="font-bold text-slate-900 dark:text-white text-sm">Maria S.</h5>
+<div class="flex text-yellow-400 text-xs">
+<span class="material-icons-outlined" style="font-size: 16px;">star</span>
+<span class="material-icons-outlined" style="font-size: 16px;">star</span>
+<span class="material-icons-outlined" style="font-size: 16px;">star</span>
+<span class="material-icons-outlined" style="font-size: 16px;">star</span>
+<span class="material-icons-outlined" style="font-size: 16px;">star</span>
+</div>
+</div>
+<img alt="Google Logo" class="h-5 w-auto ml-auto opacity-50" data-alt="Google G logo" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAmHtYUyGSGqjIeJSx-oyESAyKP1RDQIZZBN1a4eLBtolHizwab2vFS9aCGszfI_ojVmDtv9Me37h5GfKH6pJWAPfHU1r6S-G6jMrWfZc-Yk6OzN3eQqIKSgZt6XGGrgOc1-wXllteocMilLTsDh3-_KY11X1QvHmIJf_MDuxxyBRnyGkZZjDCTdOLFgw6WNNZ9OYLtbAhU7QMozTisveNjiDt6SZdDMc7kLK0_0guIwcVEMX7wCFE1fdxbt__aszIwS9ron0MLda7p"/>
+</div>
+<p class="text-slate-600 dark:text-slate-300 text-sm leading-relaxed italic">"Eu não entendia nada sobre meus direitos trabalhistas. O Dr. Diego explicou tudo de forma muito simples e ganhamos a causa em tempo recorde."</p>
+<div class="mt-auto pt-4 text-xs text-slate-400">Avaliado há 2 semanas</div>
+</div>
+<!-- Card 2: WhatsApp/Chat Style -->
+<div class="bg-[#e5ddd5] dark:bg-[#0b141a] p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 flex flex-col h-full relative overflow-hidden">
+<div class="absolute inset-0 opacity-5 bg-[url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png')] bg-repeat" data-alt="Subtle chat background pattern"></div>
+<div class="relative z-10">
+<div class="bg-white dark:bg-[#202c33] p-4 rounded-tr-xl rounded-bl-xl rounded-br-xl shadow-sm max-w-[90%] mb-2">
+<p class="text-slate-800 dark:text-slate-200 text-sm">Dr., passando para agradecer. O dinheiro acabou de cair na conta! 🙏 Não imaginava que seria tão rápido.</p>
+<div class="text-[10px] text-slate-400 text-right mt-1 flex items-center justify-end gap-1">
+                                14:32 <span class="material-icons-outlined text-blue-400" style="font-size: 14px;">done_all</span>
+</div>
+</div>
+<div class="flex items-center gap-3 mt-4 px-2">
+<div class="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center">
+<span class="material-icons-outlined text-primary text-sm">person</span>
+</div>
+<div class="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wide">João Paulo (Cliente)</div>
+</div>
+</div>
+</div>
+<!-- Card 3: Google Style -->
+<div class="bg-white dark:bg-slate-800 p-8 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 flex flex-col h-full hover:-translate-y-1 transition-transform duration-300">
+<div class="flex items-center gap-3 mb-4">
+<div class="w-10 h-10 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center font-bold text-sm">F</div>
+<div>
+<h5 class="font-bold text-slate-900 dark:text-white text-sm">Fernanda Lima</h5>
+<div class="flex text-yellow-400 text-xs">
+<span class="material-icons-outlined" style="font-size: 16px;">star</span>
+<span class="material-icons-outlined" style="font-size: 16px;">star</span>
+<span class="material-icons-outlined" style="font-size: 16px;">star</span>
+<span class="material-icons-outlined" style="font-size: 16px;">star</span>
+<span class="material-icons-outlined" style="font-size: 16px;">star</span>
+</div>
+</div>
+<img alt="Google Logo" class="h-5 w-auto ml-auto opacity-50" data-alt="Google G logo" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAV89rHk3t0vTRLuEaasilQlLK74mVl4qOVwEfHGXjSt2ACFRg2QoIbGKhkn0gzuzaNak5hHC1K2yHLwC8B-H9pCprEi1HH27bVp6uTVqhQzsT8CZdXozbGhThvF_IcFR3qmc0UCUBKxgoMoRp_N55irXhOeSQbUQVx6BEARdUP4IrFWiVuO63Q8BpdWRnrdCvv8XFo4QXApUYJKL71Z2G8aM5AE5Di3m7Z8C7S6lHYycuyp-xXetUPGwRFZ_PBYys7y4zIy-mlOyIQ"/>
+</div>
+<p class="text-slate-600 dark:text-slate-300 text-sm leading-relaxed italic">"Transparência total desde o primeiro contato. O sistema deles avisa cada movimentação do processo. Recomendo demais!"</p>
+<div class="mt-auto pt-4 text-xs text-slate-400">Avaliado há 1 mês</div>
+</div>
+</div>
+</section>
+<!-- Final CTA Section -->
+<section class="w-full px-4 md:px-8 mt-12">
+<div class="max-w-5xl mx-auto bg-white dark:bg-slate-800 rounded-3xl p-8 md:p-16 text-center shadow-xl border border-slate-100 dark:border-slate-700 relative overflow-hidden">
+<!-- Decorative Circle -->
+<div class="absolute -top-24 -left-24 w-64 h-64 bg-primary/5 rounded-full blur-3xl"></div>
+<div class="absolute -bottom-24 -right-24 w-64 h-64 bg-emerald-brand/5 rounded-full blur-3xl"></div>
+<div class="relative z-10">
+<h2 class="text-3xl md:text-5xl font-bold text-slate-900 dark:text-white mb-6 tracking-tight">
+                        Não deixe seu direito <span class="text-primary">prescrever</span>.
+                    </h2>
+<p class="text-lg text-slate-500 dark:text-slate-400 mb-10 max-w-2xl mx-auto">
+                        O tempo é crucial em processos jurídicos. Converse com nossa equipe hoje mesmo e garanta o que é seu por direito. A análise inicial é gratuita.
+                    </p>
+<button class="group bg-emerald-brand hover:bg-emerald-dark text-white px-8 py-4 rounded-full text-lg font-semibold transition-all shadow-lg shadow-emerald-brand/30 flex items-center justify-center gap-3 mx-auto transform hover:scale-105">
+<span class="material-icons-outlined">whatsapp</span>
+                        Falar com Especialista Agora
+                        <span class="material-icons-outlined group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</button>
+<p class="text-xs text-slate-400 mt-6 flex items-center justify-center gap-1">
+<span class="material-icons-outlined text-sm">lock</span> Seus dados estão 100% seguros
+                    </p>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="bg-navy-footer text-slate-300 py-12 px-4 md:px-8">
+<div class="max-w-7xl mx-auto">
+<div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
+<!-- Brand Column -->
+<div class="col-span-1 md:col-span-2">
+<div class="flex items-center gap-2 mb-6">
+<div class="w-8 h-8 bg-primary rounded-lg flex items-center justify-center text-white font-bold text-xl">D</div>
+<span class="font-semibold text-xl text-white tracking-tight">Diego Barbosa</span>
+</div>
+<p class="text-slate-400 text-sm leading-relaxed max-w-sm mb-6">
+                        Soluções jurídicas modernas para problemas reais. Atuamos com ética, transparência e agilidade para defender seus interesses.
+                    </p>
+<div class="inline-flex items-center gap-2 px-3 py-1 bg-slate-800 rounded-full border border-slate-700 text-xs font-mono text-slate-400">
+<span>OAB/SP 123.456</span>
+</div>
+</div>
+<!-- Links Column 1 -->
+<div>
+<h4 class="text-white font-semibold mb-4">Navegação</h4>
+<ul class="space-y-2 text-sm">
+<li><a class="hover:text-primary transition-colors" href="#">Início</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Sobre Nós</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Como Funciona</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Blog Jurídico</a></li>
+</ul>
+</div>
+<!-- Links Column 2 -->
+<div>
+<h4 class="text-white font-semibold mb-4">Legal</h4>
+<ul class="space-y-2 text-sm">
+<li><a class="hover:text-primary transition-colors" href="#">Política de Privacidade</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Termos de Uso</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Código de Ética</a></li>
+</ul>
+</div>
+</div>
+<div class="border-t border-slate-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-slate-500">
+<p>© 2023 Diego Barbosa Advocacia. Todos os direitos reservados.</p>
+<div class="flex gap-4">
+<a class="hover:text-white transition-colors" href="#"><span class="material-icons-outlined">facebook</span></a>
+<a class="hover:text-white transition-colors" href="#"><span class="material-icons-outlined">photo_camera</span></a> <!-- Instagram icon alternative -->
+<a class="hover:text-white transition-colors" href="#"><span class="material-icons-outlined">work</span></a> <!-- Linkedin icon alternative -->
+</div>
+</div>
+</div>
+</footer>
+</body></html>
