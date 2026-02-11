@@ -108,8 +108,8 @@ export function SuccessStep({
       {/* Card do Documento */}
       <div className="bg-card rounded-xl border border-border shadow-[0_8px_30px_rgb(0,0,0,0.04)] overflow-hidden">
         {/* Thumbnail PDF */}
-        <div className="relative h-32 bg-gradient-to-br from-muted to-muted/80 flex items-center justify-center">
-          <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent" />
+        <div className="relative h-32 bg-linear-to-br from-muted to-muted/80 flex items-center justify-center">
+          <div className="absolute inset-0 bg-linear-to-t from-black/10 to-transparent" />
           <div className="relative z-10 flex items-center justify-center w-16 h-16 bg-red-500/10 rounded-lg text-red-500">
             <FileText className="w-8 h-8" aria-hidden="true" />
           </div>

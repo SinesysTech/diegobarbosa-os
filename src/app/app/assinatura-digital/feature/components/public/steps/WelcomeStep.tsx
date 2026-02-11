@@ -76,7 +76,7 @@ export function WelcomeStep({ documento, onNext }: WelcomeStepProps) {
         {/* Hero Section */}
         <div className="text-center">
           <div className="inline-flex items-center justify-center h-12 w-12 rounded-full bg-primary/10 text-primary mb-4">
-            <span className="material-symbols-outlined !text-2xl" aria-hidden="true">
+            <span className="material-symbols-outlined text-2xl!" aria-hidden="true">
               contract_edit
             </span>
           </div>
