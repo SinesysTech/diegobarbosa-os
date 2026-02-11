@@ -458,13 +458,12 @@ export async function listarCredenciais(
     throw new Error(`Erro ao listar credenciais: ${error.message}`);
   }
 
-  type CredencialRow = Omit<CredencialComAdvogado, 'advogado_nome' | 'advogado_cpf' | 'advogado_oab' | 'advogado_uf_oab'> & {
+  type CredencialRow = Omit<CredencialComAdvogado, 'advogado_nome' | 'advogado_cpf' | 'advogado_oabs'> & {
     advogados:
       | {
           nome_completo: string;
           cpf: string;
-          oab: string;
-          uf_oab: string;
+          oabs: OabEntry[];
         }
       | null;
   };
@@ -481,8 +480,7 @@ export async function listarCredenciais(
         ...credencialData,
         advogado_nome: '-',
         advogado_cpf: '-',
-        advogado_oab: '-',
-        advogado_uf_oab: '-',
+        advogado_oabs: [],
       };
     }
 
@@ -491,8 +489,7 @@ export async function listarCredenciais(
       ...credencial,
       advogado_nome: advogados.nome_completo,
       advogado_cpf: advogados.cpf,
-      advogado_oab: advogados.oab,
-      advogado_uf_oab: advogados.uf_oab,
+      advogado_oabs: advogados.oabs || [],
     };
   });
 }
