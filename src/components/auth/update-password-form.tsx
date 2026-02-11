@@ -61,7 +61,7 @@ export function UpdatePasswordForm({ className, ...props }: React.ComponentProps
                   onChange={(e) => setPassword(e.target.value)}
                 />
               </div>
-              {error && <Typography.Small className="text-red-500">{error}</Typography.Small>}
+              {error && <Typography.Small className="text-destructive">{error}</Typography.Small>}
               <Button type="submit" className="w-full" disabled={isLoading}>
                 {isLoading ? 'Salvando...' : 'Salvar nova senha'}
               </Button>

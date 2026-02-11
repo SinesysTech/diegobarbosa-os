@@ -99,7 +99,7 @@ export function SignUpForm({ className, ...props }: React.ComponentPropsWithoutR
                   onChange={(e) => setRepeatPassword(e.target.value)}
                 />
               </div>
-              {error && <Typography.Small className="text-red-500">{error}</Typography.Small>}
+              {error && <Typography.Small className="text-destructive">{error}</Typography.Small>}
               <Button type="submit" className="w-full" disabled={isLoading}>
                 {isLoading ? 'Criando conta...' : 'Cadastrar'}
               </Button>

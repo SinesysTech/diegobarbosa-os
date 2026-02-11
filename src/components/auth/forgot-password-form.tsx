@@ -79,7 +79,7 @@ export function ForgotPasswordForm({ className, ...props }: React.ComponentProps
                     onChange={(e) => setEmail(e.target.value)}
                   />
                 </div>
-                {error && <Typography.Small className="text-red-500">{error}</Typography.Small>}
+                {error && <Typography.Small className="text-destructive">{error}</Typography.Small>}
                 <Button type="submit" className="w-full" disabled={isLoading}>
                   {isLoading ? 'Enviando...' : 'Enviar email de redefinição'}
                 </Button>

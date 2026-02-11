@@ -8,9 +8,9 @@ export default function AuthLayout({
   return (
     <div className="flex min-h-svh">
       {/* ── Brand Panel ── */}
-      <div className="hidden lg:flex lg:w-[45%] xl:w-1/2 relative overflow-hidden bg-sidebar">
+      <div className="hidden lg:flex lg:w-[45%] xl:w-1/2 relative overflow-hidden bg-brand-navy">
         {/* Dark overlay for depth */}
-        <div className="absolute inset-0 bg-black/40" aria-hidden="true" />
+        <div className="absolute inset-0 bg-black/20" aria-hidden="true" />
 
         {/* Subtle grid pattern */}
         <div
@@ -52,14 +52,14 @@ export default function AuthLayout({
             priority
           />
           <div className="mt-5 h-px w-10 bg-primary/40" />
-          <p className="mt-5 max-w-xs text-center text-base leading-relaxed text-sidebar-foreground/50">
+          <p className="mt-5 max-w-xs text-center text-base leading-relaxed text-white/60">
             Plataforma integrada de gestão jurídica trabalhista
           </p>
         </div>
 
         {/* Copyright */}
         <div className="absolute bottom-6 left-0 right-0 text-center">
-          <p className="text-xs text-sidebar-foreground/25">
+          <p className="text-xs text-white/30">
             &copy; {new Date().getFullYear()} Diego Barbosa Soluções Jurídicas. Todos os direitos reservados.
           </p>
         </div>
