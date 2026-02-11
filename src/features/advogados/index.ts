@@ -5,6 +5,7 @@
 // Types
 export type {
   Advogado,
+  OabEntry,
   CriarAdvogadoParams,
   AtualizarAdvogadoParams,
   ListarAdvogadosParams,
@@ -14,6 +15,15 @@ export type {
   CriarCredencialParams,
   AtualizarCredencialParams,
   ListarCredenciaisParams,
+} from './domain';
+
+// Helper functions
+export {
+  getPrimaryOab,
+  formatOabs,
+  formatOab,
+  hasOabInState,
+  findOabByState,
 } from './domain';
 
 // Actions

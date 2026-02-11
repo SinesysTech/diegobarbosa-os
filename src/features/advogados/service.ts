@@ -51,27 +51,65 @@ export async function criarAdvogado(params: CriarAdvogadoParams) {
   const cpfClean = params.cpf.replace(/\D/g, '');
   if (cpfClean.length !== 11) throw new Error('CPF inválido');
   if (params.nome_completo.length < 3) throw new Error('Nome curto demais');
-  if (params.uf_oab.length !== 2) throw new Error('UF OAB inválido');
-  
+
+  // Validar OABs
+  if (!params.oabs || params.oabs.length === 0) {
+    throw new Error('Pelo menos uma OAB é obrigatória');
+  }
+
+  for (const oab of params.oabs) {
+    if (!oab.numero || oab.numero.trim().length === 0) {
+      throw new Error('Número OAB obrigatório');
+    }
+    if (!oab.uf || oab.uf.length !== 2) {
+      throw new Error('UF OAB inválido');
+    }
+  }
+
   return criarAdvogadoDb({
     ...params,
     cpf: cpfClean,
     nome_completo: params.nome_completo.trim(),
-    oab: params.oab.trim(),
-    uf_oab: params.uf_oab.toUpperCase(),
+    oabs: params.oabs.map((oab) => ({
+      numero: oab.numero.trim(),
+      uf: oab.uf.toUpperCase(),
+    })),
   });
 }
 
 export async function atualizarAdvogado(id: number, params: AtualizarAdvogadoParams) {
   if (!id) throw new Error('ID obrigatório');
-  
-  if (params.cpf) {
-      const cpfClean = params.cpf.replace(/\D/g, '');
-      if (cpfClean.length !== 11) throw new Error('CPF inválido');
-      params.cpf = cpfClean;
+
+  const updateParams = { ...params };
+
+  if (updateParams.cpf) {
+    const cpfClean = updateParams.cpf.replace(/\D/g, '');
+    if (cpfClean.length !== 11) throw new Error('CPF inválido');
+    updateParams.cpf = cpfClean;
   }
-  
-  return atualizarAdvogadoDb(id, params);
+
+  // Validar OABs se fornecidas
+  if (updateParams.oabs !== undefined) {
+    if (updateParams.oabs.length === 0) {
+      throw new Error('Pelo menos uma OAB é obrigatória');
+    }
+
+    for (const oab of updateParams.oabs) {
+      if (!oab.numero || oab.numero.trim().length === 0) {
+        throw new Error('Número OAB obrigatório');
+      }
+      if (!oab.uf || oab.uf.length !== 2) {
+        throw new Error('UF OAB inválido');
+      }
+    }
+
+    updateParams.oabs = updateParams.oabs.map((oab) => ({
+      numero: oab.numero.trim(),
+      uf: oab.uf.toUpperCase(),
+    }));
+  }
+
+  return atualizarAdvogadoDb(id, updateParams);
 }
 
 // ============================================================================

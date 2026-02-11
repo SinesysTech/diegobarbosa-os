@@ -36,14 +36,15 @@ export function criarColunasAdvogados({ onEdit, onManageCredenciais }: Params): 
       },
     },
     {
-      accessorKey: 'oab',
+      accessorKey: 'oabs',
       header: ({ column }) => <DataTableColumnHeader column={column} title="OAB" />,
       cell: ({ row }) => (
-        <div className="flex items-center gap-1">
-          <span className="text-sm">{row.original.oab}</span>
-          <Badge variant="outline" className="text-xs">
-            {row.original.uf_oab}
-          </Badge>
+        <div className="flex flex-wrap gap-1">
+          {row.original.oabs.map((oab, index) => (
+            <Badge key={index} variant="outline" className="text-xs">
+              {oab.numero}/{oab.uf}
+            </Badge>
+          ))}
         </div>
       ),
     },

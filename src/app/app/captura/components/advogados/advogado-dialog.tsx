@@ -21,9 +21,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Loader2 } from 'lucide-react';
+import { Loader2, Plus, Trash2 } from 'lucide-react';
 
-import type { Advogado, CriarAdvogadoParams, AtualizarAdvogadoParams } from '@/features/advogados';
+import type {
+  Advogado,
+  CriarAdvogadoParams,
+  AtualizarAdvogadoParams,
+  OabEntry,
+} from '@/features/advogados';
 import { UFS_BRASIL } from '@/features/advogados/domain';
 
 type Props = {
@@ -34,13 +39,18 @@ type Props = {
   onSave: (data: CriarAdvogadoParams | AtualizarAdvogadoParams) => Promise<void>;
 };
 
+interface FormData {
+  nome_completo: string;
+  cpf: string;
+  oabs: OabEntry[];
+}
+
 export function AdvogadoDialog({ open, onOpenChange, advogado, mode, onSave }: Props) {
   const [isSaving, setIsSaving] = useState(false);
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FormData>({
     nome_completo: '',
     cpf: '',
-    oab: '',
-    uf_oab: '',
+    oabs: [{ numero: '', uf: '' }],
   });
 
   // Reset form when dialog opens
@@ -50,15 +60,13 @@ export function AdvogadoDialog({ open, onOpenChange, advogado, mode, onSave }: P
         setFormData({
           nome_completo: advogado.nome_completo,
           cpf: advogado.cpf,
-          oab: advogado.oab,
-          uf_oab: advogado.uf_oab,
+          oabs: advogado.oabs.length > 0 ? advogado.oabs : [{ numero: '', uf: '' }],
         });
       } else {
         setFormData({
           nome_completo: '',
           cpf: '',
-          oab: '',
-          uf_oab: '',
+          oabs: [{ numero: '', uf: '' }],
         });
       }
     }
@@ -69,7 +77,22 @@ export function AdvogadoDialog({ open, onOpenChange, advogado, mode, onSave }: P
     setIsSaving(true);
 
     try {
-      await onSave(formData);
+      // Filtrar OABs vazias
+      const oabsValidas = formData.oabs.filter(
+        (oab) => oab.numero.trim() !== '' && oab.uf.trim() !== ''
+      );
+
+      if (oabsValidas.length === 0) {
+        alert('Pelo menos uma OAB é obrigatória');
+        setIsSaving(false);
+        return;
+      }
+
+      await onSave({
+        nome_completo: formData.nome_completo,
+        cpf: formData.cpf,
+        oabs: oabsValidas,
+      });
     } finally {
       setIsSaving(false);
     }
@@ -81,7 +104,8 @@ export function AdvogadoDialog({ open, onOpenChange, advogado, mode, onSave }: P
     // Format as 000.000.000-00
     if (digits.length <= 3) return digits;
     if (digits.length <= 6) return `${digits.slice(0, 3)}.${digits.slice(3)}`;
-    if (digits.length <= 9) return `${digits.slice(0, 3)}.${digits.slice(3, 6)}.${digits.slice(6)}`;
+    if (digits.length <= 9)
+      return `${digits.slice(0, 3)}.${digits.slice(3, 6)}.${digits.slice(6)}`;
     return `${digits.slice(0, 3)}.${digits.slice(3, 6)}.${digits.slice(6, 9)}-${digits.slice(9)}`;
   };
 
@@ -90,9 +114,32 @@ export function AdvogadoDialog({ open, onOpenChange, advogado, mode, onSave }: P
     setFormData({ ...formData, cpf: formatted });
   };
 
+  // Funções para gerenciar múltiplas OABs
+  const addOab = () => {
+    setFormData({
+      ...formData,
+      oabs: [...formData.oabs, { numero: '', uf: '' }],
+    });
+  };
+
+  const removeOab = (index: number) => {
+    if (formData.oabs.length > 1) {
+      setFormData({
+        ...formData,
+        oabs: formData.oabs.filter((_, i) => i !== index),
+      });
+    }
+  };
+
+  const updateOab = (index: number, field: 'numero' | 'uf', value: string) => {
+    const newOabs = [...formData.oabs];
+    newOabs[index] = { ...newOabs[index], [field]: value };
+    setFormData({ ...formData, oabs: newOabs });
+  };
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[500px]">
+      <DialogContent className="sm:max-w-[550px]">
         <form onSubmit={handleSubmit}>
           <DialogHeader>
             <DialogTitle>
@@ -130,36 +177,66 @@ export function AdvogadoDialog({ open, onOpenChange, advogado, mode, onSave }: P
               />
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
-              <div className="grid gap-2">
-                <Label htmlFor="oab">Numero OAB *</Label>
-                <Input
-                  id="oab"
-                  value={formData.oab}
-                  onChange={(e) => setFormData({ ...formData, oab: e.target.value })}
-                  placeholder="123456"
-                  required
-                />
+            {/* Seção de OABs */}
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <Label>OABs *</Label>
+                <span className="text-xs text-muted-foreground">
+                  Adicione as inscrições na OAB por estado
+                </span>
               </div>
 
-              <div className="grid gap-2">
-                <Label htmlFor="uf_oab">UF OAB *</Label>
-                <Select
-                  value={formData.uf_oab}
-                  onValueChange={(value) => setFormData({ ...formData, uf_oab: value })}
-                >
-                  <SelectTrigger id="uf_oab">
-                    <SelectValue placeholder="Selecione" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {UFS_BRASIL.map((uf) => (
-                      <SelectItem key={uf} value={uf}>
-                        {uf}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
+              {formData.oabs.map((oab, index) => (
+                <div key={index} className="flex gap-2 items-end">
+                  <div className="flex-1">
+                    <Input
+                      value={oab.numero}
+                      onChange={(e) => updateOab(index, 'numero', e.target.value)}
+                      placeholder="Número OAB"
+                      required={index === 0}
+                    />
+                  </div>
+                  <div className="w-24">
+                    <Select
+                      value={oab.uf}
+                      onValueChange={(value) => updateOab(index, 'uf', value)}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="UF" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {UFS_BRASIL.map((uf) => (
+                          <SelectItem key={uf} value={uf}>
+                            {uf}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  {formData.oabs.length > 1 && (
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => removeOab(index)}
+                      className="text-destructive hover:text-destructive"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  )}
+                </div>
+              ))}
+
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={addOab}
+                className="w-full"
+              >
+                <Plus className="h-4 w-4 mr-2" />
+                Adicionar OAB
+              </Button>
             </div>
           </div>
 

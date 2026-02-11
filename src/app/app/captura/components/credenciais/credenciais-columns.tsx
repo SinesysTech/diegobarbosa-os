@@ -10,6 +10,7 @@ import { TribunalBadge } from '@/components/ui/tribunal-badge';
 import { DataTableColumnHeader } from '@/components/shared/data-shell/data-table-column-header';
 import { getSemanticBadgeVariant, GRAU_LABELS } from '@/lib/design-system';
 import type { Credencial } from '@/features/captura/types';
+import { formatOabs } from '@/features/advogados/domain';
 
 type Params = {
   onViewAdvogado?: (credencial: Credencial) => void;
@@ -26,7 +27,7 @@ export function criarColunasCredenciais({ onViewAdvogado, onEdit, onToggleStatus
         <div className="min-w-0">
           <p className="truncate text-sm font-medium">{row.original.advogado_nome}</p>
           <p className="truncate text-xs text-muted-foreground">
-            {row.original.advogado_oab}/{row.original.advogado_uf_oab} • CPF {row.original.advogado_cpf}
+            OAB {formatOabs(row.original.advogado_oabs)} • CPF {row.original.advogado_cpf}
           </p>
         </div>
       ),

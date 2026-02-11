@@ -163,10 +163,16 @@ export default function CredenciaisPage() {
       // Filtro de busca
       if (buscaDebounced) {
         const buscaLower = buscaDebounced.toLowerCase();
+        // Verificar se alguma OAB corresponde à busca
+        const oabMatch = credencial.advogado_oabs.some(
+          (oab) =>
+            oab.numero.toLowerCase().includes(buscaLower) ||
+            oab.uf.toLowerCase().includes(buscaLower)
+        );
         const match =
           credencial.advogado_nome.toLowerCase().includes(buscaLower) ||
           credencial.advogado_cpf.includes(buscaDebounced) ||
-          credencial.advogado_oab.toLowerCase().includes(buscaLower);
+          oabMatch;
 
         if (!match) return false;
       }

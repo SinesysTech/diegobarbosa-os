@@ -44,10 +44,15 @@ import { createServiceClient } from '@/lib/supabase/service-client';
  *                             type: string
  *                           advogado_cpf:
  *                             type: string
- *                           advogado_oab:
- *                             type: string
- *                           advogado_uf_oab:
- *                             type: string
+ *                           advogado_oabs:
+ *                             type: array
+ *                             items:
+ *                               type: object
+ *                               properties:
+ *                                 numero:
+ *                                   type: string
+ *                                 uf:
+ *                                   type: string
  *                           tribunal:
  *                             type: string
  *                           grau:
@@ -98,8 +103,7 @@ export async function GET(request: NextRequest) {
           id,
           nome_completo,
           cpf,
-          oab,
-          uf_oab
+          oabs
         )
       `);
     
@@ -133,8 +137,7 @@ export async function GET(request: NextRequest) {
         advogado_id: credencial.advogado_id,
         advogado_nome: advogado?.nome_completo || '',
         advogado_cpf: advogado?.cpf || '',
-        advogado_oab: advogado?.oab || '',
-        advogado_uf_oab: advogado?.uf_oab || '',
+        advogado_oabs: advogado?.oabs || [],
         tribunal: credencial.tribunal,
         grau: credencial.grau,
         usuario: (credencial as { usuario?: string | null }).usuario || null,
