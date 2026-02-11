@@ -154,9 +154,10 @@ export default function AdvogadosClient() {
     }
   };
 
-  // Get unique UFs from data
+  // Get unique UFs from data (flatten oabs array)
   const ufsDisponiveis = useMemo(() => {
-    const ufs = [...new Set(advogados.map((a) => a.uf_oab))];
+    const allUfs = advogados.flatMap((a) => a.oabs.map((oab) => oab.uf));
+    const ufs = [...new Set(allUfs)];
     return ufs.sort();
   }, [advogados]);
 
