@@ -1,7 +1,10 @@
-import type { NextConfig } from "next";
 import path from "path";
+import { fileURLToPath } from "url";
 import withPWA from "@ducanh2912/next-pwa";
 import bundleAnalyzer from "@next/bundle-analyzer";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // Bundle analyzer for performance analysis (enabled via ANALYZE=true)
 const withBundleAnalyzer =
@@ -11,7 +14,7 @@ const withBundleAnalyzer =
         analyzerMode: "static",
         openAnalyzer: false,
       })
-    : (config: NextConfig) => config;
+    : (config) => config;
 
 const APP_MODULES = [
   "acordos-condenacoes",
@@ -34,7 +37,8 @@ const APP_MODULES = [
   "usuarios",
 ];
 
-const nextConfig: NextConfig = {
+/** @type {import('next').NextConfig} */
+const nextConfig = {
   // Generates a build optimized for Docker, reducing image size and improving startup time
   output: "standalone",
   outputFileTracingExcludes: {
