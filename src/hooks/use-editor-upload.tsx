@@ -70,22 +70,22 @@ export function useEditorUpload({
         }
 
         const data = result.data as unknown as { 
-          b2_key: string; 
+          storage_path: string; 
           nome_arquivo: string; 
           tamanho_bytes: number; 
           tipo_mime: string; 
-          b2_url: string; 
+          storage_url: string; 
         }; // Casting to avoid complex type imports if not available directly or just map properties
 
         setProgress(100);
         onUploadProgress?.(100);
 
         const uploadedResult: UploadedFile = {
-          key: data.b2_key,
+          key: data.storage_path,
           name: data.nome_arquivo,
           size: data.tamanho_bytes,
           type: data.tipo_mime,
-          url: data.b2_url,
+          url: data.storage_url,
         };
 
         setUploadedFile(uploadedResult);

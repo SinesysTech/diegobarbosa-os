@@ -1,17 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getTemplate } from '@/app/app/assinatura-digital/feature/services/templates.service';
-import { generatePresignedUrl } from '@/lib/storage/backblaze-b2.service';
+import { createPresignedUrl as generatePresignedUrl } from '@/lib/storage/supabase-storage.service';
 
 /**
  * GET /api/assinatura-digital/templates/[id]/preview
  *
- * Faz proxy do PDF do template para evitar problemas de CORS com Backblaze B2.
+ * Faz proxy do PDF do template para evitar problemas de CORS com Storage.
  * O endpoint gera uma URL presigned e faz o fetch do PDF, retornando-o diretamente.
- *
- * Esta abordagem é mais confiável que redirect porque:
- * - Não há problemas de CORS com cross-origin redirects
- * - Não há issues com withCredentials em redirects
- * - Funciona consistentemente com react-pdf/pdf.js
  */
 export async function GET(
   request: NextRequest,
@@ -33,12 +28,33 @@ export async function GET(
 
     // Determinar URL para fetch
     let fetchUrl = pdfUrl;
-    const bucket = process.env.B2_BUCKET;
-
-    // Se a URL contém o bucket, gerar URL presigned para acesso
-    if (bucket && pdfUrl.includes(`/${bucket}/`)) {
-      const fileKey = pdfUrl.split(`/${bucket}/`)[1];
-      fetchUrl = await generatePresignedUrl(fileKey, 3600);
+    // Aqui assumimos que a URL salva no banco é a pública ou já é válida.
+    // Se for do Supabase, podemos gerar um presigned se for bucket privado.
+    // Por simplicidade, vamos tentar gerar o presigned SE conseguirmos extrair a key.
+    
+    // Tentar extrair key para gerar URL assinada e segura
+    const bucket = process.env.SUPABASE_STORAGE_BUCKET || 'zattar-advogados';
+    
+    // Simplificação: se tem "storage/v1/object/public", tentamos pegar a key
+    if (pdfUrl.includes('/storage/v1/object/public/')) {
+        const parts = pdfUrl.split('/storage/v1/object/public/');
+        if (parts.length > 1) {
+            const pathInside = parts[1];
+            // bucket é o primeiro segmento
+            const [urlBucket, ...keyParts] = pathInside.split('/');
+            const key = keyParts.join('/');
+            
+            // Só gera presigned se for o mesmo bucket configurado (opcional, mas seguro)
+            if (urlBucket === bucket) {
+                 fetchUrl = await generatePresignedUrl(key, 3600);
+            }
+        }
+    } else if (pdfUrl.includes(`/${bucket}/`)) {
+        // Fallback para URLs antigas ou outro formato
+        const fileKey = pdfUrl.split(`/${bucket}/`)[1];
+        if (fileKey) {
+             fetchUrl = await generatePresignedUrl(fileKey, 3600);
+        }
     }
 
     // Fazer proxy do PDF (evita problemas de CORS)

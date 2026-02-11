@@ -1,7 +1,7 @@
 import { randomBytes, randomUUID } from "crypto";
 import { PDFDocument, type PDFImage } from "pdf-lib";
 import { createServiceClient } from "@/lib/supabase/service-client";
-import { uploadToBackblaze } from "@/lib/storage/backblaze-b2.service";
+import { uploadToSupabase } from "@/lib/storage/supabase-storage.service";
 import { calculateHash } from "../services/integrity.service";
 import { decodeDataUrlToBuffer } from "../services/base64";
 import { downloadFromStorageUrl } from "../services/signature";
@@ -191,7 +191,7 @@ export async function createDocumentoFromUploadedPdf(params: {
   const hashOriginal = calculateHash(params.pdfBuffer);
 
   const pdfKey = `assinatura-digital/documentos/${documento_uuid}/original.pdf`;
-  const uploadedPdf = await uploadToBackblaze({
+  const uploadedPdf = await uploadToSupabase({
     buffer: params.pdfBuffer,
     key: pdfKey,
     contentType: "application/pdf",
@@ -702,10 +702,10 @@ export async function finalizePublicSigner(params: {
     throw new Error("Rubrica é obrigatória para este documento.");
   }
 
-  // Upload de artefatos (assinatura/rubrica/selfie) para B2
+  // Upload de artefatos (assinatura/rubrica/selfie) para Storage
   const assinaturaBuf = decodeDataUrlToBuffer(params.assinatura_base64).buffer;
   const assinaturaKey = `assinatura-digital/documentos/${documento.documento_uuid}/assinantes/${assinante.id}/assinatura.png`;
-  const assinaturaUpload = await uploadToBackblaze({
+  const assinaturaUpload = await uploadToSupabase({
     buffer: assinaturaBuf,
     key: assinaturaKey,
     contentType: "image/png",
@@ -715,7 +715,7 @@ export async function finalizePublicSigner(params: {
   if (params.rubrica_base64) {
     const rubricaBuf = decodeDataUrlToBuffer(params.rubrica_base64).buffer;
     const rubricaKey = `assinatura-digital/documentos/${documento.documento_uuid}/assinantes/${assinante.id}/rubrica.png`;
-    const rubricaUpload = await uploadToBackblaze({
+    const rubricaUpload = await uploadToSupabase({
       buffer: rubricaBuf,
       key: rubricaKey,
       contentType: "image/png",
@@ -730,7 +730,7 @@ export async function finalizePublicSigner(params: {
     }
     const selfieBuf = decodeDataUrlToBuffer(params.selfie_base64).buffer;
     const selfieKey = `assinatura-digital/documentos/${documento.documento_uuid}/assinantes/${assinante.id}/selfie.jpg`;
-    const selfieUpload = await uploadToBackblaze({
+    const selfieUpload = await uploadToSupabase({
       buffer: selfieBuf,
       key: selfieKey,
       contentType: "image/jpeg",
@@ -851,7 +851,7 @@ export async function finalizePublicSigner(params: {
   const hashFinal = calculateHash(finalPdfBuffer);
 
   const finalKey = `assinatura-digital/documentos/${documento.documento_uuid}/final.pdf`;
-  const finalUpload = await uploadToBackblaze({
+  const finalUpload = await uploadToSupabase({
     buffer: finalPdfBuffer,
     key: finalKey,
     contentType: "application/pdf",

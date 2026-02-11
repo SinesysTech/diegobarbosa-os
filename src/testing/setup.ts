@@ -322,14 +322,7 @@ jest.mock('@/components/editor/plate-ui/ai-node', () => ({
 // External Services Mocks
 // -----------------------------------------------------------------------------
 
-// Mock Backblaze B2 Service
-jest.mock('@/lib/storage/backblaze-b2.service', () => ({
-  uploadToBackblaze: jest.fn(),
-  deleteFromBackblaze: jest.fn(),
-  generatePresignedUrl: jest.fn(),
-  getFileInfo: jest.fn(),
-  listFiles: jest.fn(),
-}));
+
 
 // Mock Dyte Client
 jest.mock('@/lib/dyte/client', () => ({

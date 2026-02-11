@@ -1,11 +1,11 @@
 /**
- * Serviço de Upload de Documentos da Timeline para Backblaze B2
+ * Serviço de Upload de Documentos da Timeline para Supabase Storage
  * 
  * Responsável por fazer upload de PDFs capturados da timeline do PJE
- * para o Backblaze B2 com organização padronizada.
+ * para o Supabase Storage com organização padronizada.
  */
 
-import { uploadToBackblaze, type BackblazeUploadResult } from '@/lib/storage/backblaze-b2.service';
+import { uploadToSupabase, type SupabaseUploadResult } from '@/lib/storage/supabase-storage.service';
 import { gerarCaminhoCompletoTimeline } from '@/lib/storage/file-naming.utils';
 
 /**
@@ -37,7 +37,7 @@ export interface UploadDocumentoTimelineResult {
 }
 
 /**
- * Faz upload de um documento da timeline para o Backblaze B2
+ * Faz upload de um documento da timeline para o Supabase Storage
  * 
  * @param params - Parâmetros do upload
  * @returns Resultado com URLs e metadados do arquivo
@@ -47,19 +47,19 @@ export async function uploadDocumentoTimeline(
 ): Promise<UploadDocumentoTimelineResult> {
     const { pdfBuffer, numeroProcesso, documentoId } = params;
 
-    console.log(`📤 [uploadDocumentoTimeline] Iniciando upload para Backblaze B2`, {
+    console.log(`📤 [uploadDocumentoTimeline] Iniciando upload para Supabase Storage`, {
         numeroProcesso,
         documentoId,
         tamanho: `${(pdfBuffer.length / 1024).toFixed(2)} KB`,
     });
 
-    // Gerar caminho completo no Backblaze
+    // Gerar caminho completo no Storage
     // Formato: processos/{numeroProcesso}/timeline/doc_{documentoId}_{YYYYMMDD}.pdf
     const key = gerarCaminhoCompletoTimeline(numeroProcesso, documentoId);
     const fileName = key.split('/').pop() || `doc_${documentoId}.pdf`;
 
-    // Upload para Backblaze B2
-    const uploadResult: BackblazeUploadResult = await uploadToBackblaze({
+    // Upload para Supabase Storage
+    const uploadResult: SupabaseUploadResult = await uploadToSupabase({
         buffer: pdfBuffer,
         key,
         contentType: 'application/pdf',

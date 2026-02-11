@@ -1,26 +1,12 @@
-import { generatePresignedUrl as getBackblazeUrl } from '@/lib/storage/backblaze-b2.service';
 import { createClient } from '@/lib/supabase/server';
+import { downloadFromSupabase } from '@/lib/storage/supabase-storage.service';
 
-export type StorageProvider = 'backblaze' | 'supabase' | 'google_drive';
+export type StorageProvider = 'supabase' | 'google_drive';
 
 export async function downloadFile(provider: StorageProvider, key: string): Promise<Buffer> {
   switch (provider) {
-    case 'backblaze': {
-      const url = await getBackblazeUrl(key);
-      const response = await fetch(url);
-      if (!response.ok) {
-        throw new Error(`Falha ao baixar de Backblaze: ${response.statusText}`);
-      }
-      const arrayBuffer = await response.arrayBuffer();
-      return Buffer.from(arrayBuffer);
-    }
-
     case 'supabase': {
-      const supabase = await createClient();
-      const { data, error } = await supabase.storage.from('chat-files').download(key);
-
-      if (error) throw error;
-      const arrayBuffer = await data.arrayBuffer();
+      const arrayBuffer = await downloadFromSupabase(key);
       return Buffer.from(arrayBuffer);
     }
 
@@ -35,18 +21,10 @@ export async function downloadFile(provider: StorageProvider, key: string): Prom
 
 export function extractKeyFromUrl(url: string): string {
   // Extrai a key/path do arquivo de uma URL completa
-  // Suporta URLs do Backblaze B2, Supabase Storage, etc.
+  // Suporta URLs do Supabase Storage
 
   try {
     const urlObj = new URL(url);
-
-    // Backblaze B2
-    if (urlObj.hostname.includes('backblazeb2.com')) {
-      // URL format: https://f005.backblazeb2.com/file/bucket-name/path/to/file.pdf
-      const pathParts = urlObj.pathname.split('/');
-      // Remove /file/bucket-name e retorna o resto
-      return pathParts.slice(3).join('/');
-    }
 
     // Supabase Storage
     if (urlObj.hostname.includes('supabase')) {
@@ -55,12 +33,30 @@ export function extractKeyFromUrl(url: string): string {
       // Encontra 'object' ou 'public' e pega o resto após o bucket
       const objectIndex = pathParts.findIndex((p) => p === 'object' || p === 'public');
       if (objectIndex !== -1) {
-        return pathParts.slice(objectIndex + 3).join('/');
+        // ... /object/public/bucket/KEY...
+        // objectIndex points to 'object' or 'public'
+        // If 'object/public' -> bucket is at +2
+        // IF 'object/sign'
+        // Let's assume standard public URL structure: /storage/v1/object/public/BUCKET/KEY
+        // If we found 'public', bucket is next, key starts after bucket.
+        // If we found 'object' and next is 'public', same.
+        
+        let bucketIndex = -1;
+        if (pathParts[objectIndex] === 'public') {
+             bucketIndex = objectIndex + 1;
+        } else if (pathParts[objectIndex] === 'object' && pathParts[objectIndex+1] === 'public') {
+             bucketIndex = objectIndex + 2;
+        }
+
+        if (bucketIndex !== -1 && bucketIndex < pathParts.length) {
+            return pathParts.slice(bucketIndex + 1).join('/');
+        }
       }
     }
 
     // Fallback: retorna o pathname sem a barra inicial
-    return urlObj.pathname.replace(/^\//, '');
+    // Caution: this might be wrong if it includes /storage/v1... but for now keeping fallback behavior but simplified
+    return urlObj.pathname.replace(/^\//, ''); 
   } catch {
     // Se não for uma URL válida, assume que já é uma key
     return url;

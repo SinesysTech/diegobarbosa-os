@@ -121,6 +121,8 @@ export function buildVersaoWithCreatorSelect() {
 export function buildUploadWithInfoSelect() {
   return `
     *,
+    storage_path:b2_key,
+    storage_url:b2_url,
     documento:documentos!documentos_uploads_documento_id_fkey(
       id,
       titulo

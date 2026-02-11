@@ -14,6 +14,9 @@ import { buildUploadWithInfoSelect } from "./shared/query-builders";
 /**
  * Registra um novo upload no banco de dados
  */
+/**
+ * Registra um novo upload no banco de dados
+ */
 export async function registrarUpload(
   params: UploadArquivoParams,
   usuario_id: number
@@ -27,19 +30,25 @@ export async function registrarUpload(
       nome_arquivo: params.nome_arquivo,
       tipo_mime: params.tipo_mime,
       tamanho_bytes: params.tamanho_bytes,
-      b2_key: params.b2_key,
-      b2_url: params.b2_url,
+      b2_key: params.storage_path, // Map to DB column
+      b2_url: params.storage_url,  // Map to DB column
       tipo_media: params.tipo_media,
       criado_por: usuario_id,
     })
-    .select()
+    .select(
+      `
+      *,
+      storage_path:b2_key,
+      storage_url:b2_url
+    `
+    )
     .single();
 
   if (error) {
     throw new Error(`Erro ao registrar upload: ${error.message}`);
   }
 
-  return data;
+  return data as unknown as DocumentoUpload;
 }
 
 /**
@@ -52,7 +61,13 @@ export async function buscarUploadPorId(
 
   const { data, error } = await supabase
     .from("documentos_uploads")
-    .select()
+    .select(
+      `
+      *,
+      storage_path:b2_key,
+      storage_url:b2_url
+    `
+    )
     .eq("id", id)
     .single();
 
@@ -63,31 +78,37 @@ export async function buscarUploadPorId(
     throw new Error(`Erro ao buscar upload: ${error.message}`);
   }
 
-  return data;
+  return data as unknown as DocumentoUpload;
 }
 
 /**
- * Busca um upload por B2 key
+ * Busca um upload por Storage path (antigo B2 key)
  */
-export async function buscarUploadPorB2Key(
-  b2_key: string
+export async function buscarUploadPorStoragePath(
+  storage_path: string
 ): Promise<DocumentoUpload | null> {
   const supabase = createServiceClient();
 
   const { data, error } = await supabase
     .from("documentos_uploads")
-    .select()
-    .eq("b2_key", b2_key)
+    .select(
+      `
+      *,
+      storage_path:b2_key,
+      storage_url:b2_url
+    `
+    )
+    .eq("b2_key", storage_path)
     .single();
 
   if (error) {
     if (error.code === "PGRST116") {
       return null;
     }
-    throw new Error(`Erro ao buscar upload por B2 key: ${error.message}`);
+    throw new Error(`Erro ao buscar upload por path: ${error.message}`);
   }
 
-  return data;
+  return data as unknown as DocumentoUpload;
 }
 
 /**
@@ -143,7 +164,13 @@ export async function listarUploadsPorDocumento(
 
   const { data, error } = await supabase
     .from("documentos_uploads")
-    .select()
+    .select(
+      `
+      *,
+      storage_path:b2_key,
+      storage_url:b2_url
+    `
+    )
     .eq("documento_id", documento_id)
     .order("created_at", { ascending: false });
 
@@ -151,15 +178,15 @@ export async function listarUploadsPorDocumento(
     throw new Error(`Erro ao listar uploads do documento: ${error.message}`);
   }
 
-  return data ?? [];
+  return (data as unknown as DocumentoUpload[]) ?? [];
 }
 
 /**
- * Deleta um upload do banco e retorna informações para deletar do B2
+ * Deleta um upload do banco e retorna informações para deletar do Storage
  */
 export async function deletarUpload(
   id: number
-): Promise<{ b2_key: string; b2_url: string }> {
+): Promise<{ storage_path: string; storage_url: string }> {
   const supabase = createServiceClient();
 
   // Buscar informações antes de deletar
@@ -179,8 +206,8 @@ export async function deletarUpload(
   }
 
   return {
-    b2_key: upload.b2_key,
-    b2_url: upload.b2_url,
+    storage_path: upload.storage_path,
+    storage_url: upload.storage_url,
   };
 }
 
@@ -219,7 +246,13 @@ export async function listarUploadsPorTipoMedia(
 
   const { data, error } = await supabase
     .from("documentos_uploads")
-    .select()
+    .select(
+      `
+      *,
+      storage_path:b2_key,
+      storage_url:b2_url
+    `
+    )
     .eq("documento_id", documento_id)
     .eq("tipo_media", tipo_media)
     .order("created_at", { ascending: false });
@@ -228,23 +261,23 @@ export async function listarUploadsPorTipoMedia(
     throw new Error(`Erro ao listar uploads por tipo: ${error.message}`);
   }
 
-  return data ?? [];
+  return (data as unknown as DocumentoUpload[]) ?? [];
 }
 
 /**
- * Verifica se um arquivo já foi enviado (por B2 key)
+ * Verifica se um arquivo já foi enviado (por Storage Path)
  */
 export async function verificarUploadExistente(
-  b2_key: string
+  storage_path: string
 ): Promise<boolean> {
-  const upload = await buscarUploadPorB2Key(b2_key);
+  const upload = await buscarUploadPorStoragePath(storage_path);
   return upload !== null;
 }
 
 /**
- * Atualiza URL do B2 (útil se a URL mudar)
+ * Atualiza URL do Storage (útil se a URL mudar)
  */
-export async function atualizarUrlB2(
+export async function atualizarUrlStorage(
   id: number,
   nova_url: string
 ): Promise<DocumentoUpload> {
@@ -254,14 +287,20 @@ export async function atualizarUrlB2(
     .from("documentos_uploads")
     .update({ b2_url: nova_url })
     .eq("id", id)
-    .select()
+    .select(
+      `
+      *,
+      storage_path:b2_key,
+      storage_url:b2_url
+    `
+    )
     .single();
 
   if (error) {
-    throw new Error(`Erro ao atualizar URL do B2: ${error.message}`);
+    throw new Error(`Erro ao atualizar URL do Storage: ${error.message}`);
   }
 
-  return data;
+  return data as unknown as DocumentoUpload;
 }
 
 /**

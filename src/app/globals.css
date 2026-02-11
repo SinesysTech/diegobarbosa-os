@@ -160,16 +160,15 @@
   --input: oklch(0.88 0 0);
   --ring: transparent; /* Foco removido globalmente */
 
-  /* SIDEBAR FIXA (Sempre Escura - "Charcoal") */
-  /* Mesmo no light mode, a sidebar mantém a identidade premium escura */
-  --sidebar: oklch(0.24 0 0);
+  /* SIDEBAR FIXA (Navy Blue - Identidade Visual #2b4060) */
+  --sidebar: oklch(0.33 0.065 258);            /* Navy Blue #2b4060 */
   --sidebar-foreground: oklch(0.98 0 0);
-  --sidebar-primary: oklch(0.53 0.24 260);
-  --sidebar-primary-foreground: oklch(1 0 0);
-  --sidebar-accent: oklch(0.32 0 0); /* Hover na sidebar */
+  --sidebar-primary: oklch(1 0 0);             /* Branco para item ativo */
+  --sidebar-primary-foreground: oklch(0.33 0.065 258);
+  --sidebar-accent: oklch(0.40 0.065 258);    /* Hover mais claro */
   --sidebar-accent-foreground: oklch(1 0 0);
   --sidebar-border: oklch(1 0 0 / 0.1);
-  --sidebar-ring: oklch(0.53 0.24 260);
+  --sidebar-ring: oklch(1 0 0 / 0.3);
 
   /* CORES DA MARCA & GRÁFICOS */
   --brand: oklch(0.53 0.24 260); /* Electric Blue */
@@ -228,15 +227,15 @@
   --input: oklch(1 0 0 / 0.15);
   --ring: transparent;
 
-  /* Sidebar Dark (Mantém consistência, ajusta apenas bordas/contraste) */
-  --sidebar: oklch(0.18 0 0);
+  /* Sidebar Dark (Navy Blue - tom mais profundo #2b4060) */
+  --sidebar: oklch(0.28 0.06 258);            /* Navy mais profundo */
   --sidebar-foreground: oklch(0.98 0 0);
-  --sidebar-primary: oklch(0.58 0.22 260);
-  --sidebar-primary-foreground: oklch(1 0 0);
-  --sidebar-accent: oklch(0.28 0 0);
-  --sidebar-accent-foreground: oklch(0.98 0 0);
+  --sidebar-primary: oklch(1 0 0);
+  --sidebar-primary-foreground: oklch(0.28 0.06 258);
+  --sidebar-accent: oklch(0.36 0.065 258);    /* Hover mais claro */
+  --sidebar-accent-foreground: oklch(1 0 0);
   --sidebar-border: oklch(1 0 0 / 0.1);
-  --sidebar-ring: oklch(0.58 0.22 260);
+  --sidebar-ring: oklch(1 0 0 / 0.3);
 
   /* Cores de Marca Dark */
   --brand: oklch(0.58 0.22 260); /* Electric Blue */

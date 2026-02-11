@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServiceClient } from "@/lib/supabase/service-client";
-import { generatePresignedUrl } from "@/lib/storage/backblaze-b2.service";
+import { createPresignedUrl as generatePresignedUrl } from "@/lib/storage/supabase-storage.service";
 import {
   TABLE_DOCUMENTOS,
   TABLE_DOCUMENTO_ASSINANTES,
@@ -10,20 +10,31 @@ import { applyRateLimit } from "@/app/app/assinatura-digital/feature/utils/rate-
 import { checkTokenExpiration } from "@/app/app/assinatura-digital/feature/utils/token-expiration";
 
 /**
- * Extrai a key do arquivo a partir da URL completa do Backblaze.
+ * Extrai a key do arquivo a partir da URL.
  *
- * URL formato: https://s3.us-east-005.backblazeb2.com/bucket-name/path/to/file.pdf
- * Key extraída: path/to/file.pdf
+ * Suporta URLs do Supabase Storage.
  */
-function extractKeyFromBackblazeUrl(url: string): string | null {
+function extractKeyFromUrl(url: string): string | null {
   try {
     const parsedUrl = new URL(url);
     const pathParts = parsedUrl.pathname.split('/').filter(Boolean);
-    if (pathParts.length < 2) {
-      return null;
+    
+    // Tentar detectar padrão Supabase
+    // /storage/v1/object/public/bucket/KEY...
+    const publicIndex = pathParts.indexOf('public');
+    if (publicIndex !== -1 && publicIndex + 1 < pathParts.length) {
+        // bucket = pathParts[publicIndex + 1]
+        // key = pathParts.slice(publicIndex + 2)
+        return pathParts.slice(publicIndex + 2).join('/');
     }
-    // Remove o primeiro segmento (bucket name) e junta o resto
-    return pathParts.slice(1).join('/');
+
+    // Fallback: se for URL curta ou outra estrutura, tentar pegar caminho relativo
+    // Remove o primeiro segmento (bucket name provável se for estilo S3 path style)
+    if (pathParts.length >= 2) {
+       return pathParts.slice(1).join('/');
+    }
+    
+    return parsedUrl.pathname.substring(1);
   } catch {
     return null;
   }
@@ -98,19 +109,19 @@ export async function GET(
       );
     }
 
-    // Gerar URLs pré-assinadas para acesso aos PDFs (URLs do Backblaze são privadas)
+    // Gerar URLs pré-assinadas para acesso aos PDFs (URLs do Storage são privadas)
     let pdfOriginalPresignedUrl = doc.pdf_original_url;
     let pdfFinalPresignedUrl = doc.pdf_final_url;
 
     if (doc.pdf_original_url) {
-      const originalKey = extractKeyFromBackblazeUrl(doc.pdf_original_url);
+      const originalKey = extractKeyFromUrl(doc.pdf_original_url);
       if (originalKey) {
         pdfOriginalPresignedUrl = await generatePresignedUrl(originalKey, 3600);
       }
     }
 
     if (doc.pdf_final_url) {
-      const finalKey = extractKeyFromBackblazeUrl(doc.pdf_final_url);
+      const finalKey = extractKeyFromUrl(doc.pdf_final_url);
       if (finalKey) {
         pdfFinalPresignedUrl = await generatePresignedUrl(finalKey, 3600);
       }

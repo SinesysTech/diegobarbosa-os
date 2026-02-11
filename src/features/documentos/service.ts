@@ -40,9 +40,9 @@ import {
   getTipoMedia,
   validateFileType,
   validateFileSize,
-} from "./services/b2-upload.service";
+} from "./services/storage-upload.service";
 import { checkQuota, incrementQuota } from "@/lib/mcp/quotas"; // Moved to feature
-import { generatePresignedUrl as generatePresignedDownloadUrl } from "@/lib/storage/backblaze-b2.service";
+import { createPresignedUrl as generatePresignedDownloadUrl } from "@/lib/storage/supabase-storage.service";
 
 // ============================================================================
 // DOCUMENTOS
@@ -737,8 +737,8 @@ export async function uploadArquivo(
       nome_arquivo: name,
       tipo_mime: type,
       tamanho_bytes: size,
-      b2_key: b2UploadResult.key,
-      b2_url: b2UploadResult.url,
+      storage_path: b2UploadResult.key,
+      storage_url: b2UploadResult.url,
       tipo_media: getTipoMedia(type),
     },
     usuario_id

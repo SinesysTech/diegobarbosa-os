@@ -29,13 +29,14 @@ import type {
 // Alias for backward compatibility in tests
 const repository = { ...arquivosRepo, ...pastasRepo };
 
-// Mock B2 upload service
-jest.mock("../../services/b2-upload.service", () => ({
-  uploadFileToB2: jest.fn().mockResolvedValue({
+// Mock Storage Upload service
+jest.mock("../../services/storage-upload.service", () => ({
+  uploadFile: jest.fn().mockResolvedValue({
     key: "arquivos/test-file.pdf",
-    url: "https://b2.example.com/arquivos/test-file.pdf",
+    url: "https://supabase.example.com/storage/v1/object/public/bucket/arquivos/test-file.pdf",
+    size: 1024,
   } as never),
-  generatePresignedUploadUrl: jest.fn(),
+  // generatePresignedUploadUrl: jest.fn(), // Não usado no Supabase simplificado por enquanto
   getTipoMedia: jest.fn((mimeType: string) => {
     if (mimeType.startsWith("image/")) return "imagem";
     if (mimeType === "application/pdf") return "pdf";
@@ -47,11 +48,12 @@ jest.mock("../../services/b2-upload.service", () => ({
   validateFileSize: jest.fn().mockReturnValue(true),
 }));
 
-// Mock B2 download service
-jest.mock("@/lib/storage/backblaze-b2.service", () => ({
-  generatePresignedUrl: jest
+// Mock Supabase storage service
+jest.mock("@/lib/storage/supabase-storage.service", () => ({
+  createPresignedUrl: jest
     .fn()
     .mockResolvedValue("https://presigned.url/file" as never),
+  uploadToSupabase: jest.fn(),
 }));
 
 // Mock repositories
@@ -90,8 +92,8 @@ describe("Arquivos API Integration", () => {
     tipo_mime: "application/pdf",
     tamanho_bytes: 1024000,
     pasta_id: null,
-    b2_key: "arquivos/documento.pdf",
-    b2_url: "https://b2.example.com/arquivos/documento.pdf",
+    storage_path: "arquivos/documento.pdf",
+    storage_url: "https://supabase.example.com/storage/v1/object/public/bucket/arquivos/documento.pdf",
     tipo_media: "pdf",
     criado_por: mockUser.id,
     created_at: new Date().toISOString(),
@@ -120,20 +122,20 @@ describe("Arquivos API Integration", () => {
      * O fluxo real de upload é coberto pelos testes E2E.
      */
 
-    it("deve chamar criarArquivo com parâmetros corretos após upload B2", async () => {
+    it("deve chamar criarArquivo com parâmetros corretos após upload", async () => {
       // Setup - Mock direto do repository para testar a integração
       (repository.criarArquivo as jest.Mock).mockResolvedValue(
         mockArquivo as never
       );
 
-      // Simular que o service recebeu os dados corretos do B2
+      // Simular que o service recebeu os dados corretos do Storage
       const arquivoParams = {
         nome: "test.pdf",
         tipo_mime: "application/pdf",
         tamanho_bytes: 1024,
         pasta_id: null,
-        b2_key: "arquivos/test-file.pdf",
-        b2_url: "https://b2.example.com/arquivos/test-file.pdf",
+        storage_path: "arquivos/test-file.pdf",
+        storage_url: "https://supabase.example.com/storage/v1/object/public/bucket/arquivos/test-file.pdf",
         tipo_media: "pdf" as const,
       };
 
@@ -147,8 +149,8 @@ describe("Arquivos API Integration", () => {
           tipo_mime: "application/pdf",
           tamanho_bytes: 1024,
           pasta_id: null,
-          b2_key: expect.any(String),
-          b2_url: expect.any(String),
+          storage_path: expect.any(String),
+          storage_url: expect.any(String),
           tipo_media: "pdf",
         }),
         mockUser.id
@@ -179,8 +181,8 @@ describe("Arquivos API Integration", () => {
         tipo_mime: "image/png",
         tamanho_bytes: 2048,
         pasta_id: pastaId,
-        b2_key: "pastas/5/image.png",
-        b2_url: "https://b2.example.com/pastas/5/image.png",
+        storage_path: "pastas/5/image.png",
+        storage_url: "https://supabase.example.com/storage/v1/object/public/bucket/pastas/5/image.png",
         tipo_media: "imagem" as const,
       };
 
@@ -194,42 +196,45 @@ describe("Arquivos API Integration", () => {
       expect(result.pasta_id).toBe(pastaId);
     });
 
-    it("deve classificar tipos de arquivo via getTipoMedia", async () => {
+    it("deve classificar tipos de arquivo via getTipoMedia", () => {
       // Setup
-      const b2Service = await import("../../services/b2-upload.service");
+      // eslint-disable-next-line @typescript-eslint/no-require-imports
+      const storageService = require("../../services/storage-upload.service");
 
       // Assert - Testar classificação de tipos
-      expect(b2Service.getTipoMedia("application/pdf")).toBe("pdf");
-      expect(b2Service.getTipoMedia("image/jpeg")).toBe("imagem");
-      expect(b2Service.getTipoMedia("video/mp4")).toBe("video");
-      expect(b2Service.getTipoMedia("audio/mp3")).toBe("audio");
-      expect(b2Service.getTipoMedia("application/zip")).toBe("outros");
+      expect(storageService.getTipoMedia("application/pdf")).toBe("pdf");
+      expect(storageService.getTipoMedia("image/jpeg")).toBe("imagem");
+      expect(storageService.getTipoMedia("video/mp4")).toBe("video");
+      expect(storageService.getTipoMedia("audio/mp3")).toBe("audio");
+      expect(storageService.getTipoMedia("application/zip")).toBe("outros");
     });
 
-    it("deve validar tipo de arquivo", async () => {
+    it("deve validar tipo de arquivo", () => {
       // Setup
-      const b2Service = await import("../../services/b2-upload.service");
+      // eslint-disable-next-line @typescript-eslint/no-require-imports
+      const storageService = require("../../services/storage-upload.service");
 
       // Assert - validateFileType retorna true por padrão no mock
-      expect(b2Service.validateFileType("application/pdf")).toBe(true);
+      expect(storageService.validateFileType("application/pdf")).toBe(true);
 
       // Simular rejeição
-      (b2Service.validateFileType as jest.Mock).mockReturnValue(false);
-      expect(b2Service.validateFileType("application/x-executable")).toBe(
+      (storageService.validateFileType as jest.Mock).mockReturnValue(false);
+      expect(storageService.validateFileType("application/x-executable")).toBe(
         false
       );
     });
 
-    it("deve validar tamanho de arquivo", async () => {
+    it("deve validar tamanho de arquivo", () => {
       // Setup
-      const b2Service = await import("../../services/b2-upload.service");
+      // eslint-disable-next-line @typescript-eslint/no-require-imports
+      const storageService = require("../../services/storage-upload.service");
 
       // Assert - validateFileSize retorna true por padrão no mock
-      expect(b2Service.validateFileSize(1024)).toBe(true);
+      expect(storageService.validateFileSize(1024)).toBe(true);
 
       // Simular rejeição para arquivo grande
-      (b2Service.validateFileSize as jest.Mock).mockReturnValue(false);
-      expect(b2Service.validateFileSize(100 * 1024 * 1024)).toBe(false);
+      (storageService.validateFileSize as jest.Mock).mockReturnValue(false);
+      expect(storageService.validateFileSize(100 * 1024 * 1024)).toBe(false);
     });
 
     it("deve negar acesso a pasta restrita", async () => {
@@ -522,8 +527,8 @@ describe("Arquivos API Integration", () => {
         tipo_mime: "text/plain",
         tamanho_bytes: 0,
         pasta_id: null,
-        b2_key: "arquivos/empty.txt",
-        b2_url: "https://b2.example.com/arquivos/empty.txt",
+        storage_path: "arquivos/empty.txt",
+        storage_url: "https://supabase.example.com/storage/v1/object/public/bucket/arquivos/empty.txt",
         tipo_media: "outros" as const,
       };
 
@@ -547,8 +552,8 @@ describe("Arquivos API Integration", () => {
         tipo_mime: "application/pdf",
         tamanho_bytes: 1024,
         pasta_id: null,
-        b2_key: "arquivos/relatorio-2024-final.pdf",
-        b2_url: "https://b2.example.com/arquivos/relatorio-2024-final.pdf",
+        storage_path: "arquivos/relatorio-2024-final.pdf",
+        storage_url: "https://supabase.example.com/storage/v1/object/public/bucket/arquivos/relatorio-2024-final.pdf",
         tipo_media: "pdf" as const,
       };
 
@@ -886,7 +891,7 @@ describe("Arquivos API Integration", () => {
 
       // Simula: usuário não é criador da pasta privada
       (repository.verificarAcessoPasta as jest.Mock).mockImplementation(
-        (pastaId: number, usuarioId: number) => {
+        (pastaId: any, usuarioId: any) => {
           // Pasta privada criada pelo mockUser.id
           if (usuarioId === mockUser.id) return Promise.resolve(true);
           return Promise.resolve(false);

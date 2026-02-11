@@ -34,7 +34,7 @@ export async function actionUploadArquivo(formData: FormData) {
           if (isContentTypeSupported(upload.tipo_mime)) {
             try {
               const { extractText } = await import('@/features/ai/services/extraction.service');
-              textoExtraido = await extractText(upload.b2_key as unknown as Buffer, upload.tipo_mime);
+              textoExtraido = await extractText(upload.storage_path as unknown as Buffer, upload.tipo_mime);
             } catch (extractError) {
               console.warn(`[AI] Falha ao extrair texto para upload ${upload.id}:`, extractError);
               // Deixar texto vazio para reprocessamento no cron
@@ -46,7 +46,7 @@ export async function actionUploadArquivo(formData: FormData) {
             entity_id: upload.id,
             texto: textoExtraido, // populado com extração, ou vazio para reprocessar no cron
             metadata: {
-              storage_key: upload.b2_key,
+              storage_key: upload.storage_path,
               content_type: upload.tipo_mime,
               parent_id: documento_id,
               nome_arquivo: upload.nome_arquivo,

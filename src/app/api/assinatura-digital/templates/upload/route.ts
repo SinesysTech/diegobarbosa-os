@@ -1,13 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { requirePermission } from '@/lib/auth/require-permission';
-import { uploadToBackblaze } from '@/lib/storage/backblaze-b2.service';
+import { uploadToSupabase } from '@/lib/storage/supabase-storage.service';
 import { randomUUID } from 'crypto';
 import { validatePdfFile } from '@/app/app/assinatura-digital/feature/utils/file-validation';
 
 /**
  * POST /api/assinatura-digital/templates/upload
  *
- * Faz upload de um arquivo PDF de template para o Backblaze B2.
+ * Faz upload de um arquivo PDF de template para o Supabase Storage.
  * Salva na pasta: assinatura-digital/templates/
  */
 export async function POST(request: NextRequest) {
@@ -44,8 +44,8 @@ export async function POST(request: NextRequest) {
       .replace(/-+/g, '-');
     const key = `assinatura-digital/templates/${uuid}-${sanitizedName}`;
 
-    // Upload para Backblaze
-    const result = await uploadToBackblaze({
+    // Upload para Supabase Storage
+    const result = await uploadToSupabase({
       buffer,
       key,
       contentType: file.type,

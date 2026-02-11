@@ -1,32 +1,26 @@
 /**
  * Serviço de Operações de Storage para Assinatura Digital
  *
- * Operações de download de PDFs do Backblaze B2 para auditoria
+ * Operações de download de PDFs do Supabase Storage para auditoria
  * e verificação de integridade.
  *
  * @module signature/storage-ops.service
  */
 
-import { S3Client, GetObjectCommand } from "@aws-sdk/client-s3";
 import { logger, LogServices, LogOperations } from "../logger";
+import { createServiceClient } from "@/lib/supabase/service-client";
 
 const SERVICE = LogServices.SIGNATURE;
 
 /**
- * Baixa PDF do Backblaze B2 para auditoria.
+ * Baixa PDF do Supabase Storage para auditoria.
  *
- * Usa cliente S3-compatible para acessar o Backblaze B2 e
+ * Usa cliente Supabase para acessar o Storage e
  * baixar o PDF armazenado para verificação de integridade.
  *
  * @param pdfUrl - URL pública do PDF no storage
  * @returns Buffer do PDF baixado
- * @throws {Error} Se configuração do B2 estiver incompleta ou download falhar
- *
- * @example
- * const pdfBuffer = await downloadPdfFromStorage(
- *   "https://endpoint/bucket/assinaturas/FS-20250110143022-84721.pdf"
- * );
- * const hash = calculateHash(pdfBuffer);
+ * @throws {Error} Se configuração estiver incompleta ou download falhar
  */
 export async function downloadPdfFromStorage(pdfUrl: string): Promise<Buffer> {
   const context = {
@@ -48,89 +42,63 @@ export async function downloadPdfFromStorage(pdfUrl: string): Promise<Buffer> {
 }
 
 /**
- * Baixa qualquer arquivo do storage (Backblaze B2 / S3 compatível) a partir de uma URL.
- *
- * Mantém a mesma lógica de extração bucket+key usada por downloadPdfFromStorage,
- * porém genérica para permitir reuso (ex.: baixar imagens de assinatura/selfie).
+ * Baixa qualquer arquivo do storage (Supabase) a partir de uma URL.
  */
 export async function downloadFromStorageUrl(
   fileUrl: string,
   baseContext: { service: string; operation: string; [key: string]: unknown }
 ): Promise<Buffer> {
-  // Extrair bucket e key da URL - suporte a múltiplos formatos
-  // Formato 1 (S3-style virtual-hosted): https://bucket.endpoint/key
-  // Formato 2 (Backblaze /file/): https://endpoint/file/bucket/key
-  // Formato 3 (path-style): https://endpoint/bucket/key
+  // Extrair bucket e key da URL
+  // Formato Supabase: .../storage/v1/object/public/BUCKET/KEY
   const urlObj = new URL(fileUrl);
   const pathParts = urlObj.pathname.split("/").filter(Boolean);
 
   let bucket: string;
   let key: string;
 
-  // Verificar se é virtual-hosted style (bucket no hostname)
-  const hostParts = urlObj.hostname.split(".");
-  if (hostParts.length > 2 && !hostParts[0].includes("s3")) {
-    // Formato: bucket.s3.region.amazonaws.com ou bucket.endpoint.com
-    bucket = hostParts[0];
-    key = pathParts.join("/");
-  } else if (pathParts[0] === "file" && pathParts.length >= 2) {
-    // Formato Backblaze: /file/bucket/key
-    bucket = pathParts[1];
-    key = pathParts.slice(2).join("/");
+  // Tenta detectar se é URL do Supabase Storage
+  // pathParts geralmente: ['storage', 'v1', 'object', 'public', 'bucketName', 'folder', 'file.pdf']
+  const publicIndex = pathParts.indexOf("public");
+
+  if (publicIndex !== -1 && publicIndex + 1 < pathParts.length) {
+      bucket = pathParts[publicIndex + 1];
+      key = pathParts.slice(publicIndex + 2).join("/");
   } else {
-    // Formato path-style: /bucket/key
-    bucket = pathParts[0];
-    key = pathParts.slice(1).join("/");
+      // Fallback ou formato desconhecido - Tentar inferir que os 2 primeiros são prefixos se não achar keywords
+      // ex: /bucket/key (se estiver usando proxy ou custom domain)
+      bucket = pathParts[0];
+      key = pathParts.slice(1).join("/");
   }
 
   logger.debug("Baixando arquivo do storage", {
     ...baseContext,
     bucket,
     key,
-    url_format: pathParts[0] === "file" ? "backblaze" : "path-style",
+    url_format: "supabase",
   });
 
-  // Configurar cliente S3 para Backblaze
-  // Support both naming conventions (BACKBLAZE_* priority, fallback to B2_*)
-  const endpoint = process.env.BACKBLAZE_ENDPOINT || process.env.B2_ENDPOINT;
-  const region = process.env.BACKBLAZE_REGION || process.env.B2_REGION;
-  const keyId = process.env.BACKBLAZE_ACCESS_KEY_ID || process.env.B2_KEY_ID;
-  const applicationKey = process.env.BACKBLAZE_SECRET_ACCESS_KEY || process.env.B2_APPLICATION_KEY;
+  const supabase = createServiceClient();
+  
+  const { data, error } = await supabase.storage
+    .from(bucket)
+    .download(key);
 
-  if (!endpoint || !region || !keyId || !applicationKey) {
-    throw new Error(
-      "Configuração do Backblaze B2 incompleta. Verifique as variáveis de ambiente: " +
-      "BACKBLAZE_ENDPOINT (ou B2_ENDPOINT), BACKBLAZE_REGION (ou B2_REGION), " +
-      "BACKBLAZE_ACCESS_KEY_ID (ou B2_KEY_ID), BACKBLAZE_SECRET_ACCESS_KEY (ou B2_APPLICATION_KEY)"
-    );
+  if (error || !data) {
+     // Tentar fetch direto se falhar via SDK (caso seja URL pública acessível)
+     logger.warn("Falha via SDK, tentando fetch direto da URL", { ...baseContext, error });
+     const res = await fetch(fileUrl);
+     if (!res.ok) {
+         throw new Error(`Falha ao baixar arquivo (SDK e Fetch): ${error?.message || res.statusText}`);
+     }
+     const arrayBuffer = await res.arrayBuffer();
+     return Buffer.from(arrayBuffer);
   }
 
-  const client = new S3Client({
-    endpoint,
-    region,
-    credentials: {
-      accessKeyId: keyId,
-      secretAccessKey: applicationKey,
-    },
-  });
-
-  const command = new GetObjectCommand({
-    Bucket: bucket,
-    Key: key,
-  });
-
-  const response = await client.send(command);
-  if (!response.Body) {
-    throw new Error("Resposta do storage sem corpo");
-  }
-
-  // Converter stream para buffer
-  const chunks: Uint8Array[] = [];
-  for await (const chunk of response.Body as AsyncIterable<Uint8Array>) {
-    chunks.push(chunk);
-  }
-
-  const buffer = Buffer.concat(chunks);
+  const arrayBuffer = await data.arrayBuffer();
+  const buffer = Buffer.from(arrayBuffer);
+  
   logger.debug("Arquivo baixado com sucesso", { ...baseContext, size: buffer.length });
   return buffer;
 }
+
+

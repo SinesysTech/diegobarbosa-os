@@ -7,7 +7,7 @@
  */
 
 import { createClient } from '@/lib/supabase/server';
-import { uploadToBackblaze, deleteFromBackblaze } from '@/lib/storage/backblaze-b2.service';
+import { uploadToSupabase, deleteFromSupabase } from '@/lib/storage/supabase-storage.service';
 import { generateFileKey, getFileTypeFromMime, validateFileType } from '@/lib/storage/utils';
 import { ActionResult } from '../domain';
 
@@ -59,8 +59,8 @@ export async function actionUploadFile(
     const buffer = Buffer.from(await file.arrayBuffer());
     const fileKey = generateFileKey(salaId, file.name);
     
-    // Use the project-standard B2 service
-    const { url } = await uploadToBackblaze({
+    // Use Supabase Storage
+    const { url } = await uploadToSupabase({
       buffer, 
       key: fileKey, 
       contentType: file.type
@@ -99,7 +99,7 @@ export async function actionDeleteFile(fileKey: string): Promise<ActionResult<vo
       return { success: false, error: 'Unauthorized', message: 'Usuário não autenticado.' };
     }
 
-    await deleteFromBackblaze(fileKey);
+    await deleteFromSupabase(fileKey);
 
     return {
       success: true,

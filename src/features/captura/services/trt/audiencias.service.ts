@@ -52,7 +52,7 @@ import { salvarAudiencias, type SalvarAudienciasResult } from '../persistence/au
 import { obterTimeline } from '@/features/captura/pje-trt/timeline/obter-timeline';
 import { obterDocumento } from '@/features/captura/pje-trt/timeline/obter-documento';
 import { baixarDocumento } from '@/features/captura/pje-trt/timeline/baixar-documento';
-import { uploadToBackblaze } from '@/lib/storage/backblaze-b2.service';
+import { uploadToSupabase } from '@/lib/storage/supabase-storage.service';
 import { gerarNomeDocumentoAudiencia, gerarCaminhoDocumento } from '@/lib/storage/file-naming.utils';
 import { buscarOuCriarAdvogadoPorCpf } from '../advogado-helper.service';
 import { captureLogService, type LogEntry } from '../persistence/capture-log.service';
@@ -377,7 +377,7 @@ export async function audienciasCapture(
             });
             const nomeArquivo = gerarNomeDocumentoAudiencia(a.id);
             const key = gerarCaminhoDocumento(a.nrProcesso || a.processo?.numero || '', 'audiencias', nomeArquivo);
-            const upload = await uploadToBackblaze({ buffer: pdf, key, contentType: 'application/pdf' });
+            const upload = await uploadToSupabase({ buffer: pdf, key, contentType: 'application/pdf' });
             atasMap[a.id] = { documentoId: docDetalhes.id, url: upload.url };
           }
         } catch (e) {

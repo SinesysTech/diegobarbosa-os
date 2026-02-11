@@ -152,8 +152,8 @@ export interface Arquivo {
   tipo_mime: string;
   tamanho_bytes: number;
   pasta_id: number | null;
-  b2_key: string;
-  b2_url: string;
+  storage_path: string; // Antigo b2_key
+  storage_url: string;  // Antigo b2_url
   tipo_media: "imagem" | "video" | "audio" | "pdf" | "documento" | "outros";
   criado_por: number;
   created_at: string;
@@ -182,8 +182,8 @@ export interface CriarArquivoParams {
   tipo_mime: string;
   tamanho_bytes: number;
   pasta_id?: number | null;
-  b2_key: string;
-  b2_url: string;
+  storage_path: string;
+  storage_url: string;
   tipo_media: "imagem" | "video" | "audio" | "pdf" | "documento" | "outros";
 }
 
@@ -415,8 +415,8 @@ export interface DocumentoUpload {
   nome_arquivo: string;
   tipo_mime: string;
   tamanho_bytes: number;
-  b2_key: string;
-  b2_url: string;
+  storage_path: string; // Antigo b2_key
+  storage_url: string;  // Antigo b2_url
   tipo_media: "imagem" | "video" | "audio" | "pdf" | "outros";
   criado_por: number;
   created_at: string;
@@ -430,8 +430,8 @@ export interface UploadArquivoParams {
   nome_arquivo: string;
   tipo_mime: string;
   tamanho_bytes: number;
-  b2_key: string;
-  b2_url: string;
+  storage_path: string;
+  storage_url: string;
   tipo_media: "imagem" | "video" | "audio" | "pdf" | "outros";
 }
 

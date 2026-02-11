@@ -13,8 +13,11 @@ import * as documentosRepo from "../../repositories/documentos-repository";
 const repository = { ...arquivosRepo, ...pastasRepo, ...documentosRepo };
 
 // Mock dependencies
-jest.mock("@/lib/storage/backblaze-b2.service", () => ({
-  generatePresignedUrl: jest.fn(),
+jest.mock("@/lib/storage/supabase-storage.service", () => ({
+  createPresignedUrl: jest.fn(),
+}));
+
+jest.mock("../../services/storage-upload.service", () => ({
   uploadFileToB2: jest.fn(),
   generatePresignedUploadUrl: jest.fn(),
   getTipoMedia: jest.fn(),

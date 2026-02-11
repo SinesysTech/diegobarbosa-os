@@ -1,40 +1,13 @@
 /**
  * API Route: GET /api/clientes/[id]/documentos
  *
- * Lista os arquivos do cliente armazenados no Backblaze B2.
+ * Lista os arquivos do cliente armazenados no Supabase Storage.
  * Retorna URLs assinadas (presigned) para acesso temporário.
  */
 
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
-import {
-  S3Client,
-  ListObjectsV2Command,
-  GetObjectCommand
-} from '@aws-sdk/client-s3';
-import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
-
-// Configuração do cliente S3 para Backblaze
-function getS3Client(): S3Client | null {
-  const endpoint = process.env.BACKBLAZE_ENDPOINT || process.env.B2_ENDPOINT;
-  const region = process.env.BACKBLAZE_REGION || process.env.B2_REGION;
-  const keyId = process.env.BACKBLAZE_ACCESS_KEY_ID || process.env.B2_KEY_ID;
-  const applicationKey =
-    process.env.BACKBLAZE_SECRET_ACCESS_KEY || process.env.B2_APPLICATION_KEY;
-
-  if (!endpoint || !region || !keyId || !applicationKey) {
-    return null;
-  }
-
-  return new S3Client({
-    endpoint: endpoint.startsWith('http') ? endpoint : `https://${endpoint}`,
-    region,
-    credentials: {
-      accessKeyId: keyId,
-      secretAccessKey: applicationKey
-    }
-  });
-}
+import { createPresignedUrl } from '@/lib/storage/supabase-storage.service';
 
 interface DocumentFile {
   key: string;
@@ -98,39 +71,34 @@ export async function GET(
       });
     }
 
-    // Configurar cliente S3
-    const s3Client = getS3Client();
-    if (!s3Client) {
+    // Listar arquivos do Supabase Storage
+    const bucket = process.env.SUPABASE_STORAGE_BUCKET || 'zattar-advogados';
+    const prefix = cliente.documentos;
+
+    const { data: objects, error: listError } = await supabase
+      .storage
+      .from(bucket)
+      .list(prefix, {
+        limit: 100,
+        offset: 0,
+        sortBy: { column: 'name', order: 'asc' },
+      });
+
+    if (listError) {
+      console.error('Erro ao listar arquivos do Supabase:', listError);
       return NextResponse.json(
-        { error: 'Backblaze não configurado' },
+        { error: 'Erro ao listar documentos' },
         { status: 500 }
       );
     }
-
-    const bucket = process.env.BACKBLAZE_BUCKET_NAME || process.env.B2_BUCKET;
-    if (!bucket) {
-      return NextResponse.json(
-        { error: 'Bucket não configurado' },
-        { status: 500 }
-      );
-    }
-
-    // Listar arquivos do cliente
-    const listCommand = new ListObjectsV2Command({
-      Bucket: bucket,
-      Prefix: cliente.documentos
-    });
-
-    const listResponse = await s3Client.send(listCommand);
-    const objects = listResponse.Contents ?? [];
 
     // Gerar URLs assinadas para cada arquivo
     const documentos: DocumentFile[] = await Promise.all(
-      objects.map(async (obj) => {
-        const key = obj.Key ?? '';
-        const name = key.split('/').pop() ?? key;
+      (objects || []).map(async (obj) => {
+        const key = `${prefix}/${obj.name}`;
+        const name = obj.name;
 
-        // Determinar content type pelo nome do arquivo
+        // Determinar content type pelo nome do arquivo (opcional, metadata do supabase tem update?)
         const ext = name.toLowerCase().split('.').pop();
         const contentTypeMap: Record<string, string> = {
           pdf: 'application/pdf',
@@ -142,31 +110,32 @@ export async function GET(
           xls: 'application/vnd.ms-excel',
           xlsx: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
         };
-        const contentType = contentTypeMap[ext ?? ''] ?? 'application/octet-stream';
+        const contentType = contentTypeMap[ext ?? ''] ?? (obj.metadata?.mimetype || 'application/octet-stream');
 
-        // Gerar URL assinada (válida por 1 hora)
-        const getCommand = new GetObjectCommand({
-          Bucket: bucket,
-          Key: key
-        });
-
-        const url = await getSignedUrl(s3Client, getCommand, {
-          expiresIn: 3600
-        });
+        // URL assinada
+        // Note: createPresignedUrl internally creates a service client. 
+        // We can use it or use the current supabase client if we had route handler context (but createPresignedUrl uses service role which is safer for signed urls usually, actually standard client can do it if RLS allows)
+        // Let's use the helper for consistency.
+        let url = '';
+        try {
+            url = await createPresignedUrl(key, 3600, bucket);
+        } catch (e) {
+            console.error(`Erro ao gerar URL para ${key}`, e);
+        }
 
         return {
           key,
           name,
-          size: obj.Size ?? 0,
-          lastModified: obj.LastModified?.toISOString() ?? '',
+          size: obj.metadata?.size || 0,
+          lastModified: obj.created_at || new Date().toISOString(), // Supabase returns created_at/updated_at
           contentType,
           url
         };
       })
     );
-
-    // Ordenar por nome
-    documentos.sort((a, b) => a.name.localeCompare(b.name));
+    
+    // Filtrar arquivos que falharam ao gerar URL (opcional) ou pastas vazias (placeholder)
+    const validDocumentos = documentos.filter(d => d.url && d.name !== '.emptyFolderPlaceholder');
 
     return NextResponse.json({
       cliente: {
@@ -174,9 +143,10 @@ export async function GET(
         nome: cliente.nome,
         cpf: cliente.cpf
       },
-      documentos,
-      total: documentos.length
+      documentos: validDocumentos,
+      total: validDocumentos.length
     });
+
   } catch (error) {
     console.error('Erro ao listar documentos do cliente:', error);
     return NextResponse.json(

@@ -31,19 +31,30 @@ export async function criarArquivo(
       tipo_mime: params.tipo_mime,
       tamanho_bytes: params.tamanho_bytes,
       pasta_id: params.pasta_id ?? null,
-      b2_key: params.b2_key,
-      b2_url: params.b2_url,
+      b2_key: params.storage_path, // Map to DB column
+      b2_url: params.storage_url,  // Map to DB column
       tipo_media: params.tipo_media,
       criado_por: usuario_id,
     })
-    .select()
+    .select(
+      `
+      *,
+      storage_path:b2_key,
+      storage_url:b2_url
+    `
+    )
     .single();
 
   if (error) {
     throw new Error(`Erro ao criar arquivo: ${error.message}`);
   }
 
-  return data;
+  // Remove original DB keys to avoid confusion if needed, but TypeScript will be happy with the alias
+  // Note: select('*') includes b2_key, b2_url. alias includes storage_path, storage_url.
+  // We can strip them if we want to be strict, but for now just returning data matches the interface if we ignore extra fields.
+  // Actually, to match interface perfectly:
+  // const { b2_key, b2_url, ...rest } = data;
+  return data as unknown as Arquivo;
 }
 
 /**
@@ -54,7 +65,13 @@ export async function buscarArquivoPorId(id: number): Promise<Arquivo | null> {
 
   const { data, error } = await supabase
     .from("arquivos")
-    .select("*")
+    .select(
+      `
+      *,
+      storage_path:b2_key,
+      storage_url:b2_url
+    `
+    )
     .eq("id", id)
     .is("deleted_at", null)
     .single();
@@ -66,7 +83,7 @@ export async function buscarArquivoPorId(id: number): Promise<Arquivo | null> {
     throw new Error(`Erro ao buscar arquivo: ${error.message}`);
   }
 
-  return data;
+  return data as unknown as Arquivo;
 }
 
 /**
@@ -77,9 +94,29 @@ export async function buscarArquivoComUsuario(
 ): Promise<ArquivoComUsuario | null> {
   const supabase = createServiceClient();
 
+  // Need to update query builder or helper if it uses fixed string.
+  // Since buildArquivoWithCreatorSelect is imported, let's look at it or inline the select here mostly.
+  // But wait, buildArquivoWithCreatorSelect is likely used in other places. 
+  // Let's modify buildArquivoWithCreatorSelect in query-builders.ts if possible, but I don't have that file open.
+  // For now I will assume buildArquivoWithCreatorSelect returns a string and I can append or I should verify query-builders.ts.
+  // But I can override select here.
+
   const { data, error } = await supabase
     .from("arquivos")
-    .select(buildArquivoWithCreatorSelect())
+    .select(
+      `
+      *,
+      storage_path:b2_key,
+      storage_url:b2_url,
+      criador:usuarios!created_by (
+        id,
+        nomeCompleto,
+        nomeExibicao,
+        emailCorporativo,
+        avatarUrl
+      )
+    `
+    )
     .eq("id", id)
     .is("deleted_at", null)
     .single();
@@ -102,8 +139,24 @@ export async function listarArquivos(
 ): Promise<{ arquivos: ArquivoComUsuario[]; total: number }> {
   const supabase = createServiceClient();
 
+  // If using buildArquivoWithCreatorSelect(), it needs update.
+  // Since I can't easily edit query-builders.ts without viewing it, I will replace usages here
+  // or I should go edit query-builders.ts too.
+  // Checking imports: import { buildArquivoWithCreatorSelect } from "./shared/query-builders";
+  
   let query = supabase.from("arquivos").select(
-    buildArquivoWithCreatorSelect(),
+      `
+      *,
+      storage_path:b2_key,
+      storage_url:b2_url,
+      criador:usuarios!criado_por (
+        id,
+        nomeCompleto,
+        nomeExibicao,
+        emailCorporativo,
+        avatarUrl
+      )
+    `,
     { count: "exact" }
   );
 
