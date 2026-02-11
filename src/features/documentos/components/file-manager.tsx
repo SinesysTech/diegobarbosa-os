@@ -126,7 +126,7 @@ function getPreviewIcon(item: ItemDocumento) {
         return (
             <div className="relative h-32 w-full overflow-hidden rounded-xl border bg-muted">
                 <Image
-                    src={item.dados.b2_url}
+                    src={item.dados.storage_url}
                     alt={getItemName(item)}
                     fill
                     className="object-cover"
@@ -562,7 +562,7 @@ export function FileManager() {
                                                             size="icon-sm"
                                                             onClick={(e) => {
                                                                 e.stopPropagation();
-                                                                window.open(item.dados.b2_url, '_blank');
+                                                                window.open(item.dados.storage_url, '_blank');
                                                             }}
                                                             aria-label="Abrir"
                                                         >
@@ -630,7 +630,7 @@ export function FileManager() {
                                                             size="icon-sm"
                                                             onClick={(e) => {
                                                                 e.stopPropagation();
-                                                                window.open(item.dados.b2_url, '_blank');
+                                                                window.open(item.dados.storage_url, '_blank');
                                                             }}
                                                             aria-label="Abrir"
                                                         >
@@ -721,7 +721,7 @@ export function FileManager() {
                                         <div className="mt-auto pt-4">
                                             <Button
                                                 className="w-full gap-2"
-                                                onClick={() => window.open(selectedItem.dados.b2_url, '_blank')}
+                                                onClick={() => window.open(selectedItem.dados.storage_url, '_blank')}
                                             >
                                                 <ExternalLink className="h-4 w-4" />
                                                 Abrir Arquivo
@@ -807,7 +807,7 @@ export function FileManager() {
                             {selectedItem.tipo === 'arquivo' && (
                                 <Button
                                     className="w-full gap-2"
-                                    onClick={() => window.open(selectedItem.dados.b2_url, '_blank')}
+                                    onClick={() => window.open(selectedItem.dados.storage_url, '_blank')}
                                 >
                                     <ExternalLink className="h-4 w-4" />
                                     Abrir Arquivo

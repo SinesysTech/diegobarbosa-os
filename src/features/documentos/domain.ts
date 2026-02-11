@@ -806,8 +806,8 @@ export const uploadSchema = z.object({
   nome_arquivo: z.string().min(1, "Nome do arquivo obrigatório"),
   tipo_mime: z.string().min(1, "Tipo MIME obrigatório"),
   tamanho_bytes: z.number().min(0, "Tamanho do arquivo deve ser positivo"),
-  b2_key: z.string().min(1, "B2 Key obrigatória"),
-  b2_url: z.string().url("URL inválida para B2").min(1, "B2 URL obrigatória"),
+  storage_path: z.string().min(1, "Storage path obrigatório"),
+  storage_url: z.string().url("URL inválida para storage").min(1, "Storage URL obrigatória"),
   tipo_media: z.nativeEnum(TIPOS_MEDIA),
 });
 
@@ -816,8 +816,8 @@ export const criarUploadSchema = z.object({
   nome_arquivo: z.string().min(1, "Nome do arquivo obrigatório"),
   tipo_mime: z.string().min(1, "Tipo MIME obrigatório"),
   tamanho_bytes: z.number().min(0, "Tamanho do arquivo deve ser positivo"),
-  b2_key: z.string().min(1, "B2 Key obrigatória"),
-  b2_url: z.string().url("URL inválida para B2").min(1, "B2 URL obrigatória"),
+  storage_path: z.string().min(1, "Storage path obrigatório"),
+  storage_url: z.string().url("URL inválida para storage").min(1, "Storage URL obrigatória"),
   tipo_media: z.nativeEnum(TIPOS_MEDIA),
 });
 
@@ -860,8 +860,8 @@ export const arquivoSchema = z.object({
   tipo_mime: z.string(),
   tamanho_bytes: z.number().min(0),
   pasta_id: z.number().nullable().optional(),
-  b2_key: z.string(),
-  b2_url: z.string().url(),
+  storage_path: z.string(),
+  storage_url: z.string().url(),
   tipo_media: z.enum([
     "imagem",
     "video",

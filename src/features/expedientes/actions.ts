@@ -142,7 +142,7 @@ export async function actionCriarExpediente(
             const { uploads } = await listarUploads(idDocumento, user.id);
             const latestUpload = uploads[0]; // Pega o mais recente
 
-            if (latestUpload && latestUpload.b2_key) {
+            if (latestUpload && latestUpload.storage_path) {
               console.log(
                 `🧠 [AI] Indexando expediente ${expedienteId} via documento ${idDocumento}`
               );
@@ -150,8 +150,8 @@ export async function actionCriarExpediente(
                 entity_type: "expediente",
                 entity_id: expedienteId,
                 parent_id: null, // Expediente é raiz? Ou vinculado a processo?
-                storage_provider: "backblaze",
-                storage_key: latestUpload.b2_key,
+                storage_provider: "supabase",
+                storage_key: latestUpload.storage_path,
                 content_type: latestUpload.tipo_mime,
                 metadata: {
                   ...result.data, // Metadados do expediente

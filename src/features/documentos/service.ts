@@ -946,8 +946,8 @@ export async function uploadArquivoGenerico(
       tipo_mime: type,
       tamanho_bytes: size,
       pasta_id,
-      b2_key: b2UploadResult.key,
-      b2_url: b2UploadResult.url,
+      storage_path: b2UploadResult.key,
+      storage_url: b2UploadResult.url,
       tipo_media: getTipoMedia(type),
     },
     usuario_id

@@ -29,7 +29,7 @@ const InputCPFCNPJ = React.forwardRef<HTMLInputElement, InputCPFCNPJProps>(
         )}
         <IMaskInput
           mask={mask}
-          dispatch={(appended, dynamicMasked) => {
+          dispatch={(appended: string, dynamicMasked: { value: string; compiledMasks: Array<unknown> }) => {
             const number = (dynamicMasked.value + appended).replace(/\D/g, '');
             return dynamicMasked.compiledMasks[number.length <= 11 ? 0 : 1];
           }}

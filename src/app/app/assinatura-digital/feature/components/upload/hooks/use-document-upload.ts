@@ -217,7 +217,7 @@ export function useDocumentUpload(config?: UseDocumentUploadConfig) {
           name: fileToUpload.name,
           size: fileToUpload.size,
           type: fileToUpload.type,
-          url: result.data?.b2_url || "",
+          url: result.data?.storage_url || "",
           uploadedAt: new Date(),
         };
 

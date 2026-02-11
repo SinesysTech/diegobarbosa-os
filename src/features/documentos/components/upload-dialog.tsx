@@ -96,8 +96,8 @@ export function UploadDialog({
       setProgress(0);
       onOpenChange(false);
 
-      if (onSuccess && result.data?.b2_url) {
-        onSuccess(result.data.b2_url);
+      if (onSuccess && result.data?.storage_url) {
+        onSuccess(result.data.storage_url);
       }
     } catch (error) {
       console.error('Erro no upload:', error);

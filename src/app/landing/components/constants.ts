@@ -19,14 +19,31 @@ export const NAV_LINKS = [
   { label: "Sobre", href: "#sobre" },
 ] as const;
 
-export const STATS = [
+type Stat = {
+  readonly value: string;
+  readonly label: string;
+  readonly isRating?: boolean;
+};
+
+export const STATS: readonly Stat[] = [
   { value: "500+", label: "Casos Resolvidos" },
   { value: "R$ 2 Mi", label: "Recuperados" },
   { value: "100%", label: "Digital" },
   { value: "5.0", label: "Avaliação", isRating: true },
 ] as const;
 
-export const SERVICES = [
+type Service = {
+  readonly id: string;
+  readonly icon: string;
+  readonly title: string;
+  readonly description: string;
+  readonly cta: string;
+  readonly href: string;
+  readonly featured?: boolean;
+  readonly badge?: string;
+};
+
+export const SERVICES: readonly Service[] = [
   {
     id: "passageiro",
     icon: "flight_takeoff",
@@ -55,7 +72,15 @@ export const SERVICES = [
   },
 ] as const;
 
-export const STEPS = [
+type Step = {
+  readonly number: number;
+  readonly icon: string;
+  readonly title: string;
+  readonly description: string;
+  readonly isSuccess?: boolean;
+};
+
+export const STEPS: readonly Step[] = [
   {
     number: 1,
     icon: "chat",
