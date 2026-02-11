@@ -14,6 +14,7 @@ export interface Credencial {
   advogado_uf_oab: string;
   tribunal: CodigoTRT | string;
   grau: GrauTRT | string;
+  usuario?: string | null; // Login PJE (se diferente do CPF do advogado)
   active: boolean;
   created_at: string;
   updated_at: string | null;

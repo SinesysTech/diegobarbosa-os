@@ -276,6 +276,7 @@ export async function criarCredencial(params: CriarCredencialParams): Promise<Cr
       advogado_id: params.advogado_id,
       tribunal: params.tribunal,
       grau: params.grau,
+      usuario: params.usuario || null, // Login PJE (null = usar CPF do advogado)
       senha: params.senha,
       active: params.active !== undefined ? params.active : true,
     })
@@ -303,7 +304,7 @@ export async function buscarCredencial(id: number): Promise<Credencial | null> {
 
   const { data, error } = await supabase
     .from('credenciais')
-    .select('id, advogado_id, tribunal, grau, active, created_at, updated_at')
+    .select('id, advogado_id, tribunal, grau, usuario, active, created_at, updated_at')
     .eq('id', id)
     .single();
 
@@ -364,6 +365,7 @@ export async function atualizarCredencial(
   const updateData: Partial<{
     tribunal: string;
     grau: string;
+    usuario: string | null;
     senha: string;
     active: boolean;
   }> = {};
@@ -373,6 +375,9 @@ export async function atualizarCredencial(
   }
   if (params.grau !== undefined) {
     updateData.grau = params.grau;
+  }
+  if (params.usuario !== undefined) {
+    updateData.usuario = params.usuario; // null = usar CPF do advogado
   }
   if (params.senha !== undefined) {
     updateData.senha = params.senha;
@@ -385,7 +390,7 @@ export async function atualizarCredencial(
     .from('credenciais')
     .update(updateData)
     .eq('id', id)
-    .select('id, advogado_id, tribunal, grau, active, created_at, updated_at')
+    .select('id, advogado_id, tribunal, grau, usuario, active, created_at, updated_at')
     .single();
 
   if (error) {
@@ -418,6 +423,7 @@ export async function listarCredenciais(
     advogado_id,
     tribunal,
     grau,
+    usuario,
     active,
     created_at,
     updated_at,

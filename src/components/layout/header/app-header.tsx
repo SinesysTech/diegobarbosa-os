@@ -4,6 +4,7 @@ import { SidebarTrigger, useSidebar } from "@/components/ui/sidebar"
 import { Separator } from "@/components/ui/separator"
 import Search from "@/components/layout/header/search"
 import { AiSphere } from "@/components/layout/header/ai-sphere"
+import { AuthenticatorPopover } from "@/components/layout/header/authenticator-popover"
 import Notifications from "@/components/layout/header/notifications"
 import { HeaderUserMenu } from "@/components/layout/header/header-user-menu"
 import { useChatContext } from "@copilotkit/react-ui"
@@ -34,6 +35,7 @@ export function AppHeader() {
       </div>
       <div className="flex items-center gap-2">
         <AiSphere onClick={() => setOpen(!open)} />
+        <AuthenticatorPopover />
         <Notifications />
         <Separator orientation="vertical" className="h-6" />
         <HeaderUserMenu />

@@ -118,6 +118,7 @@ export interface CriarCredencialParams {
   advogado_id: number;
   tribunal: CodigoTRT;
   grau: GrauCredencial;
+  usuario?: string; // Login do PJE (se diferente do CPF do advogado)
   senha: string;
   active?: boolean;
 }
@@ -128,6 +129,7 @@ export interface CriarCredencialParams {
 export interface AtualizarCredencialParams {
   tribunal?: CodigoTRT;
   grau?: GrauCredencial;
+  usuario?: string | null; // Login do PJE (null para usar CPF do advogado)
   senha?: string;
   active?: boolean;
 }
@@ -161,6 +163,7 @@ export const criarCredencialSchema = z.object({
   advogado_id: z.number(),
   tribunal: z.string(),
   grau: z.enum(['1', '2']),
+  usuario: z.string().optional(), // Login do PJE (se diferente do CPF)
   senha: z.string().min(1, 'Senha obrigatória'),
   active: z.boolean().optional().default(true),
 });
