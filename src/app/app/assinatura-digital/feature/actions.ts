@@ -175,7 +175,7 @@ export async function criarTemplateAction(
             await indexDocument({
               entity_type: 'assinatura_digital',
               entity_id: template.id,
-              storage_provider: 'backblaze', // Assumindo backblaze padrão
+              storage_provider: 'supabase', // Usando Supabase Storage
               storage_key: key,
               content_type: 'application/pdf',
               metadata: { ...metadata, type: 'pdf_template' },

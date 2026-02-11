@@ -114,7 +114,6 @@ export async function POST(request: NextRequest) {
                 );
 
                 const storageProvider =
-                  storageProviderRaw === "backblaze" ||
                   storageProviderRaw === "supabase" ||
                   storageProviderRaw === "google_drive"
                     ? storageProviderRaw

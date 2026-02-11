@@ -1,18 +1,20 @@
-type PdfJs = typeof import('pdfjs-dist/legacy/build/pdf.mjs');
+// TODO: pdfjs-dist/legacy/build/pdf.mjs module path não existe na versão instalada
+// Removendo temporariamente para focar no uso de pdf-parse que funciona bem no Node.js
+// type PdfJs = typeof import('pdfjs-dist/legacy/build/pdf.mjs');
 
-async function getPdfJs(): Promise<PdfJs> {
-  // Import lazy para evitar avaliar `pdfjs-dist` no SSR/Node (erro: DOMMatrix is not defined)
-  const pdfjs = (await import('pdfjs-dist/legacy/build/pdf.mjs')) as PdfJs;
+// async function getPdfJs(): Promise<PdfJs> {
+//   // Import lazy para evitar avaliar `pdfjs-dist` no SSR/Node (erro: DOMMatrix is not defined)
+//   const pdfjs = (await import('pdfjs-dist/legacy/build/pdf.mjs')) as PdfJs;
 
-  // No servidor/Node, configurar worker corretamente
-  if (typeof window === 'undefined') {
-    // Para Node.js, precisamos configurar um workerSrc válido ou usar disableWorker
-    // Usar um data URL vazio para indicar que não queremos worker
-    pdfjs.GlobalWorkerOptions.workerSrc = 'data:application/javascript,';
-  }
+//   // No servidor/Node, configurar worker corretamente
+//   if (typeof window === 'undefined') {
+//     // Para Node.js, precisamos configurar um workerSrc válido ou usar disableWorker
+//     // Usar um data URL vazio para indicar que não queremos worker
+//     pdfjs.GlobalWorkerOptions.workerSrc = 'data:application/javascript,';
+//   }
 
-  return pdfjs;
-}
+//   return pdfjs;
+// }
 
 export async function extractTextFromPDF(buffer: Buffer): Promise<string> {
   // No Node.js (scripts), usar pdf-parse que é mais simples e confiável
@@ -36,12 +38,17 @@ export async function extractTextFromPDF(buffer: Buffer): Promise<string> {
       const result = await parser.getText();
       return result.text || '';
     } catch (error) {
-      // Se pdf-parse não estiver disponível, usar pdfjs-dist como fallback
-      console.warn('[Extraction] pdf-parse não disponível, usando pdfjs-dist como fallback:', error instanceof Error ? error.message : error);
+      console.error('[Extraction] Erro ao extrair texto do PDF com pdf-parse:', error instanceof Error ? error.message : error);
+      throw new Error('Não foi possível extrair texto do PDF. Certifique-se de que o arquivo é um PDF válido.');
     }
   }
-
-  // Fallback para pdfjs-dist (usado no browser/SSR)
+  
+  // TODO: Fallback para pdfjs-dist removido temporariamente devido a problemas com imports
+  // Retornar erro se pdf-parse falhar
+  throw new Error('Extração de PDF só suportada em ambiente Node.js com pdf-parse instalado');
+  
+  // TODO: Código abaixo comentado - pdfjs-dist/legacy não está disponível
+  /*
   const pdfjs = await getPdfJs();
   const data = new Uint8Array(buffer);
   
@@ -78,6 +85,7 @@ export async function extractTextFromPDF(buffer: Buffer): Promise<string> {
   }
 
   return textParts.join('\n\n');
+  */
 }
 
 export async function extractTextFromDOCX(_buffer: Buffer): Promise<string> {

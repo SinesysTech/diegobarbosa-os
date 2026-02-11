@@ -126,7 +126,19 @@ export const WHY_US_FEATURES = [
   },
 ] as const;
 
-export const TESTIMONIALS = [
+type Testimonial = {
+  readonly id: number;
+  readonly name: string;
+  readonly text: string;
+  readonly type: "google" | "whatsapp";
+  readonly avatar?: string;
+  readonly avatarColor?: string;
+  readonly rating?: number;
+  readonly date?: string;
+  readonly time?: string;
+};
+
+export const TESTIMONIALS: readonly Testimonial[] = [
   {
     id: 1,
     name: "Maria S.",
