@@ -54,7 +54,7 @@ export function CodeBlockElement(props: PlateElementProps<TCodeBlockElement>) {
               onClick={() => formatCodeBlock(editor, { element })}
               title="Formatar código"
             >
-              <BracesIcon className="!size-3.5 text-muted-foreground" />
+              <BracesIcon className="size-3.5! text-muted-foreground" />
             </Button>
           )}
 
@@ -178,9 +178,9 @@ function CopyButton({
     >
       <span className="sr-only">Copiar</span>
       {hasCopied ? (
-        <CheckIcon className="!size-3" />
+        <CheckIcon className="size-3!" />
       ) : (
-        <CopyIcon className="!size-3" />
+        <CopyIcon className="size-3!" />
       )}
     </Button>
   );
