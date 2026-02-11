@@ -15,6 +15,7 @@ import type {
   CriarCredencialParams,
   AtualizarCredencialParams,
   ListarCredenciaisParams,
+  OabEntry,
 } from './domain';
 
 // ============================================================================
@@ -27,13 +28,18 @@ import type {
 export async function criarAdvogado(params: CriarAdvogadoParams): Promise<Advogado> {
   const supabase = createServiceClient();
 
+  // Normalizar OABs
+  const normalizedOabs = params.oabs.map((oab) => ({
+    numero: oab.numero.trim(),
+    uf: oab.uf.trim().toUpperCase(),
+  }));
+
   const { data, error } = await supabase
     .from('advogados')
     .insert({
       nome_completo: params.nome_completo.trim(),
       cpf: params.cpf.replace(/\D/g, ''),
-      oab: params.oab.trim(),
-      uf_oab: params.uf_oab.trim().toUpperCase(),
+      oabs: normalizedOabs,
     })
     .select()
     .single();
@@ -41,7 +47,7 @@ export async function criarAdvogado(params: CriarAdvogadoParams): Promise<Advoga
   if (error) {
     // Verificar erro de duplicidade (unique constraint)
     if (error.code === '23505') {
-      throw new Error('Já existe um advogado cadastrado com este CPF ou OAB/UF');
+      throw new Error('Já existe um advogado cadastrado com este CPF');
     }
     throw new Error(`Erro ao criar advogado: ${error.message}`);
   }
@@ -108,12 +114,7 @@ export async function atualizarAdvogado(
   const supabase = createServiceClient();
 
   // Montar objeto de atualização apenas com campos fornecidos
-  const updateData: Partial<{
-    nome_completo: string;
-    cpf: string;
-    oab: string;
-    uf_oab: string;
-  }> = {};
+  const updateData: Record<string, unknown> = {};
 
   if (params.nome_completo !== undefined) {
     updateData.nome_completo = params.nome_completo.trim();
@@ -121,11 +122,11 @@ export async function atualizarAdvogado(
   if (params.cpf !== undefined) {
     updateData.cpf = params.cpf.replace(/\D/g, '');
   }
-  if (params.oab !== undefined) {
-    updateData.oab = params.oab.trim();
-  }
-  if (params.uf_oab !== undefined) {
-    updateData.uf_oab = params.uf_oab.trim().toUpperCase();
+  if (params.oabs !== undefined) {
+    updateData.oabs = params.oabs.map((oab) => ({
+      numero: oab.numero.trim(),
+      uf: oab.uf.trim().toUpperCase(),
+    }));
   }
 
   const { data, error } = await supabase
@@ -140,7 +141,7 @@ export async function atualizarAdvogado(
       throw new Error('Advogado não encontrado');
     }
     if (error.code === '23505') {
-      throw new Error('Já existe um advogado cadastrado com este CPF ou OAB/UF');
+      throw new Error('Já existe um advogado cadastrado com este CPF');
     }
     throw new Error(`Erro ao atualizar advogado: ${error.message}`);
   }
@@ -166,22 +167,27 @@ export async function listarAdvogados(
 
   let query = supabase.from('advogados').select('*', { count: 'exact' });
 
-  // Filtro de busca (nome, CPF, OAB)
+  // Filtro de busca (nome, CPF)
+  // Nota: busca por OAB em JSONB seria mais complexa, fazemos apenas por nome/CPF
   if (params.busca) {
     const busca = params.busca.trim();
-    query = query.or(
-      `nome_completo.ilike.%${busca}%,cpf.ilike.%${busca}%,oab.ilike.%${busca}%`
+    query = query.or(`nome_completo.ilike.%${busca}%,cpf.ilike.%${busca}%`);
+  }
+
+  // Filtro por OAB específica usando containment JSONB
+  // Busca advogados que tenham uma OAB com o número e/ou UF especificados
+  if (params.oab && params.uf_oab) {
+    query = query.contains('oabs', [
+      { numero: params.oab.trim(), uf: params.uf_oab.trim().toUpperCase() },
+    ]);
+  } else if (params.uf_oab) {
+    // Filtrar apenas por UF - busca advogados que tenham alguma OAB nessa UF
+    // Usando raw filter para JSONB
+    query = query.filter(
+      'oabs',
+      'cs',
+      JSON.stringify([{ uf: params.uf_oab.trim().toUpperCase() }])
     );
-  }
-
-  // Filtro por OAB
-  if (params.oab) {
-    query = query.eq('oab', params.oab.trim());
-  }
-
-  // Filtro por UF OAB
-  if (params.uf_oab) {
-    query = query.eq('uf_oab', params.uf_oab.trim().toUpperCase());
   }
 
   // Filtro por advogados com credenciais ativas
@@ -430,8 +436,7 @@ export async function listarCredenciais(
     advogados:advogados (
       nome_completo,
       cpf,
-      oab,
-      uf_oab
+      oabs
     )
   `);
 

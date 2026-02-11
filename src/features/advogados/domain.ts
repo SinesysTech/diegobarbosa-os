@@ -28,14 +28,22 @@ export type GrauCredencial = '1' | '2';
 // ============================================================================
 
 /**
+ * Entrada de OAB (número + UF)
+ * Um advogado pode ter múltiplas inscrições na OAB (uma por estado)
+ */
+export interface OabEntry {
+  numero: string;
+  uf: string;
+}
+
+/**
  * Dados de um advogado
  */
 export interface Advogado {
   id: number;
   nome_completo: string;
   cpf: string;
-  oab: string;
-  uf_oab: string;
+  oabs: OabEntry[];
   created_at: string;
   updated_at: string;
 }
@@ -46,8 +54,7 @@ export interface Advogado {
 export interface CriarAdvogadoParams {
   nome_completo: string;
   cpf: string;
-  oab: string;
-  uf_oab: string;
+  oabs: OabEntry[];
 }
 
 /**
@@ -56,8 +63,7 @@ export interface CriarAdvogadoParams {
 export interface AtualizarAdvogadoParams {
   nome_completo?: string;
   cpf?: string;
-  oab?: string;
-  uf_oab?: string;
+  oabs?: OabEntry[];
 }
 
 /**
@@ -107,8 +113,7 @@ export interface Credencial {
 export interface CredencialComAdvogado extends Credencial {
   advogado_nome: string;
   advogado_cpf: string;
-  advogado_oab: string;
-  advogado_uf_oab: string;
+  advogado_oabs: OabEntry[];
 }
 
 /**
@@ -150,14 +155,25 @@ export interface ListarCredenciaisParams {
 // Zod Schemas
 // ============================================================================
 
-export const criarAdvogadoSchema = z.object({
-  nome_completo: z.string().min(3, 'Nome deve ter no mínimo 3 caracteres'),
-  cpf: z.string().min(11, 'CPF inválido'), // Add detailed validation later if utils available
-  oab: z.string().min(1, 'OAB obrigatória'),
-  uf_oab: z.string().length(2, 'UF deve ter 2 caracteres'),
+export const oabEntrySchema = z.object({
+  numero: z.string().min(1, 'Número OAB obrigatório'),
+  uf: z.string().length(2, 'UF deve ter 2 caracteres').refine(
+    (uf) => UFS_BRASIL.includes(uf.toUpperCase()),
+    'UF inválida'
+  ),
 });
 
-export const atualizarAdvogadoSchema = criarAdvogadoSchema.partial();
+export const criarAdvogadoSchema = z.object({
+  nome_completo: z.string().min(3, 'Nome deve ter no mínimo 3 caracteres'),
+  cpf: z.string().min(11, 'CPF inválido'),
+  oabs: z.array(oabEntrySchema).min(1, 'Pelo menos uma OAB obrigatória'),
+});
+
+export const atualizarAdvogadoSchema = z.object({
+  nome_completo: z.string().min(3, 'Nome deve ter no mínimo 3 caracteres').optional(),
+  cpf: z.string().min(11, 'CPF inválido').optional(),
+  oabs: z.array(oabEntrySchema).min(1, 'Pelo menos uma OAB obrigatória').optional(),
+});
 
 export const criarCredencialSchema = z.object({
   advogado_id: z.number(),
@@ -169,3 +185,42 @@ export const criarCredencialSchema = z.object({
 });
 
 export const atualizarCredencialSchema = criarCredencialSchema.partial();
+
+// ============================================================================
+// Helper Functions
+// ============================================================================
+
+/**
+ * Obtem a OAB principal (primeira do array)
+ */
+export function getPrimaryOab(advogado: Advogado): OabEntry | null {
+  return advogado.oabs[0] || null;
+}
+
+/**
+ * Formata OABs para exibição (ex: "12345/SP, 67890/MG")
+ */
+export function formatOabs(oabs: OabEntry[]): string {
+  return oabs.map((oab) => `${oab.numero}/${oab.uf}`).join(', ');
+}
+
+/**
+ * Formata uma única OAB para exibição (ex: "12345/SP")
+ */
+export function formatOab(oab: OabEntry): string {
+  return `${oab.numero}/${oab.uf}`;
+}
+
+/**
+ * Verifica se advogado tem OAB em determinado estado
+ */
+export function hasOabInState(advogado: Advogado, uf: string): boolean {
+  return advogado.oabs.some((oab) => oab.uf.toUpperCase() === uf.toUpperCase());
+}
+
+/**
+ * Encontra OAB por estado
+ */
+export function findOabByState(advogado: Advogado, uf: string): OabEntry | undefined {
+  return advogado.oabs.find((oab) => oab.uf.toUpperCase() === uf.toUpperCase());
+}
