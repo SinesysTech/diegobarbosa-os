@@ -1,210 +1,210 @@
-# Deploy Guide - Sinesys
+# Deploy Guide - Sinesys (Cloudron)
 
-Este documento descreve o processo de build e deploy da aplicacao Sinesys.
+Este documento descreve o processo de build e deploy da aplicacao Sinesys no Cloudron.
 
 ## Visao Geral
 
 O Sinesys utiliza:
-- **Docker** para containerizacao (multi-stage build com Alpine Linux)
-- **GitHub Actions** para CI/CD automatizado
-- **Docker Hub** como registry de imagens
-- **CapRover** como plataforma de deploy
+- **Docker** para containerizacao (multi-stage build)
+- **cloudron/base:4.2.0** como imagem base de producao
+- **Cloudron** como plataforma de deploy e gerenciamento
 
 ## Arquitetura de Deploy
 
 ```
-Developer Push → GitHub Actions → Docker Hub → CapRover → Producao
+Developer → Build Local → cloudron install → Cloudron Server
 ```
 
-### Fluxo Detalhado
+### Estrutura de Arquivos Cloudron
 
-1. **Push para main/master** dispara o workflow
-2. **Build Docker** com multi-stage (deps → builder → runner)
-3. **Push para Docker Hub** com tags `latest` e `sha-xxxxx`
-4. **Deploy automatico** via webhook do CapRover (se configurado)
-
-## Configuracao de Secrets
-
-### GitHub Secrets (Obrigatorios)
-
-Configurar em: GitHub > Settings > Secrets and variables > Actions
-
-| Secret | Descricao | Exemplo |
-|--------|-----------|---------|
-| `DOCKERHUB_USERNAME` | Username do Docker Hub | `sinesystec` |
-| `DOCKERHUB_TOKEN` | Access Token do Docker Hub | `dckr_pat_xxx...` |
-| `NEXT_PUBLIC_SUPABASE_URL` | URL do projeto Supabase | `https://xxx.supabase.co` |
-| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Anon Key do Supabase | `eyJhbGciOi...` |
-
-### GitHub Secrets (Opcionais - para deploy automatico)
-
-| Secret | Descricao | Exemplo |
-|--------|-----------|---------|
-| `CAPROVER_SERVER` | URL do CapRover | `https://captain.seudominio.com` |
-| `CAPROVER_APP_TOKEN` | Token do app no CapRover | `app-token-xxx` |
-
-### Obtendo o Docker Hub Token
-
-1. Acesse [hub.docker.com](https://hub.docker.com)
-2. Va em Account Settings > Security
-3. Clique em "New Access Token"
-4. Selecione permissao "Read & Write"
-5. Copie o token gerado
-
-### Obtendo o CapRover App Token
-
-1. Acesse o dashboard do CapRover
-2. Va em Apps > sinesys > Deployment
-3. Clique em "Enable App Token for Deployments"
-4. Copie o token gerado
-
-## Build Local
-
-### Requisitos
-
-- Docker 23.0+ (com BuildKit)
-- ~4GB de RAM disponivel
-
-### Comandos
-
-```bash
-# Build da imagem
-docker build -t sinesys:local .
-
-# Executar container
-docker run -p 3000:3000 \
-  -e NEXT_PUBLIC_SUPABASE_URL=https://xxx.supabase.co \
-  -e NEXT_PUBLIC_SUPABASE_PUBLISHABLE_OR_ANON_KEY=eyJxxx \
-  sinesys:local
-
-# Verificar tamanho da imagem
-docker images sinesys:local
-
-# Verificar health
-curl http://localhost:3000/api/health
+```
+projeto/
+├── CloudronManifest.json   # Configuracao do app para Cloudron
+├── Dockerfile              # Build multi-stage com base Cloudron
+├── start.sh               # Script de inicializacao
+└── ...
 ```
 
-### Build com Variaveis de Ambiente
+## Requisitos
+
+### Cloudron CLI
+
+Instale o CLI do Cloudron:
 
 ```bash
+npm install -g cloudron
+```
+
+### Autenticacao
+
+```bash
+cloudron login https://my.cloudron.server
+```
+
+## Build e Deploy
+
+### Build da Imagem
+
+```bash
+# Build com variaveis de ambiente
+npm run cloudron:build
+
+# Ou manualmente com build args
 docker build \
   --build-arg NEXT_PUBLIC_SUPABASE_URL=https://xxx.supabase.co \
   --build-arg NEXT_PUBLIC_SUPABASE_PUBLISHABLE_OR_ANON_KEY=eyJxxx \
-  -t sinesys:local .
+  -t io.sinesys.app:latest .
 ```
 
-## Deploy Manual no CapRover
+### Deploy Inicial
 
-Se o deploy automatico nao estiver configurado:
+```bash
+# Instalar o app
+cloudron install --image io.sinesys.app:latest
 
-1. Acesse o dashboard do CapRover
-2. Va em Apps > sinesys > Deployment
-3. Em "Deploy via ImageName", digite: `sinesystec/sinesys:latest`
-4. Clique em "Deploy"
+# Ou especificando a imagem
+cloudron install --image io.sinesys.app:latest --location sinesys
+```
 
-## GitHub Actions Workflows
+### Atualizacao
 
-### deploy.yml (Build e Deploy)
+```bash
+# Rebuild e update
+npm run cloudron:build
+npm run cloudron:update
 
-- **Trigger**: Push para main/master ou manual
-- **Jobs**:
-  - `build-and-push`: Build da imagem e push para Docker Hub
-  - `deploy`: Deploy para CapRover (opcional)
+# Ou manualmente
+docker build -t io.sinesys.app:latest .
+cloudron update --image io.sinesys.app:latest
+```
 
-### tests.yml (Testes)
+## Configuracao
 
-- **Trigger**: Push ou PR para main/master/develop
-- **Jobs**:
-  - `quality`: Lint e Type Check
-  - `unit-tests`: Testes unitarios
-  - `integration-tests`: Testes de integracao
-  - `e2e-tests`: Testes end-to-end
+### CloudronManifest.json
 
-## Dockerfile - Otimizacoes
+| Campo | Descricao |
+|-------|-----------|
+| `id` | Identificador unico do app (io.sinesys.app) |
+| `httpPort` | Porta HTTP interna (8000) |
+| `healthCheckPath` | Endpoint de health check (/api/health) |
+| `memoryLimit` | Limite de memoria em bytes (1GB) |
+| `addons` | Addons utilizados (localstorage) |
 
-### Multi-Stage Build
+### Variaveis de Ambiente
 
-1. **deps**: Instala dependencias com cache
-2. **builder**: Compila a aplicacao Next.js
-3. **runner**: Imagem final leve (~200-300MB)
+Configure no painel do Cloudron (Apps > Sinesys > Configure):
 
-### Alpine Linux
+**Obrigatorias:**
+| Variavel | Descricao |
+|----------|-----------|
+| `NEXT_PUBLIC_SUPABASE_URL` | URL do projeto Supabase |
+| `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_OR_ANON_KEY` | Anon Key do Supabase |
+| `SUPABASE_SECRET_KEY` | Secret Key do Supabase |
+| `SERVICE_API_KEY` | Chave de API interna |
 
-Usamos `node:24-alpine` por:
-- Menor tamanho base (~50MB vs ~150MB slim)
-- Menos vulnerabilidades
-- Inicializacao mais rapida
+**Opcionais:**
+| Variavel | Descricao |
+|----------|-----------|
+| `OPENAI_API_KEY` | API Key do OpenAI |
+| `REDIS_URL` | URL do Redis |
+| `B2_ENDPOINT` | Endpoint do Backblaze B2 |
+| `DYTE_API_KEY` | API Key do Dyte |
 
-### Cache Strategy
+### Variaveis Automaticas do Cloudron
 
-- **npm cache**: `/root/.npm` montado como cache
-- **general cache**: `/root/.cache` montado como cache
-- **Registry cache**: Layers armazenadas no Docker Hub
+O Cloudron define automaticamente:
+- `CLOUDRON=1`
+- `CLOUDRON_APP_DOMAIN` (ex: sinesys.meudominio.com)
+- `CLOUDRON_APP_ORIGIN` (ex: https://sinesys.meudominio.com)
+- `CLOUDRON_PROXY_IP` (IP do proxy reverso)
+
+## Estrutura de Diretorios no Container
+
+| Caminho | Tipo | Descricao |
+|---------|------|-----------|
+| `/app/code` | Somente leitura | Codigo da aplicacao |
+| `/app/data` | Read-write | Dados persistentes |
+| `/app/data/cache` | Read-write | Cache da aplicacao |
+| `/app/data/uploads` | Read-write | Uploads de arquivos |
+
+## Scripts NPM
+
+```bash
+npm run cloudron:build      # Build da imagem Docker
+npm run cloudron:build:no-cache  # Build sem cache
+npm run cloudron:install    # Instalar no Cloudron
+npm run cloudron:update     # Atualizar no Cloudron
+npm run cloudron:logs       # Ver logs em tempo real
+```
 
 ## Troubleshooting
 
-### Build falha por falta de memoria
+### Ver Logs
 
 ```bash
-# Aumente a memoria do Docker
-# Docker Desktop: Settings > Resources > Memory > 4GB+
+# Via CLI
+cloudron logs -f
 
-# Recomendado: use o build de CI (heap maior) para evitar OOM
-npm run build:ci
-
-# Se ainda houver OOM, ajuste o heap no Dockerfile (NODE_OPTIONS) conforme o ambiente
-# Ex.: ENV NODE_OPTIONS="--max-old-space-size=6144"
+# Via painel
+Apps > Sinesys > Logs
 ```
 
-### Container reiniciando (OOM)
+### Container Reiniciando
 
-1. Verifique logs: `docker logs <container_id>`
+1. Verifique logs: `cloudron logs`
 2. Procure por: "out of memory", "heap", "killed"
-3. Monitore: `docker stats <container_id>`
+3. Aumente `memoryLimit` no CloudronManifest.json se necessario
 
-### Build nao usa cache
+### Build Falha
 
-1. Verifique se `.dockerignore` esta correto
-2. Verifique ordem dos comandos no Dockerfile
-3. Para registry cache, verifique permissoes no Docker Hub
+1. Verifique se Docker tem memoria suficiente (4GB+)
+2. Use `npm run cloudron:build:no-cache` para rebuild limpo
+3. Verifique se todos os build args estao corretos
 
-### Deploy falha no CapRover
+### App Nao Inicia
 
-1. Verifique se a imagem foi publicada no Docker Hub
-2. Verifique se o CAPROVER_APP_TOKEN esta correto
-3. Verifique logs no CapRover dashboard
+1. Verifique se `healthCheckPath` (/api/health) esta respondendo
+2. Verifique variaveis de ambiente obrigatorias
+3. Verifique logs de inicializacao
 
 ## Metricas Esperadas
 
 | Metrica | Valor |
 |---------|-------|
-| Tamanho da imagem | < 300MB |
+| Tamanho da imagem | ~400-500MB |
 | Tempo de build (sem cache) | ~6-10 min |
 | Tempo de build (com cache) | ~2-4 min |
 | Tempo de inicializacao | ~10-15s |
+| Memoria recomendada | 1GB |
 
 ## Comandos Uteis
 
 ```bash
-# Ver tamanho das layers
-docker history sinesys:local
+# Ver informacoes do app
+cloudron inspect
 
-# Remover imagens antigas
-docker image prune -a
+# Ver status
+cloudron status
 
-# Ver logs do container
-docker logs -f <container_id>
+# Reiniciar app
+cloudron restart
 
-# Entrar no container
-docker exec -it <container_id> sh
+# Backup dos dados
+cloudron backup
+
+# Restaurar backup
+cloudron restore --backup <backup-id>
+
+# Executar comando no container
+cloudron exec -- node -v
 
 # Ver uso de recursos
-docker stats <container_id>
+cloudron stats
 ```
 
 ## Referencias
 
+- [Cloudron App Packaging](https://docs.cloudron.io/packaging/tutorial/)
+- [CloudronManifest.json](https://docs.cloudron.io/packaging/manifest/)
+- [Cloudron CLI](https://docs.cloudron.io/cli/)
 - [Next.js Docker](https://nextjs.org/docs/deployment#docker-image)
-- [CapRover Docs](https://caprover.com/docs/)
-- [Docker BuildKit](https://docs.docker.com/build/buildkit/)
-- [GitHub Actions Docker](https://docs.github.com/en/actions/publishing-packages/publishing-docker-images)

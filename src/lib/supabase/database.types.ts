@@ -10,7 +10,7 @@ export type Database = {
   // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
-    PostgrestVersion: "13.0.5"
+    PostgrestVersion: "14.1"
   }
   public: {
     Tables: {
@@ -21,7 +21,6 @@ export type Database = {
           classe_judicial_id: number | null
           codigo_status_processo: string
           created_at: string
-          dados_anteriores: Json | null
           data_arquivamento: string | null
           data_autuacao: string
           data_proxima_audiencia: string | null
@@ -51,7 +50,6 @@ export type Database = {
           classe_judicial_id?: number | null
           codigo_status_processo: string
           created_at?: string
-          dados_anteriores?: Json | null
           data_arquivamento?: string | null
           data_autuacao: string
           data_proxima_audiencia?: string | null
@@ -81,7 +79,6 @@ export type Database = {
           classe_judicial_id?: number | null
           codigo_status_processo?: string
           created_at?: string
-          dados_anteriores?: Json | null
           data_arquivamento?: string | null
           data_autuacao?: string
           data_proxima_audiencia?: string | null
@@ -113,20 +110,6 @@ export type Database = {
             referencedRelation: "advogados"
             referencedColumns: ["id"]
           },
-          {
-            foreignKeyName: "acervo_classe_judicial_id_fkey"
-            columns: ["classe_judicial_id"]
-            isOneToOne: false
-            referencedRelation: "classe_judicial"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "acervo_responsavel_id_fkey"
-            columns: ["responsavel_id"]
-            isOneToOne: false
-            referencedRelation: "usuarios"
-            referencedColumns: ["id"]
-          },
         ]
       }
       acordos_condenacoes: {
@@ -139,7 +122,6 @@ export type Database = {
           honorarios_sucumbenciais_total: number | null
           id: number
           numero_parcelas: number
-          observacoes: string | null
           percentual_cliente: number | null
           percentual_escritorio: number | null
           processo_id: number
@@ -157,7 +139,6 @@ export type Database = {
           honorarios_sucumbenciais_total?: number | null
           id?: never
           numero_parcelas?: number
-          observacoes?: string | null
           percentual_cliente?: number | null
           percentual_escritorio?: number | null
           processo_id: number
@@ -175,7 +156,6 @@ export type Database = {
           honorarios_sucumbenciais_total?: number | null
           id?: never
           numero_parcelas?: number
-          observacoes?: string | null
           percentual_cliente?: number | null
           percentual_escritorio?: number | null
           processo_id?: number
@@ -356,9 +336,9 @@ export type Database = {
       }
       assinatura_digital_assinaturas: {
         Row: {
+          acao_id: number
           assinatura_url: string
           cliente_id: number
-          contrato_id: number | null
           created_at: string | null
           data_assinatura: string
           data_envio_externo: string | null
@@ -386,9 +366,9 @@ export type Database = {
           user_agent: string | null
         }
         Insert: {
+          acao_id: number
           assinatura_url: string
           cliente_id: number
-          contrato_id?: number | null
           created_at?: string | null
           data_assinatura: string
           data_envio_externo?: string | null
@@ -416,9 +396,9 @@ export type Database = {
           user_agent?: string | null
         }
         Update: {
+          acao_id?: number
           assinatura_url?: string
           cliente_id?: number
-          contrato_id?: number | null
           created_at?: string | null
           data_assinatura?: string
           data_envio_externo?: string | null
@@ -446,13 +426,6 @@ export type Database = {
           user_agent?: string | null
         }
         Relationships: [
-          {
-            foreignKeyName: "assinatura_digital_assinaturas_contrato_id_fkey"
-            columns: ["contrato_id"]
-            isOneToOne: false
-            referencedRelation: "contratos"
-            referencedColumns: ["id"]
-          },
           {
             foreignKeyName: "assinatura_digital_assinaturas_formulario_id_fkey"
             columns: ["formulario_id"]
@@ -534,7 +507,6 @@ export type Database = {
           dados_snapshot: Json
           dispositivo_fingerprint_raw: Json | null
           documento_id: number
-          expires_at: string | null
           geolocation: Json | null
           id: number
           ip_address: string | null
@@ -557,7 +529,6 @@ export type Database = {
           dados_snapshot?: Json
           dispositivo_fingerprint_raw?: Json | null
           documento_id: number
-          expires_at?: string | null
           geolocation?: Json | null
           id?: never
           ip_address?: string | null
@@ -580,7 +551,6 @@ export type Database = {
           dados_snapshot?: Json
           dispositivo_fingerprint_raw?: Json | null
           documento_id?: number
-          expires_at?: string | null
           geolocation?: Json | null
           id?: never
           ip_address?: string | null
@@ -605,7 +575,6 @@ export type Database = {
       }
       assinatura_digital_documentos: {
         Row: {
-          contrato_id: number | null
           created_at: string | null
           created_by: number | null
           documento_uuid: string
@@ -620,7 +589,6 @@ export type Database = {
           updated_at: string | null
         }
         Insert: {
-          contrato_id?: number | null
           created_at?: string | null
           created_by?: number | null
           documento_uuid?: string
@@ -635,7 +603,6 @@ export type Database = {
           updated_at?: string | null
         }
         Update: {
-          contrato_id?: number | null
           created_at?: string | null
           created_by?: number | null
           documento_uuid?: string
@@ -650,13 +617,6 @@ export type Database = {
           updated_at?: string | null
         }
         Relationships: [
-          {
-            foreignKeyName: "assinatura_digital_documentos_contrato_id_fkey"
-            columns: ["contrato_id"]
-            isOneToOne: false
-            referencedRelation: "contratos"
-            referencedColumns: ["id"]
-          },
           {
             foreignKeyName: "assinatura_digital_documentos_created_by_fkey"
             columns: ["created_by"]
@@ -736,7 +696,7 @@ export type Database = {
       }
       assinatura_digital_sessoes_assinatura: {
         Row: {
-          contrato_id: number | null
+          acao_id: number | null
           created_at: string | null
           device_info: Json | null
           expires_at: string | null
@@ -749,7 +709,7 @@ export type Database = {
           user_agent: string | null
         }
         Insert: {
-          contrato_id?: number | null
+          acao_id?: number | null
           created_at?: string | null
           device_info?: Json | null
           expires_at?: string | null
@@ -762,7 +722,7 @@ export type Database = {
           user_agent?: string | null
         }
         Update: {
-          contrato_id?: number | null
+          acao_id?: number | null
           created_at?: string | null
           device_info?: Json | null
           expires_at?: string | null
@@ -774,15 +734,7 @@ export type Database = {
           updated_at?: string | null
           user_agent?: string | null
         }
-        Relationships: [
-          {
-            foreignKeyName: "assinatura_digital_sessoes_assinatura_contrato_id_fkey"
-            columns: ["contrato_id"]
-            isOneToOne: false
-            referencedRelation: "contratos"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       assinatura_digital_templates: {
         Row: {
@@ -792,14 +744,16 @@ export type Database = {
           ativo: boolean | null
           campos: string | null
           conteudo_markdown: string | null
-          contrato_id: number | null
           created_at: string | null
           criado_por: string | null
           descricao: string | null
           id: number
           nome: string
+          pdf_url: string | null
+          segmento_id: number | null
           status: string | null
           template_uuid: string
+          tipo_template: string | null
           updated_at: string | null
           versao: number | null
         }
@@ -810,14 +764,16 @@ export type Database = {
           ativo?: boolean | null
           campos?: string | null
           conteudo_markdown?: string | null
-          contrato_id?: number | null
           created_at?: string | null
           criado_por?: string | null
           descricao?: string | null
           id?: never
           nome: string
+          pdf_url?: string | null
+          segmento_id?: number | null
           status?: string | null
           template_uuid?: string
+          tipo_template?: string | null
           updated_at?: string | null
           versao?: number | null
         }
@@ -828,23 +784,25 @@ export type Database = {
           ativo?: boolean | null
           campos?: string | null
           conteudo_markdown?: string | null
-          contrato_id?: number | null
           created_at?: string | null
           criado_por?: string | null
           descricao?: string | null
           id?: never
           nome?: string
+          pdf_url?: string | null
+          segmento_id?: number | null
           status?: string | null
           template_uuid?: string
+          tipo_template?: string | null
           updated_at?: string | null
           versao?: number | null
         }
         Relationships: [
           {
-            foreignKeyName: "assinatura_digital_templates_contrato_id_fkey"
-            columns: ["contrato_id"]
+            foreignKeyName: "assinatura_digital_templates_segmento_id_fkey"
+            columns: ["segmento_id"]
             isOneToOne: false
-            referencedRelation: "contratos"
+            referencedRelation: "segmentos"
             referencedColumns: ["id"]
           },
         ]
@@ -1024,13 +982,6 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "audiencias_classe_judicial_id_fkey"
-            columns: ["classe_judicial_id"]
-            isOneToOne: false
-            referencedRelation: "classe_judicial"
-            referencedColumns: ["id"]
-          },
-          {
             foreignKeyName: "audiencias_orgao_julgador_id_fkey"
             columns: ["orgao_julgador_id"]
             isOneToOne: false
@@ -1059,21 +1010,21 @@ export type Database = {
             referencedColumns: ["processo_id"]
           },
           {
-            foreignKeyName: "audiencias_responsavel_id_fkey"
+            foreignKeyName: "fk_audiencias_classe_judicial"
+            columns: ["classe_judicial_id"]
+            isOneToOne: false
+            referencedRelation: "classe_judicial"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fk_audiencias_responsavel"
             columns: ["responsavel_id"]
             isOneToOne: false
             referencedRelation: "usuarios"
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "audiencias_sala_audiencia_id_fkey"
-            columns: ["sala_audiencia_id"]
-            isOneToOne: false
-            referencedRelation: "sala_audiencia"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "audiencias_tipo_audiencia_id_fkey"
+            foreignKeyName: "fk_audiencias_tipo_audiencia"
             columns: ["tipo_audiencia_id"]
             isOneToOne: false
             referencedRelation: "tipo_audiencia"
@@ -1178,17 +1129,32 @@ export type Database = {
           tipo_captura?: string
           trt?: Database["public"]["Enums"]["codigo_tribunal"] | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "captura_logs_brutos_advogado_id_fkey"
+            columns: ["advogado_id"]
+            isOneToOne: false
+            referencedRelation: "advogados"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "captura_logs_brutos_credencial_id_fkey"
+            columns: ["credencial_id"]
+            isOneToOne: false
+            referencedRelation: "credenciais"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       capturas_log: {
         Row: {
           advogado_id: number | null
           concluido_em: string | null
-          created_at: string
-          credencial_ids: number[]
+          created_at: string | null
+          credencial_ids: number[] | null
           erro: string | null
           id: number
-          iniciado_em: string
+          iniciado_em: string | null
           resultado: Json | null
           status: Database["public"]["Enums"]["status_captura"]
           tipo_captura: Database["public"]["Enums"]["tipo_captura"]
@@ -1196,11 +1162,11 @@ export type Database = {
         Insert: {
           advogado_id?: number | null
           concluido_em?: string | null
-          created_at?: string
-          credencial_ids?: number[]
+          created_at?: string | null
+          credencial_ids?: number[] | null
           erro?: string | null
           id?: never
-          iniciado_em?: string
+          iniciado_em?: string | null
           resultado?: Json | null
           status?: Database["public"]["Enums"]["status_captura"]
           tipo_captura: Database["public"]["Enums"]["tipo_captura"]
@@ -1208,11 +1174,11 @@ export type Database = {
         Update: {
           advogado_id?: number | null
           concluido_em?: string | null
-          created_at?: string
-          credencial_ids?: number[]
+          created_at?: string | null
+          credencial_ids?: number[] | null
           erro?: string | null
           id?: never
-          iniciado_em?: string
+          iniciado_em?: string | null
           resultado?: Json | null
           status?: Database["public"]["Enums"]["status_captura"]
           tipo_captura?: Database["public"]["Enums"]["tipo_captura"]
@@ -1223,6 +1189,44 @@ export type Database = {
             columns: ["advogado_id"]
             isOneToOne: false
             referencedRelation: "advogados"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      cargo_permissoes: {
+        Row: {
+          cargo_id: number
+          created_at: string | null
+          id: number
+          operacao: string
+          permitido: boolean | null
+          recurso: string
+          updated_at: string | null
+        }
+        Insert: {
+          cargo_id: number
+          created_at?: string | null
+          id?: never
+          operacao: string
+          permitido?: boolean | null
+          recurso: string
+          updated_at?: string | null
+        }
+        Update: {
+          cargo_id?: number
+          created_at?: string | null
+          id?: never
+          operacao?: string
+          permitido?: boolean | null
+          recurso?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cargo_permissoes_cargo_id_fkey"
+            columns: ["cargo_id"]
+            isOneToOne: false
+            referencedRelation: "cargos"
             referencedColumns: ["id"]
           },
         ]
@@ -1311,6 +1315,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "centros_custo_centro_pai_id_fkey"
+            columns: ["centro_pai_id"]
+            isOneToOne: false
+            referencedRelation: "v_lancamentos_por_centro_custo"
+            referencedColumns: ["centro_custo_id"]
+          },
+          {
             foreignKeyName: "centros_custo_created_by_fkey"
             columns: ["created_by"]
             isOneToOne: false
@@ -1347,7 +1358,7 @@ export type Database = {
           duracao_segundos?: number | null
           finalizada_em?: string | null
           gravacao_url?: string | null
-          id?: never
+          id?: number
           iniciada_em?: string
           iniciado_por: number
           meeting_id: string
@@ -1362,7 +1373,7 @@ export type Database = {
           duracao_segundos?: number | null
           finalizada_em?: string | null
           gravacao_url?: string | null
-          id?: never
+          id?: number
           iniciada_em?: string
           iniciado_por?: number
           meeting_id?: string
@@ -1407,7 +1418,7 @@ export type Database = {
           created_at?: string
           duracao_segundos?: number | null
           entrou_em?: string | null
-          id?: never
+          id?: number
           respondeu_em?: string | null
           saiu_em?: string | null
           usuario_id: number
@@ -1418,7 +1429,7 @@ export type Database = {
           created_at?: string
           duracao_segundos?: number | null
           entrou_em?: string | null
-          id?: never
+          id?: number
           respondeu_em?: string | null
           saiu_em?: string | null
           usuario_id?: number
@@ -1442,61 +1453,61 @@ export type Database = {
       }
       classe_judicial: {
         Row: {
-          ativo: boolean
+          ativo: boolean | null
           codigo: string
-          controla_valor_causa: boolean
-          created_at: string
+          controla_valor_causa: boolean | null
+          created_at: string | null
           descricao: string
           grau: Database["public"]["Enums"]["grau_tribunal"]
           id: number
           id_classe_judicial_pai: number | null
           id_pje: number
           piso_valor_causa: number | null
-          pode_incluir_autoridade: boolean
-          possui_filhos: boolean
+          pode_incluir_autoridade: boolean | null
+          possui_filhos: boolean | null
           requer_processo_referencia_codigo: string | null
           sigla: string | null
           teto_valor_causa: number | null
           trt: Database["public"]["Enums"]["codigo_tribunal"]
-          updated_at: string
+          updated_at: string | null
         }
         Insert: {
-          ativo?: boolean
+          ativo?: boolean | null
           codigo: string
-          controla_valor_causa?: boolean
-          created_at?: string
+          controla_valor_causa?: boolean | null
+          created_at?: string | null
           descricao: string
           grau: Database["public"]["Enums"]["grau_tribunal"]
           id?: never
           id_classe_judicial_pai?: number | null
           id_pje: number
           piso_valor_causa?: number | null
-          pode_incluir_autoridade?: boolean
-          possui_filhos?: boolean
+          pode_incluir_autoridade?: boolean | null
+          possui_filhos?: boolean | null
           requer_processo_referencia_codigo?: string | null
           sigla?: string | null
           teto_valor_causa?: number | null
           trt: Database["public"]["Enums"]["codigo_tribunal"]
-          updated_at?: string
+          updated_at?: string | null
         }
         Update: {
-          ativo?: boolean
+          ativo?: boolean | null
           codigo?: string
-          controla_valor_causa?: boolean
-          created_at?: string
+          controla_valor_causa?: boolean | null
+          created_at?: string | null
           descricao?: string
           grau?: Database["public"]["Enums"]["grau_tribunal"]
           id?: never
           id_classe_judicial_pai?: number | null
           id_pje?: number
           piso_valor_causa?: number | null
-          pode_incluir_autoridade?: boolean
-          possui_filhos?: boolean
+          pode_incluir_autoridade?: boolean | null
+          possui_filhos?: boolean | null
           requer_processo_referencia_codigo?: string | null
           sigla?: string | null
           teto_valor_causa?: number | null
           trt?: Database["public"]["Enums"]["codigo_tribunal"]
-          updated_at?: string
+          updated_at?: string | null
         }
         Relationships: []
       }
@@ -1516,7 +1527,6 @@ export type Database = {
           ddd_celular: string | null
           ddd_comercial: string | null
           ddd_residencial: string | null
-          documentos: string | null
           ds_prazo_expediente_automatico: string | null
           ds_tipo_pessoa: string | null
           emails: Json | null
@@ -1582,7 +1592,6 @@ export type Database = {
           ddd_celular?: string | null
           ddd_comercial?: string | null
           ddd_residencial?: string | null
-          documentos?: string | null
           ds_prazo_expediente_automatico?: string | null
           ds_tipo_pessoa?: string | null
           emails?: Json | null
@@ -1648,7 +1657,6 @@ export type Database = {
           ddd_celular?: string | null
           ddd_comercial?: string | null
           ddd_residencial?: string | null
-          documentos?: string | null
           ds_prazo_expediente_automatico?: string | null
           ds_tipo_pessoa?: string | null
           emails?: Json | null
@@ -1708,7 +1716,7 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "clientes_endereco_id_fkey"
+            foreignKeyName: "fk_clientes_endereco"
             columns: ["endereco_id"]
             isOneToOne: false
             referencedRelation: "enderecos"
@@ -1880,6 +1888,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "conciliacao_bancaria_lancamento_financeiro_id_fkey"
+            columns: ["lancamento_financeiro_id"]
+            isOneToOne: false
+            referencedRelation: "v_lancamentos_pendentes"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "conciliacao_bancaria_transacao_importada_id_fkey"
             columns: ["transacao_importada_id"]
             isOneToOne: true
@@ -1947,11 +1962,25 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "conciliacoes_bancarias_lancamento_financeiro_id_fkey"
+            columns: ["lancamento_financeiro_id"]
+            isOneToOne: false
+            referencedRelation: "v_lancamentos_pendentes"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "conciliacoes_bancarias_transacao_importada_id_fkey"
             columns: ["transacao_importada_id"]
             isOneToOne: true
             referencedRelation: "transacoes_bancarias_importadas"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "conciliacoes_bancarias_transacao_importada_id_fkey"
+            columns: ["transacao_importada_id"]
+            isOneToOne: true
+            referencedRelation: "v_conciliacoes_pendentes"
+            referencedColumns: ["transacao_id"]
           },
         ]
       }
@@ -2024,46 +2053,74 @@ export type Database = {
         Row: {
           agencia: string | null
           ativo: boolean
-          banco: string | null
-          conta: string | null
+          banco_codigo: string | null
+          banco_nome: string | null
+          conta_contabil_id: number | null
           created_at: string
           created_by: number | null
+          data_saldo_inicial: string
+          digito_conta: string | null
           id: number
           nome: string
+          numero_conta: string | null
+          observacoes: string | null
+          pix_chave: string | null
           saldo_atual: number
           saldo_inicial: number
-          tipo: string | null
+          status: Database["public"]["Enums"]["status_conta_bancaria"]
+          tipo: Database["public"]["Enums"]["tipo_conta_bancaria"]
           updated_at: string
         }
         Insert: {
           agencia?: string | null
           ativo?: boolean
-          banco?: string | null
-          conta?: string | null
+          banco_codigo?: string | null
+          banco_nome?: string | null
+          conta_contabil_id?: number | null
           created_at?: string
           created_by?: number | null
+          data_saldo_inicial: string
+          digito_conta?: string | null
           id?: never
           nome: string
+          numero_conta?: string | null
+          observacoes?: string | null
+          pix_chave?: string | null
           saldo_atual?: number
           saldo_inicial?: number
-          tipo?: string | null
+          status?: Database["public"]["Enums"]["status_conta_bancaria"]
+          tipo: Database["public"]["Enums"]["tipo_conta_bancaria"]
           updated_at?: string
         }
         Update: {
           agencia?: string | null
           ativo?: boolean
-          banco?: string | null
-          conta?: string | null
+          banco_codigo?: string | null
+          banco_nome?: string | null
+          conta_contabil_id?: number | null
           created_at?: string
           created_by?: number | null
+          data_saldo_inicial?: string
+          digito_conta?: string | null
           id?: never
           nome?: string
+          numero_conta?: string | null
+          observacoes?: string | null
+          pix_chave?: string | null
           saldo_atual?: number
           saldo_inicial?: number
-          tipo?: string | null
+          status?: Database["public"]["Enums"]["status_conta_bancaria"]
+          tipo?: Database["public"]["Enums"]["tipo_conta_bancaria"]
           updated_at?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "contas_bancarias_conta_contabil_id_fkey"
+            columns: ["conta_contabil_id"]
+            isOneToOne: false
+            referencedRelation: "plano_contas"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "contas_bancarias_created_by_fkey"
             columns: ["created_by"]
@@ -2333,7 +2390,6 @@ export type Database = {
           created_at: string
           created_by: number | null
           dados_anteriores: Json | null
-          documentos: string | null
           id: number
           observacoes: string | null
           papel_cliente_no_contrato: Database["public"]["Enums"]["papel_contratual"]
@@ -2350,7 +2406,6 @@ export type Database = {
           created_at?: string
           created_by?: number | null
           dados_anteriores?: Json | null
-          documentos?: string | null
           id?: never
           observacoes?: string | null
           papel_cliente_no_contrato: Database["public"]["Enums"]["papel_contratual"]
@@ -2367,7 +2422,6 @@ export type Database = {
           created_at?: string
           created_by?: number | null
           dados_anteriores?: Json | null
-          documentos?: string | null
           id?: never
           observacoes?: string | null
           papel_cliente_no_contrato?: Database["public"]["Enums"]["papel_contratual"]
@@ -2426,6 +2480,7 @@ export type Database = {
           senha: string
           tribunal: Database["public"]["Enums"]["codigo_tribunal"]
           updated_at: string
+          usuario: string | null
         }
         Insert: {
           active?: boolean
@@ -2436,6 +2491,7 @@ export type Database = {
           senha: string
           tribunal: Database["public"]["Enums"]["codigo_tribunal"]
           updated_at?: string
+          usuario?: string | null
         }
         Update: {
           active?: boolean
@@ -2446,6 +2502,7 @@ export type Database = {
           senha?: string
           tribunal?: Database["public"]["Enums"]["codigo_tribunal"]
           updated_at?: string
+          usuario?: string | null
         }
         Relationships: [
           {
@@ -2529,30 +2586,33 @@ export type Database = {
       }
       documentos_compartilhados: {
         Row: {
-          compartilhado_por: number
+          compartilhado_por: number | null
           created_at: string
           documento_id: number
           id: number
-          permissao: string
+          pode_comentar: boolean
           pode_deletar: boolean
+          pode_editar: boolean
           usuario_id: number
         }
         Insert: {
-          compartilhado_por: number
+          compartilhado_por?: number | null
           created_at?: string
           documento_id: number
           id?: never
-          permissao: string
+          pode_comentar?: boolean
           pode_deletar?: boolean
+          pode_editar?: boolean
           usuario_id: number
         }
         Update: {
-          compartilhado_por?: number
+          compartilhado_por?: number | null
           created_at?: string
           documento_id?: number
           id?: never
-          permissao?: string
+          pode_comentar?: boolean
           pode_deletar?: boolean
+          pode_editar?: boolean
           usuario_id?: number
         }
         Relationships: [
@@ -2581,40 +2641,34 @@ export type Database = {
       }
       documentos_uploads: {
         Row: {
-          b2_key: string
-          b2_url: string
+          arquivo_nome: string
+          arquivo_tamanho: number | null
+          arquivo_url: string
           created_at: string
-          criado_por: number
+          criado_por: number | null
           documento_id: number
           id: number
-          nome_arquivo: string
-          tamanho_bytes: number
-          tipo_media: string
-          tipo_mime: string
+          tipo_media: string | null
         }
         Insert: {
-          b2_key: string
-          b2_url: string
+          arquivo_nome: string
+          arquivo_tamanho?: number | null
+          arquivo_url: string
           created_at?: string
-          criado_por: number
+          criado_por?: number | null
           documento_id: number
           id?: never
-          nome_arquivo: string
-          tamanho_bytes: number
-          tipo_media: string
-          tipo_mime: string
+          tipo_media?: string | null
         }
         Update: {
-          b2_key?: string
-          b2_url?: string
+          arquivo_nome?: string
+          arquivo_tamanho?: number | null
+          arquivo_url?: string
           created_at?: string
-          criado_por?: number
+          criado_por?: number | null
           documento_id?: number
           id?: never
-          nome_arquivo?: string
-          tamanho_bytes?: number
-          tipo_media?: string
-          tipo_mime?: string
+          tipo_media?: string | null
         }
         Relationships: [
           {
@@ -2637,28 +2691,25 @@ export type Database = {
         Row: {
           conteudo: Json
           created_at: string
-          criado_por: number
+          criado_por: number | null
           documento_id: number
           id: number
-          titulo: string
           versao: number
         }
         Insert: {
           conteudo: Json
           created_at?: string
-          criado_por: number
+          criado_por?: number | null
           documento_id: number
           id?: never
-          titulo: string
           versao: number
         }
         Update: {
           conteudo?: Json
           created_at?: string
-          criado_por?: number
+          criado_por?: number | null
           documento_id?: number
           id?: never
-          titulo?: string
           versao?: number
         }
         Relationships: [
@@ -3023,14 +3074,14 @@ export type Database = {
             referencedColumns: ["processo_id"]
           },
           {
-            foreignKeyName: "expedientes_responsavel_id_fkey"
+            foreignKeyName: "fk_expedientes_responsavel"
             columns: ["responsavel_id"]
             isOneToOne: false
             referencedRelation: "usuarios"
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "expedientes_tipo_expediente_id_fkey"
+            foreignKeyName: "fk_expedientes_tipo_expediente"
             columns: ["tipo_expediente_id"]
             isOneToOne: false
             referencedRelation: "tipos_expedientes"
@@ -3263,10 +3314,24 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "itens_folha_pagamento_folha_pagamento_id_fkey"
+            columns: ["folha_pagamento_id"]
+            isOneToOne: false
+            referencedRelation: "v_folhas_pagamento_resumo"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "itens_folha_pagamento_lancamento_financeiro_id_fkey"
             columns: ["lancamento_financeiro_id"]
             isOneToOne: false
             referencedRelation: "lancamentos_financeiros"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "itens_folha_pagamento_lancamento_financeiro_id_fkey"
+            columns: ["lancamento_financeiro_id"]
+            isOneToOne: false
+            referencedRelation: "v_lancamentos_pendentes"
             referencedColumns: ["id"]
           },
           {
@@ -3398,6 +3463,7 @@ export type Database = {
           cliente_id: number | null
           conta_bancaria_id: number | null
           conta_contabil_id: number
+          conta_destino_id: number | null
           contrato_id: number | null
           created_at: string
           created_by: number | null
@@ -3408,10 +3474,12 @@ export type Database = {
           data_vencimento: string | null
           descricao: string
           documento: string | null
-          forma_pagamento: string | null
-          fornecedor_id: number | null
+          forma_pagamento:
+            | Database["public"]["Enums"]["forma_pagamento_financeiro"]
+            | null
           frequencia_recorrencia: string | null
           id: number
+          lancamento_contrapartida_id: number | null
           lancamento_origem_id: number | null
           observacoes: string | null
           origem: Database["public"]["Enums"]["origem_lancamento"]
@@ -3431,23 +3499,26 @@ export type Database = {
           cliente_id?: number | null
           conta_bancaria_id?: number | null
           conta_contabil_id: number
+          conta_destino_id?: number | null
           contrato_id?: number | null
           created_at?: string
           created_by?: number | null
           dados_adicionais?: Json | null
           data_competencia: string
           data_efetivacao?: string | null
-          data_lancamento?: string
+          data_lancamento: string
           data_vencimento?: string | null
           descricao: string
           documento?: string | null
-          forma_pagamento?: string | null
-          fornecedor_id?: number | null
+          forma_pagamento?:
+            | Database["public"]["Enums"]["forma_pagamento_financeiro"]
+            | null
           frequencia_recorrencia?: string | null
           id?: never
+          lancamento_contrapartida_id?: number | null
           lancamento_origem_id?: number | null
           observacoes?: string | null
-          origem?: Database["public"]["Enums"]["origem_lancamento"]
+          origem: Database["public"]["Enums"]["origem_lancamento"]
           parcela_id?: number | null
           recorrente?: boolean
           status?: Database["public"]["Enums"]["status_lancamento"]
@@ -3464,6 +3535,7 @@ export type Database = {
           cliente_id?: number | null
           conta_bancaria_id?: number | null
           conta_contabil_id?: number
+          conta_destino_id?: number | null
           contrato_id?: number | null
           created_at?: string
           created_by?: number | null
@@ -3474,10 +3546,12 @@ export type Database = {
           data_vencimento?: string | null
           descricao?: string
           documento?: string | null
-          forma_pagamento?: string | null
-          fornecedor_id?: number | null
+          forma_pagamento?:
+            | Database["public"]["Enums"]["forma_pagamento_financeiro"]
+            | null
           frequencia_recorrencia?: string | null
           id?: never
+          lancamento_contrapartida_id?: number | null
           lancamento_origem_id?: number | null
           observacoes?: string | null
           origem?: Database["public"]["Enums"]["origem_lancamento"]
@@ -3505,6 +3579,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "lancamentos_financeiros_centro_custo_id_fkey"
+            columns: ["centro_custo_id"]
+            isOneToOne: false
+            referencedRelation: "v_lancamentos_por_centro_custo"
+            referencedColumns: ["centro_custo_id"]
+          },
+          {
             foreignKeyName: "lancamentos_financeiros_cliente_id_fkey"
             columns: ["cliente_id"]
             isOneToOne: false
@@ -3526,10 +3607,31 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "lancamentos_financeiros_conta_bancaria_id_fkey"
+            columns: ["conta_bancaria_id"]
+            isOneToOne: false
+            referencedRelation: "v_saldo_contas_bancarias"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "lancamentos_financeiros_conta_contabil_id_fkey"
             columns: ["conta_contabil_id"]
             isOneToOne: false
             referencedRelation: "plano_contas"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "lancamentos_financeiros_conta_destino_id_fkey"
+            columns: ["conta_destino_id"]
+            isOneToOne: false
+            referencedRelation: "contas_bancarias"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "lancamentos_financeiros_conta_destino_id_fkey"
+            columns: ["conta_destino_id"]
+            isOneToOne: false
+            referencedRelation: "v_saldo_contas_bancarias"
             referencedColumns: ["id"]
           },
           {
@@ -3547,10 +3649,17 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "lancamentos_financeiros_fornecedor_id_fkey"
-            columns: ["fornecedor_id"]
+            foreignKeyName: "lancamentos_financeiros_lancamento_contrapartida_id_fkey"
+            columns: ["lancamento_contrapartida_id"]
             isOneToOne: false
-            referencedRelation: "fornecedores"
+            referencedRelation: "lancamentos_financeiros"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "lancamentos_financeiros_lancamento_contrapartida_id_fkey"
+            columns: ["lancamento_contrapartida_id"]
+            isOneToOne: false
+            referencedRelation: "v_lancamentos_pendentes"
             referencedColumns: ["id"]
           },
           {
@@ -3558,6 +3667,13 @@ export type Database = {
             columns: ["lancamento_origem_id"]
             isOneToOne: false
             referencedRelation: "lancamentos_financeiros"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "lancamentos_financeiros_lancamento_origem_id_fkey"
+            columns: ["lancamento_origem_id"]
+            isOneToOne: false
+            referencedRelation: "v_lancamentos_pendentes"
             referencedColumns: ["id"]
           },
           {
@@ -3585,25 +3701,25 @@ export type Database = {
       }
       layouts_painel: {
         Row: {
-          configuracao_layout: Json
-          created_at: string
+          created_at: string | null
           id: number
-          updated_at: string
-          usuario_id: number | null
+          updated_at: string | null
+          usuario_id: number
+          widgets: Json
         }
         Insert: {
-          configuracao_layout?: Json
-          created_at?: string
+          created_at?: string | null
           id?: never
-          updated_at?: string
-          usuario_id?: number | null
+          updated_at?: string | null
+          usuario_id: number
+          widgets?: Json
         }
         Update: {
-          configuracao_layout?: Json
-          created_at?: string
+          created_at?: string | null
           id?: never
-          updated_at?: string
-          usuario_id?: number | null
+          updated_at?: string | null
+          usuario_id?: number
+          widgets?: Json
         }
         Relationships: [
           {
@@ -3617,31 +3733,34 @@ export type Database = {
       }
       links_personalizados: {
         Row: {
-          created_at: string
+          created_at: string | null
           icone: string | null
           id: number
           ordem: number | null
           titulo: string
+          updated_at: string | null
           url: string
-          usuario_id: number | null
+          usuario_id: number
         }
         Insert: {
-          created_at?: string
+          created_at?: string | null
           icone?: string | null
           id?: never
           ordem?: number | null
           titulo: string
+          updated_at?: string | null
           url: string
-          usuario_id?: number | null
+          usuario_id: number
         }
         Update: {
-          created_at?: string
+          created_at?: string | null
           icone?: string | null
           id?: never
           ordem?: number | null
           titulo?: string
+          updated_at?: string | null
           url?: string
-          usuario_id?: number | null
+          usuario_id?: number
         }
         Relationships: [
           {
@@ -3655,31 +3774,34 @@ export type Database = {
       }
       locks: {
         Row: {
-          created_at: string
+          created_at: string | null
           expires_at: string
-          key: string
-          lock_id: string
-          metadata: Json | null
+          id: number
+          lock_key: string
+          locked_at: string | null
+          locked_by: string | null
         }
         Insert: {
-          created_at?: string
+          created_at?: string | null
           expires_at: string
-          key: string
-          lock_id: string
-          metadata?: Json | null
+          id?: never
+          lock_key: string
+          locked_at?: string | null
+          locked_by?: string | null
         }
         Update: {
-          created_at?: string
+          created_at?: string | null
           expires_at?: string
-          key?: string
-          lock_id?: string
-          metadata?: Json | null
+          id?: never
+          lock_key?: string
+          locked_at?: string | null
+          locked_by?: string | null
         }
         Relationships: []
       }
       logs_alteracao: {
         Row: {
-          created_at: string
+          created_at: string | null
           dados_evento: Json | null
           entidade_id: number
           id: number
@@ -3690,7 +3812,7 @@ export type Database = {
           usuario_que_executou_id: number
         }
         Insert: {
-          created_at?: string
+          created_at?: string | null
           dados_evento?: Json | null
           entidade_id: number
           id?: never
@@ -3701,7 +3823,7 @@ export type Database = {
           usuario_que_executou_id: number
         }
         Update: {
-          created_at?: string
+          created_at?: string | null
           dados_evento?: Json | null
           entidade_id?: number
           id?: never
@@ -3916,11 +4038,9 @@ export type Database = {
         Row: {
           conteudo: string
           created_at: string
-          data: Json | null
           deleted_at: string | null
           id: number
           sala_id: number
-          status: string | null
           tipo: string
           updated_at: string
           usuario_id: number
@@ -3928,11 +4048,9 @@ export type Database = {
         Insert: {
           conteudo: string
           created_at?: string
-          data?: Json | null
           deleted_at?: string | null
           id?: never
           sala_id: number
-          status?: string | null
           tipo: string
           updated_at?: string
           usuario_id: number
@@ -3940,11 +4058,9 @@ export type Database = {
         Update: {
           conteudo?: string
           created_at?: string
-          data?: Json | null
           deleted_at?: string | null
           id?: never
           sala_id?: number
-          status?: string | null
           tipo?: string
           updated_at?: string
           usuario_id?: number
@@ -4036,43 +4152,46 @@ export type Database = {
       }
       notas: {
         Row: {
-          conteudo: string | null
-          created_at: string
-          etiquetas: Json | null
+          conteudo: string
+          cor: string | null
+          created_at: string | null
+          fixada: boolean | null
           id: number
           image_url: string | null
           is_archived: boolean
           items: Json | null
           tipo: string
-          titulo: string
-          updated_at: string
-          usuario_id: number | null
+          titulo: string | null
+          updated_at: string | null
+          usuario_id: number
         }
         Insert: {
-          conteudo?: string | null
-          created_at?: string
-          etiquetas?: Json | null
+          conteudo: string
+          cor?: string | null
+          created_at?: string | null
+          fixada?: boolean | null
           id?: never
           image_url?: string | null
           is_archived?: boolean
           items?: Json | null
           tipo?: string
-          titulo: string
-          updated_at?: string
-          usuario_id?: number | null
+          titulo?: string | null
+          updated_at?: string | null
+          usuario_id: number
         }
         Update: {
-          conteudo?: string | null
-          created_at?: string
-          etiquetas?: Json | null
+          conteudo?: string
+          cor?: string | null
+          created_at?: string | null
+          fixada?: boolean | null
           id?: never
           image_url?: string | null
           is_archived?: boolean
           items?: Json | null
           tipo?: string
-          titulo?: string
-          updated_at?: string
-          usuario_id?: number | null
+          titulo?: string | null
+          updated_at?: string | null
+          usuario_id?: number
         }
         Relationships: [
           {
@@ -4180,6 +4299,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "orcamento_itens_centro_custo_id_fkey"
+            columns: ["centro_custo_id"]
+            isOneToOne: false
+            referencedRelation: "v_lancamentos_por_centro_custo"
+            referencedColumns: ["centro_custo_id"]
+          },
+          {
             foreignKeyName: "orcamento_itens_conta_contabil_id_fkey"
             columns: ["conta_contabil_id"]
             isOneToOne: false
@@ -4205,18 +4331,12 @@ export type Database = {
       orcamentos: {
         Row: {
           ano: number
-          aprovado_em: string | null
-          aprovado_por: number | null
           created_at: string
           created_by: number | null
           data_fim: string
           data_inicio: string
           descricao: string | null
-          encerrado_em: string | null
-          encerrado_por: number | null
           id: number
-          iniciado_em: string | null
-          iniciado_por: number | null
           nome: string
           observacoes: string | null
           periodo: Database["public"]["Enums"]["periodo_orcamento"]
@@ -4225,18 +4345,12 @@ export type Database = {
         }
         Insert: {
           ano: number
-          aprovado_em?: string | null
-          aprovado_por?: number | null
           created_at?: string
           created_by?: number | null
           data_fim: string
           data_inicio: string
           descricao?: string | null
-          encerrado_em?: string | null
-          encerrado_por?: number | null
           id?: never
-          iniciado_em?: string | null
-          iniciado_por?: number | null
           nome: string
           observacoes?: string | null
           periodo: Database["public"]["Enums"]["periodo_orcamento"]
@@ -4245,18 +4359,12 @@ export type Database = {
         }
         Update: {
           ano?: number
-          aprovado_em?: string | null
-          aprovado_por?: number | null
           created_at?: string
           created_by?: number | null
           data_fim?: string
           data_inicio?: string
           descricao?: string | null
-          encerrado_em?: string | null
-          encerrado_por?: number | null
           id?: never
-          iniciado_em?: string | null
-          iniciado_por?: number | null
           nome?: string
           observacoes?: string | null
           periodo?: Database["public"]["Enums"]["periodo_orcamento"]
@@ -4265,29 +4373,8 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: "orcamentos_aprovado_por_fkey"
-            columns: ["aprovado_por"]
-            isOneToOne: false
-            referencedRelation: "usuarios"
-            referencedColumns: ["id"]
-          },
-          {
             foreignKeyName: "orcamentos_created_by_fkey"
             columns: ["created_by"]
-            isOneToOne: false
-            referencedRelation: "usuarios"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "orcamentos_encerrado_por_fkey"
-            columns: ["encerrado_por"]
-            isOneToOne: false
-            referencedRelation: "usuarios"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "orcamentos_iniciado_por_fkey"
-            columns: ["iniciado_por"]
             isOneToOne: false
             referencedRelation: "usuarios"
             referencedColumns: ["id"]
@@ -4377,41 +4464,41 @@ export type Database = {
       }
       orgaos_tribunais: {
         Row: {
-          ativo: boolean
-          createdAt: string
+          ativo: boolean | null
+          createdAt: string | null
           id: string
           metadados: Json | null
           nome: string
           orgaoIdCNJ: number
           tipo: string | null
           tribunalId: string
-          updatedAt: string
+          updatedAt: string | null
         }
         Insert: {
-          ativo?: boolean
-          createdAt?: string
+          ativo?: boolean | null
+          createdAt?: string | null
           id: string
           metadados?: Json | null
           nome: string
           orgaoIdCNJ: number
           tipo?: string | null
           tribunalId: string
-          updatedAt?: string
+          updatedAt?: string | null
         }
         Update: {
-          ativo?: boolean
-          createdAt?: string
+          ativo?: boolean | null
+          createdAt?: string | null
           id?: string
           metadados?: Json | null
           nome?: string
           orgaoIdCNJ?: number
           tipo?: string | null
           tribunalId?: string
-          updatedAt?: string
+          updatedAt?: string | null
         }
         Relationships: [
           {
-            foreignKeyName: "TribunalOrgao_tribunalId_fkey"
+            foreignKeyName: "orgaos_tribunais_tribunalId_fkey"
             columns: ["tribunalId"]
             isOneToOne: false
             referencedRelation: "tribunais"
@@ -4424,12 +4511,10 @@ export type Database = {
           acordo_condenacao_id: number
           arquivo_comprovante_repasse: string | null
           arquivo_declaracao_prestacao_contas: string | null
-          arquivo_quitacao_reclamante: string | null
           created_at: string | null
           dados_pagamento: Json | null
           data_declaracao_anexada: string | null
           data_efetivacao: string | null
-          data_quitacao_anexada: string | null
           data_repasse: string | null
           data_vencimento: string
           editado_manualmente: boolean | null
@@ -4449,12 +4534,10 @@ export type Database = {
           acordo_condenacao_id: number
           arquivo_comprovante_repasse?: string | null
           arquivo_declaracao_prestacao_contas?: string | null
-          arquivo_quitacao_reclamante?: string | null
           created_at?: string | null
           dados_pagamento?: Json | null
           data_declaracao_anexada?: string | null
           data_efetivacao?: string | null
-          data_quitacao_anexada?: string | null
           data_repasse?: string | null
           data_vencimento: string
           editado_manualmente?: boolean | null
@@ -4474,12 +4557,10 @@ export type Database = {
           acordo_condenacao_id?: number
           arquivo_comprovante_repasse?: string | null
           arquivo_declaracao_prestacao_contas?: string | null
-          arquivo_quitacao_reclamante?: string | null
           created_at?: string | null
           dados_pagamento?: Json | null
           data_declaracao_anexada?: string | null
           data_efetivacao?: string | null
-          data_quitacao_anexada?: string | null
           data_repasse?: string | null
           data_vencimento?: string
           editado_manualmente?: boolean | null
@@ -4752,58 +4833,46 @@ export type Database = {
         }
         Relationships: [
           {
+            foreignKeyName: "fk_partes_contrarias_endereco"
+            columns: ["endereco_id"]
+            isOneToOne: false
+            referencedRelation: "enderecos"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "partes_contrarias_created_by_fkey"
             columns: ["created_by"]
             isOneToOne: false
             referencedRelation: "usuarios"
             referencedColumns: ["id"]
           },
-          {
-            foreignKeyName: "partes_contrarias_endereco_id_fkey"
-            columns: ["endereco_id"]
-            isOneToOne: false
-            referencedRelation: "enderecos"
-            referencedColumns: ["id"]
-          },
         ]
       }
       pastas: {
         Row: {
-          cor: string | null
           created_at: string
-          criado_por: number
-          deleted_at: string | null
-          descricao: string | null
-          icone: string | null
+          criado_por: number | null
           id: number
           nome: string
-          pasta_pai_id: number | null
+          parent_id: number | null
           tipo: string
           updated_at: string
         }
         Insert: {
-          cor?: string | null
           created_at?: string
-          criado_por: number
-          deleted_at?: string | null
-          descricao?: string | null
-          icone?: string | null
+          criado_por?: number | null
           id?: never
           nome: string
-          pasta_pai_id?: number | null
+          parent_id?: number | null
           tipo: string
           updated_at?: string
         }
         Update: {
-          cor?: string | null
           created_at?: string
-          criado_por?: number
-          deleted_at?: string | null
-          descricao?: string | null
-          icone?: string | null
+          criado_por?: number | null
           id?: never
           nome?: string
-          pasta_pai_id?: number | null
+          parent_id?: number | null
           tipo?: string
           updated_at?: string
         }
@@ -4816,8 +4885,8 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "pastas_pasta_pai_id_fkey"
-            columns: ["pasta_pai_id"]
+            foreignKeyName: "pastas_parent_id_fkey"
+            columns: ["parent_id"]
             isOneToOne: false
             referencedRelation: "pastas"
             referencedColumns: ["id"]
@@ -5095,7 +5164,7 @@ export type Database = {
           descricao: string | null
           id: number
           natureza: Database["public"]["Enums"]["natureza_conta"]
-          nivel: number
+          nivel: Database["public"]["Enums"]["nivel_conta"]
           nome: string
           ordem_exibicao: number | null
           tipo_conta: Database["public"]["Enums"]["tipo_conta_contabil"]
@@ -5111,7 +5180,7 @@ export type Database = {
           descricao?: string | null
           id?: never
           natureza: Database["public"]["Enums"]["natureza_conta"]
-          nivel?: number
+          nivel: Database["public"]["Enums"]["nivel_conta"]
           nome: string
           ordem_exibicao?: number | null
           tipo_conta: Database["public"]["Enums"]["tipo_conta_contabil"]
@@ -5127,7 +5196,7 @@ export type Database = {
           descricao?: string | null
           id?: never
           natureza?: Database["public"]["Enums"]["natureza_conta"]
-          nivel?: number
+          nivel?: Database["public"]["Enums"]["nivel_conta"]
           nome?: string
           ordem_exibicao?: number | null
           tipo_conta?: Database["public"]["Enums"]["tipo_conta_contabil"]
@@ -5153,75 +5222,75 @@ export type Database = {
       processo_partes: {
         Row: {
           autoridade: boolean | null
-          created_at: string | null
+          created_at: string
           dados_pje_completo: Json | null
           endereco_desconhecido: boolean | null
           entidade_id: number
-          grau: Database["public"]["Enums"]["grau_tribunal"]
+          grau: string
           id: number
           id_pessoa_pje: number | null
           id_pje: number
           id_tipo_parte: number | null
-          numero_processo: string | null
-          ordem: number | null
+          numero_processo: string
+          ordem: number
           polo: string
-          principal: boolean | null
+          principal: boolean
           processo_id: number
           situacao_pje: string | null
           status_pje: string | null
           tipo_entidade: string
           tipo_parte: string
-          trt: Database["public"]["Enums"]["codigo_tribunal"]
+          trt: string
           ultima_atualizacao_pje: string | null
-          updated_at: string | null
+          updated_at: string
         }
         Insert: {
           autoridade?: boolean | null
-          created_at?: string | null
+          created_at?: string
           dados_pje_completo?: Json | null
           endereco_desconhecido?: boolean | null
           entidade_id: number
-          grau: Database["public"]["Enums"]["grau_tribunal"]
+          grau: string
           id?: never
           id_pessoa_pje?: number | null
           id_pje: number
           id_tipo_parte?: number | null
-          numero_processo?: string | null
-          ordem?: number | null
+          numero_processo: string
+          ordem: number
           polo: string
-          principal?: boolean | null
+          principal: boolean
           processo_id: number
           situacao_pje?: string | null
           status_pje?: string | null
           tipo_entidade: string
           tipo_parte: string
-          trt: Database["public"]["Enums"]["codigo_tribunal"]
+          trt: string
           ultima_atualizacao_pje?: string | null
-          updated_at?: string | null
+          updated_at?: string
         }
         Update: {
           autoridade?: boolean | null
-          created_at?: string | null
+          created_at?: string
           dados_pje_completo?: Json | null
           endereco_desconhecido?: boolean | null
           entidade_id?: number
-          grau?: Database["public"]["Enums"]["grau_tribunal"]
+          grau?: string
           id?: never
           id_pessoa_pje?: number | null
           id_pje?: number
           id_tipo_parte?: number | null
-          numero_processo?: string | null
-          ordem?: number | null
+          numero_processo?: string
+          ordem?: number
           polo?: string
-          principal?: boolean | null
+          principal?: boolean
           processo_id?: number
           situacao_pje?: string | null
           status_pje?: string | null
           tipo_entidade?: string
           tipo_parte?: string
-          trt?: Database["public"]["Enums"]["codigo_tribunal"]
+          trt?: string
           ultima_atualizacao_pje?: string | null
-          updated_at?: string | null
+          updated_at?: string
         }
         Relationships: [
           {
@@ -5404,7 +5473,7 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: "representantes_new_endereco_id_fkey"
+            foreignKeyName: "representantes_endereco_id_fkey"
             columns: ["endereco_id"]
             isOneToOne: false
             referencedRelation: "enderecos"
@@ -5432,34 +5501,34 @@ export type Database = {
       }
       sala_audiencia: {
         Row: {
-          created_at: string
+          created_at: string | null
           grau: Database["public"]["Enums"]["grau_tribunal"]
           id: number
           id_pje: number | null
           nome: string
           orgao_julgador_id: number
           trt: Database["public"]["Enums"]["codigo_tribunal"]
-          updated_at: string
+          updated_at: string | null
         }
         Insert: {
-          created_at?: string
+          created_at?: string | null
           grau: Database["public"]["Enums"]["grau_tribunal"]
           id?: never
           id_pje?: number | null
           nome: string
           orgao_julgador_id: number
           trt: Database["public"]["Enums"]["codigo_tribunal"]
-          updated_at?: string
+          updated_at?: string | null
         }
         Update: {
-          created_at?: string
+          created_at?: string | null
           grau?: Database["public"]["Enums"]["grau_tribunal"]
           id?: never
           id_pje?: number | null
           nome?: string
           orgao_julgador_id?: number
           trt?: Database["public"]["Enums"]["codigo_tribunal"]
-          updated_at?: string
+          updated_at?: string | null
         }
         Relationships: [
           {
@@ -5541,7 +5610,6 @@ export type Database = {
           criado_por: number
           documento_id: number | null
           id: number
-          is_archive: boolean
           nome: string
           participante_id: number | null
           tipo: string
@@ -5552,7 +5620,6 @@ export type Database = {
           criado_por: number
           documento_id?: number | null
           id?: never
-          is_archive?: boolean
           nome: string
           participante_id?: number | null
           tipo: string
@@ -5563,7 +5630,6 @@ export type Database = {
           criado_por?: number
           documento_id?: number | null
           id?: never
-          is_archive?: boolean
           nome?: string
           participante_id?: number | null
           tipo?: string
@@ -5649,33 +5715,33 @@ export type Database = {
       }
       tarefas: {
         Row: {
-          created_at: string
+          created_at: string | null
           id: string
           label: string
           priority: string
           status: string
           title: string
-          updated_at: string
+          updated_at: string | null
           usuario_id: number
         }
         Insert: {
-          created_at?: string
+          created_at?: string | null
           id?: string
           label?: string
           priority?: string
           status?: string
           title: string
-          updated_at?: string
+          updated_at?: string | null
           usuario_id: number
         }
         Update: {
-          created_at?: string
+          created_at?: string | null
           id?: string
           label?: string
           priority?: string
           status?: string
           title?: string
-          updated_at?: string
+          updated_at?: string | null
           usuario_id?: number
         }
         Relationships: [
@@ -5693,10 +5759,8 @@ export type Database = {
           categoria: string | null
           conteudo: Json
           created_at: string
-          criado_por: number
-          descricao: string | null
+          criado_por: number | null
           id: number
-          thumbnail_url: string | null
           titulo: string
           updated_at: string
           uso_count: number
@@ -5704,25 +5768,21 @@ export type Database = {
         }
         Insert: {
           categoria?: string | null
-          conteudo?: Json
+          conteudo: Json
           created_at?: string
-          criado_por: number
-          descricao?: string | null
+          criado_por?: number | null
           id?: never
-          thumbnail_url?: string | null
           titulo: string
           updated_at?: string
           uso_count?: number
-          visibilidade: string
+          visibilidade?: string
         }
         Update: {
           categoria?: string | null
           conteudo?: Json
           created_at?: string
-          criado_por?: number
-          descricao?: string | null
+          criado_por?: number | null
           id?: never
-          thumbnail_url?: string | null
           titulo?: string
           updated_at?: string
           uso_count?: number
@@ -5746,7 +5806,6 @@ export type Database = {
           cpf: string | null
           cpf_responsavel: string | null
           created_at: string | null
-          dados_anteriores: Json | null
           data_abertura: string | null
           data_fim_atividade: string | null
           data_nascimento: string | null
@@ -5806,7 +5865,6 @@ export type Database = {
           uf_nascimento_descricao: string | null
           uf_nascimento_id_pje: number | null
           uf_nascimento_sigla: string | null
-          ultima_atualizacao_pje: string | null
           updated_at: string | null
         }
         Insert: {
@@ -5816,7 +5874,6 @@ export type Database = {
           cpf?: string | null
           cpf_responsavel?: string | null
           created_at?: string | null
-          dados_anteriores?: Json | null
           data_abertura?: string | null
           data_fim_atividade?: string | null
           data_nascimento?: string | null
@@ -5876,7 +5933,6 @@ export type Database = {
           uf_nascimento_descricao?: string | null
           uf_nascimento_id_pje?: number | null
           uf_nascimento_sigla?: string | null
-          ultima_atualizacao_pje?: string | null
           updated_at?: string | null
         }
         Update: {
@@ -5886,7 +5942,6 @@ export type Database = {
           cpf?: string | null
           cpf_responsavel?: string | null
           created_at?: string | null
-          dados_anteriores?: Json | null
           data_abertura?: string | null
           data_fim_atividade?: string | null
           data_nascimento?: string | null
@@ -5946,7 +6001,6 @@ export type Database = {
           uf_nascimento_descricao?: string | null
           uf_nascimento_id_pje?: number | null
           uf_nascimento_sigla?: string | null
-          ultima_atualizacao_pje?: string | null
           updated_at?: string | null
         }
         Relationships: [
@@ -5961,36 +6015,27 @@ export type Database = {
       }
       tipo_audiencia: {
         Row: {
-          codigo: string
           created_at: string
           descricao: string
-          grau: Database["public"]["Enums"]["grau_tribunal"]
           id: number
-          id_pje: number
           is_virtual: boolean
-          trt: Database["public"]["Enums"]["codigo_tribunal"]
+          trts_metadata: Json
           updated_at: string
         }
         Insert: {
-          codigo: string
           created_at?: string
           descricao: string
-          grau: Database["public"]["Enums"]["grau_tribunal"]
           id?: never
-          id_pje: number
           is_virtual?: boolean
-          trt: Database["public"]["Enums"]["codigo_tribunal"]
+          trts_metadata?: Json
           updated_at?: string
         }
         Update: {
-          codigo?: string
           created_at?: string
           descricao?: string
-          grau?: Database["public"]["Enums"]["grau_tribunal"]
           id?: never
-          id_pje?: number
           is_virtual?: boolean
-          trt?: Database["public"]["Enums"]["codigo_tribunal"]
+          trts_metadata?: Json
           updated_at?: string
         }
         Relationships: []
@@ -6019,7 +6064,7 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: "tipos_expedientes_created_by_fkey"
+            foreignKeyName: "fk_tipos_expedientes_created_by"
             columns: ["created_by"]
             isOneToOne: false
             referencedRelation: "usuarios"
@@ -6029,14 +6074,17 @@ export type Database = {
       }
       todo_assignees: {
         Row: {
+          created_at: string
           todo_id: string
           usuario_id: number
         }
         Insert: {
+          created_at?: string
           todo_id: string
           usuario_id: number
         }
         Update: {
+          created_at?: string
           todo_id?: string
           usuario_id?: number
         }
@@ -6273,6 +6321,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "transacoes_bancarias_importadas_conta_bancaria_id_fkey"
+            columns: ["conta_bancaria_id"]
+            isOneToOne: false
+            referencedRelation: "v_saldo_contas_bancarias"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "transacoes_bancarias_importadas_created_by_fkey"
             columns: ["created_by"]
             isOneToOne: false
@@ -6332,77 +6387,84 @@ export type Database = {
             referencedRelation: "contas_bancarias"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "transacoes_importadas_conta_bancaria_id_fkey"
+            columns: ["conta_bancaria_id"]
+            isOneToOne: false
+            referencedRelation: "v_saldo_contas_bancarias"
+            referencedColumns: ["id"]
+          },
         ]
       }
       tribunais: {
         Row: {
-          ativo: boolean
-          cidadeSede: string
+          ativo: boolean | null
+          cidadeSede: string | null
           codigo: string
-          createdAt: string
+          createdAt: string | null
           id: string
           nome: string
-          regiao: string
-          uf: string
-          updatedAt: string
+          regiao: string | null
+          uf: string | null
+          updatedAt: string | null
         }
         Insert: {
-          ativo?: boolean
-          cidadeSede: string
+          ativo?: boolean | null
+          cidadeSede?: string | null
           codigo: string
-          createdAt?: string
+          createdAt?: string | null
           id: string
           nome: string
-          regiao: string
-          uf: string
-          updatedAt: string
+          regiao?: string | null
+          uf?: string | null
+          updatedAt?: string | null
         }
         Update: {
-          ativo?: boolean
-          cidadeSede?: string
+          ativo?: boolean | null
+          cidadeSede?: string | null
           codigo?: string
-          createdAt?: string
+          createdAt?: string | null
           id?: string
           nome?: string
-          regiao?: string
-          uf?: string
-          updatedAt?: string
+          regiao?: string | null
+          uf?: string | null
+          updatedAt?: string | null
         }
         Relationships: []
       }
       tribunais_config: {
         Row: {
-          created_at: string
+          created_at: string | null
           custom_timeouts: Json | null
           id: string
-          sistema: string
+          sistema: string | null
           tipo_acesso: Database["public"]["Enums"]["tipo_acesso_tribunal"]
           tribunal_id: string
-          updated_at: string
+          updated_at: string | null
           url_api: string | null
           url_base: string
           url_login_seam: string
         }
         Insert: {
-          created_at?: string
+          created_at?: string | null
           custom_timeouts?: Json | null
           id: string
-          sistema?: string
+          sistema?: string | null
           tipo_acesso: Database["public"]["Enums"]["tipo_acesso_tribunal"]
           tribunal_id: string
-          updated_at: string
+          updated_at?: string | null
           url_api?: string | null
           url_base: string
           url_login_seam: string
         }
         Update: {
-          created_at?: string
+          created_at?: string | null
           custom_timeouts?: Json | null
           id?: string
-          sistema?: string
+          sistema?: string | null
           tipo_acesso?: Database["public"]["Enums"]["tipo_acesso_tribunal"]
           tribunal_id?: string
-          updated_at?: string
+          updated_at?: string | null
           url_api?: string | null
           url_base?: string
           url_login_seam?: string
@@ -6433,11 +6495,9 @@ export type Database = {
           genero: Database["public"]["Enums"]["genero_usuario"] | null
           id: number
           is_super_admin: boolean | null
-          last_seen: string | null
           nome_completo: string
           nome_exibicao: string
           oab: string | null
-          online_status: string | null
           ramal: string | null
           rg: string | null
           telefone: string | null
@@ -6459,11 +6519,9 @@ export type Database = {
           genero?: Database["public"]["Enums"]["genero_usuario"] | null
           id?: never
           is_super_admin?: boolean | null
-          last_seen?: string | null
           nome_completo: string
           nome_exibicao: string
           oab?: string | null
-          online_status?: string | null
           ramal?: string | null
           rg?: string | null
           telefone?: string | null
@@ -6485,11 +6543,9 @@ export type Database = {
           genero?: Database["public"]["Enums"]["genero_usuario"] | null
           id?: never
           is_super_admin?: boolean | null
-          last_seen?: string | null
           nome_completo?: string
           nome_exibicao?: string
           oab?: string | null
-          online_status?: string | null
           ramal?: string | null
           rg?: string | null
           telefone?: string | null
@@ -6498,7 +6554,7 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: "usuarios_cargo_id_fkey"
+            foreignKeyName: "fk_usuarios_cargo"
             columns: ["cargo_id"]
             isOneToOne: false
             referencedRelation: "cargos"
@@ -6516,23 +6572,18 @@ export type Database = {
           created_at: string | null
           data_arquivamento: string | null
           data_autuacao: string | null
-          data_autuacao_origem: string | null
           data_proxima_audiencia: string | null
           descricao_orgao_julgador: string | null
           grau_atual: Database["public"]["Enums"]["grau_tribunal"] | null
-          grau_origem: Database["public"]["Enums"]["grau_tribunal"] | null
           graus_ativos: Database["public"]["Enums"]["grau_tribunal"][] | null
           id: number | null
           id_pje: number | null
           instances: Json | null
           juizo_digital: boolean | null
           nome_parte_autora: string | null
-          nome_parte_autora_origem: string | null
           nome_parte_re: string | null
-          nome_parte_re_origem: string | null
           numero: number | null
           numero_processo: string | null
-          orgao_julgador_origem: string | null
           origem: string | null
           prioridade_processual: number | null
           qtde_parte_autora: number | null
@@ -6541,7 +6592,6 @@ export type Database = {
           segredo_justica: boolean | null
           tem_associacao: boolean | null
           trt: Database["public"]["Enums"]["codigo_tribunal"] | null
-          trt_origem: Database["public"]["Enums"]["codigo_tribunal"] | null
           updated_at: string | null
         }
         Relationships: [
@@ -6550,13 +6600,6 @@ export type Database = {
             columns: ["advogado_id"]
             isOneToOne: false
             referencedRelation: "advogados"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "acervo_responsavel_id_fkey"
-            columns: ["responsavel_id"]
-            isOneToOne: false
-            referencedRelation: "usuarios"
             referencedColumns: ["id"]
           },
         ]
@@ -6600,6 +6643,7 @@ export type Database = {
           status: string | null
           status_descricao: string | null
           tipo_audiencia_id: number | null
+          tipo_descricao: string | null
           trt: Database["public"]["Enums"]["codigo_tribunal"] | null
           trt_origem: Database["public"]["Enums"]["codigo_tribunal"] | null
           updated_at: string | null
@@ -6612,13 +6656,6 @@ export type Database = {
             columns: ["advogado_id"]
             isOneToOne: false
             referencedRelation: "advogados"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "audiencias_classe_judicial_id_fkey"
-            columns: ["classe_judicial_id"]
-            isOneToOne: false
-            referencedRelation: "classe_judicial"
             referencedColumns: ["id"]
           },
           {
@@ -6650,21 +6687,21 @@ export type Database = {
             referencedColumns: ["processo_id"]
           },
           {
-            foreignKeyName: "audiencias_responsavel_id_fkey"
+            foreignKeyName: "fk_audiencias_classe_judicial"
+            columns: ["classe_judicial_id"]
+            isOneToOne: false
+            referencedRelation: "classe_judicial"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fk_audiencias_responsavel"
             columns: ["responsavel_id"]
             isOneToOne: false
             referencedRelation: "usuarios"
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "audiencias_sala_audiencia_id_fkey"
-            columns: ["sala_audiencia_id"]
-            isOneToOne: false
-            referencedRelation: "sala_audiencia"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "audiencias_tipo_audiencia_id_fkey"
+            foreignKeyName: "fk_audiencias_tipo_audiencia"
             columns: ["tipo_audiencia_id"]
             isOneToOne: false
             referencedRelation: "tipo_audiencia"
@@ -6750,14 +6787,14 @@ export type Database = {
             referencedColumns: ["processo_id"]
           },
           {
-            foreignKeyName: "expedientes_responsavel_id_fkey"
+            foreignKeyName: "fk_expedientes_responsavel"
             columns: ["responsavel_id"]
             isOneToOne: false
             referencedRelation: "usuarios"
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "expedientes_tipo_expediente_id_fkey"
+            foreignKeyName: "fk_expedientes_tipo_expediente"
             columns: ["tipo_expediente_id"]
             isOneToOne: false
             referencedRelation: "tipos_expedientes"
@@ -6849,19 +6886,279 @@ export type Database = {
           },
         ]
       }
-      v_orcamento_vs_realizado: {
+      v_conciliacoes_pendentes: {
+        Row: {
+          conciliacao_id: number | null
+          conciliacao_status:
+            | Database["public"]["Enums"]["status_conciliacao"]
+            | null
+          conta_bancaria_id: number | null
+          conta_bancaria_nome: string | null
+          data_importacao: string | null
+          data_transacao: string | null
+          descricao: string | null
+          documento: string | null
+          lancamento_data: string | null
+          lancamento_descricao: string | null
+          lancamento_financeiro_id: number | null
+          lancamento_valor: number | null
+          score_similaridade: number | null
+          tipo_transacao: string | null
+          transacao_id: number | null
+          valor: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "conciliacoes_bancarias_lancamento_financeiro_id_fkey"
+            columns: ["lancamento_financeiro_id"]
+            isOneToOne: false
+            referencedRelation: "lancamentos_financeiros"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "conciliacoes_bancarias_lancamento_financeiro_id_fkey"
+            columns: ["lancamento_financeiro_id"]
+            isOneToOne: false
+            referencedRelation: "v_lancamentos_pendentes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "transacoes_bancarias_importadas_conta_bancaria_id_fkey"
+            columns: ["conta_bancaria_id"]
+            isOneToOne: false
+            referencedRelation: "contas_bancarias"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "transacoes_bancarias_importadas_conta_bancaria_id_fkey"
+            columns: ["conta_bancaria_id"]
+            isOneToOne: false
+            referencedRelation: "v_saldo_contas_bancarias"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      v_dre: {
         Row: {
           ano: number | null
-          centro_codigo: string | null
-          centro_custo_id: number | null
-          centro_nome: string | null
+          categoria: string | null
           conta_codigo: string | null
           conta_contabil_id: number | null
           conta_nome: string | null
-          data_fim: string | null
-          data_inicio: string | null
+          mes: number | null
+          periodo_completo: string | null
+          quantidade_lancamentos: number | null
+          tipo_conta: Database["public"]["Enums"]["tipo_conta_contabil"] | null
+          valor_total: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lancamentos_financeiros_conta_contabil_id_fkey"
+            columns: ["conta_contabil_id"]
+            isOneToOne: false
+            referencedRelation: "plano_contas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      v_fluxo_caixa_diario: {
+        Row: {
+          data: string | null
+          quantidade_lancamentos: number | null
+          saldo_liquido: number | null
+          total_despesas: number | null
+          total_receitas: number | null
+        }
+        Relationships: []
+      }
+      v_fluxo_caixa_mensal: {
+        Row: {
+          ano: number | null
+          mes: number | null
+          saldo_liquido: number | null
+          total_despesas: number | null
+          total_receitas: number | null
+          total_transferencias: number | null
+        }
+        Relationships: []
+      }
+      v_folhas_pagamento_resumo: {
+        Row: {
+          ano_referencia: number | null
+          created_at: string | null
+          created_by: number | null
+          criado_por_nome: string | null
+          data_geracao: string | null
+          data_pagamento: string | null
+          id: number | null
+          lancamentos_gerados: number | null
+          mes_referencia: number | null
+          periodo_formatado: string | null
+          quantidade_funcionarios: number | null
+          status: string | null
+          valor_total: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "folhas_pagamento_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "usuarios"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      v_lancamentos_pendentes: {
+        Row: {
+          acordo_condenacao_id: number | null
+          categoria: string | null
+          centro_custo_codigo: string | null
+          centro_custo_id: number | null
+          centro_custo_nome: string | null
+          cliente_id: number | null
+          cliente_nome: string | null
+          conta_bancaria_id: number | null
+          conta_bancaria_nome: string | null
+          conta_contabil_codigo: string | null
+          conta_contabil_id: number | null
+          conta_contabil_nome: string | null
+          contrato_id: number | null
+          created_at: string | null
+          data_competencia: string | null
+          data_lancamento: string | null
+          data_vencimento: string | null
+          descricao: string | null
+          dias_ate_vencimento: number | null
+          documento: string | null
+          forma_pagamento:
+            | Database["public"]["Enums"]["forma_pagamento_financeiro"]
+            | null
+          id: number | null
+          observacoes: string | null
+          origem: Database["public"]["Enums"]["origem_lancamento"] | null
+          parcela_id: number | null
+          situacao_vencimento: string | null
+          status: Database["public"]["Enums"]["status_lancamento"] | null
+          tipo: Database["public"]["Enums"]["tipo_lancamento"] | null
+          updated_at: string | null
+          usuario_id: number | null
+          usuario_nome: string | null
+          valor: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lancamentos_financeiros_acordo_condenacao_id_fkey"
+            columns: ["acordo_condenacao_id"]
+            isOneToOne: false
+            referencedRelation: "acordos_condenacoes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "lancamentos_financeiros_centro_custo_id_fkey"
+            columns: ["centro_custo_id"]
+            isOneToOne: false
+            referencedRelation: "centros_custo"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "lancamentos_financeiros_centro_custo_id_fkey"
+            columns: ["centro_custo_id"]
+            isOneToOne: false
+            referencedRelation: "v_lancamentos_por_centro_custo"
+            referencedColumns: ["centro_custo_id"]
+          },
+          {
+            foreignKeyName: "lancamentos_financeiros_cliente_id_fkey"
+            columns: ["cliente_id"]
+            isOneToOne: false
+            referencedRelation: "clientes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "lancamentos_financeiros_cliente_id_fkey"
+            columns: ["cliente_id"]
+            isOneToOne: false
+            referencedRelation: "processos_cliente_por_cpf"
+            referencedColumns: ["cliente_id"]
+          },
+          {
+            foreignKeyName: "lancamentos_financeiros_conta_bancaria_id_fkey"
+            columns: ["conta_bancaria_id"]
+            isOneToOne: false
+            referencedRelation: "contas_bancarias"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "lancamentos_financeiros_conta_bancaria_id_fkey"
+            columns: ["conta_bancaria_id"]
+            isOneToOne: false
+            referencedRelation: "v_saldo_contas_bancarias"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "lancamentos_financeiros_conta_contabil_id_fkey"
+            columns: ["conta_contabil_id"]
+            isOneToOne: false
+            referencedRelation: "plano_contas"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "lancamentos_financeiros_contrato_id_fkey"
+            columns: ["contrato_id"]
+            isOneToOne: false
+            referencedRelation: "contratos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "lancamentos_financeiros_parcela_id_fkey"
+            columns: ["parcela_id"]
+            isOneToOne: false
+            referencedRelation: "parcelas"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "lancamentos_financeiros_parcela_id_fkey"
+            columns: ["parcela_id"]
+            isOneToOne: false
+            referencedRelation: "repasses_pendentes"
+            referencedColumns: ["parcela_id"]
+          },
+          {
+            foreignKeyName: "lancamentos_financeiros_usuario_id_fkey"
+            columns: ["usuario_id"]
+            isOneToOne: false
+            referencedRelation: "usuarios"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      v_lancamentos_por_centro_custo: {
+        Row: {
+          ano: number | null
+          centro_custo_codigo: string | null
+          centro_custo_id: number | null
+          centro_custo_nome: string | null
+          mes: number | null
+          quantidade_lancamentos: number | null
+          saldo: number | null
+          total_despesas: number | null
+          total_receitas: number | null
+        }
+        Relationships: []
+      }
+      v_orcamento_vs_realizado: {
+        Row: {
+          ano: number | null
+          centro_custo_codigo: string | null
+          centro_custo_id: number | null
+          centro_custo_nome: string | null
+          conta_codigo: string | null
+          conta_contabil_id: number | null
+          conta_nome: string | null
           item_id: number | null
           mes: number | null
+          orcamento_data_fim: string | null
+          orcamento_data_inicio: string | null
           orcamento_id: number | null
           orcamento_nome: string | null
           orcamento_status:
@@ -6883,6 +7180,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "orcamento_itens_centro_custo_id_fkey"
+            columns: ["centro_custo_id"]
+            isOneToOne: false
+            referencedRelation: "v_lancamentos_por_centro_custo"
+            referencedColumns: ["centro_custo_id"]
+          },
+          {
             foreignKeyName: "orcamento_itens_conta_contabil_id_fkey"
             columns: ["conta_contabil_id"]
             isOneToOne: false
@@ -6891,42 +7195,57 @@ export type Database = {
           },
         ]
       }
+      v_plano_contas_hierarquico: {
+        Row: {
+          aceita_lancamento: boolean | null
+          ativo: boolean | null
+          caminho: string | null
+          caminho_nome: string | null
+          codigo: string | null
+          conta_pai_id: number | null
+          id: number | null
+          natureza: Database["public"]["Enums"]["natureza_conta"] | null
+          nivel: Database["public"]["Enums"]["nivel_conta"] | null
+          nome: string | null
+          nome_indentado: string | null
+          profundidade: number | null
+          tipo_conta: Database["public"]["Enums"]["tipo_conta_contabil"] | null
+        }
+        Relationships: []
+      }
+      v_saldo_contas_bancarias: {
+        Row: {
+          agencia: string | null
+          banco_nome: string | null
+          conta_contabil_codigo: string | null
+          conta_contabil_nome: string | null
+          data_saldo_inicial: string | null
+          id: number | null
+          lancamentos_pendentes: number | null
+          nome: string | null
+          numero_conta: string | null
+          saldo_atual: number | null
+          saldo_inicial: number | null
+          status: Database["public"]["Enums"]["status_conta_bancaria"] | null
+          tipo: Database["public"]["Enums"]["tipo_conta_bancaria"] | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
-      atribuir_responsavel_acervo: {
+      calcular_saldo_periodo: {
         Args: {
-          processo_id: number
-          responsavel_id_param: number
-          usuario_executou_id: number
+          p_conta_bancaria_id: number
+          p_data_fim: string
+          p_data_inicio: string
         }
-        Returns: Json
+        Returns: {
+          saldo_final: number
+          saldo_inicial: number
+          total_entradas: number
+          total_saidas: number
+        }[]
       }
-      atribuir_responsavel_audiencia: {
-        Args: {
-          audiencia_id: number
-          responsavel_id_param: number
-          usuario_executou_id: number
-        }
-        Returns: Json
-      }
-      atribuir_responsavel_pendente: {
-        Args: {
-          pendente_id: number
-          responsavel_id_param: number
-          usuario_executou_id: number
-        }
-        Returns: Json
-      }
-      atualizar_tipo_descricao_expediente: {
-        Args: {
-          p_descricao_arquivos?: string
-          p_expediente_id: number
-          p_tipo_expediente_id?: number
-          p_usuario_executou_id: number
-        }
-        Returns: Json
-      }
-      cleanup_expired_locks: { Args: never; Returns: number }
       cleanup_old_mcp_audit_logs: { Args: never; Returns: number }
       count_processos_unicos: {
         Args: {
@@ -6949,58 +7268,15 @@ export type Database = {
         }
         Returns: number
       }
-      desatribuir_todas_audiencias_usuario: {
-        Args: { p_usuario_id: number }
-        Returns: undefined
-      }
-      desatribuir_todos_contratos_usuario: {
-        Args: { p_usuario_id: number }
-        Returns: undefined
-      }
-      desatribuir_todos_expedientes_usuario: {
-        Args: { p_usuario_id: number }
-        Returns: undefined
-      }
-      desatribuir_todos_pendentes_usuario: {
-        Args: { p_usuario_id: number }
-        Returns: undefined
-      }
-      desatribuir_todos_processos_usuario: {
-        Args: { p_usuario_id: number }
-        Returns: undefined
-      }
-      exec_sql_with_context: {
-        Args: { sql_text: string; user_id: number }
-        Returns: undefined
-      }
-      generate_unique_chat_filename:
-        | { Args: { original_name: string }; Returns: string }
-        | { Args: { original_name: string; user_id: number }; Returns: string }
-      get_accessible_documento_ids: {
-        Args: { p_usuario_id: number }
-        Returns: {
-          documento_id: number
-        }[]
-      }
       get_current_user_id: { Args: never; Returns: number }
-      get_landlord_org_id: { Args: never; Returns: string }
       get_my_admin_org_ids: { Args: never; Returns: string[] }
       get_my_org_ids: { Args: never; Returns: string[] }
-      get_usuario_id_from_auth: { Args: never; Returns: number }
-      is_current_user_active: { Args: never; Returns: boolean }
-      is_current_user_in_landlord: { Args: never; Returns: boolean }
-      is_landlord_org: { Args: { org_id: string }; Returns: boolean }
-      is_super_admin: { Args: never; Returns: boolean }
-      list_auth_users_nao_sincronizados: {
-        Args: never
-        Returns: {
-          created_at: string
-          email: string
-          id: string
-          raw_user_meta_data: Json
-        }[]
+      identificar_grau_atual_id: {
+        Args: { p_advogado_id: number; p_numero_processo: string }
+        Returns: number
       }
-      marcar_parcelas_atrasadas: { Args: never; Returns: number }
+      is_current_user_active: { Args: never; Returns: boolean }
+      is_super_admin: { Args: never; Returns: boolean }
       match_embeddings: {
         Args: {
           filter_entity_type?: string
@@ -7020,6 +7296,38 @@ export type Database = {
           similarity: number
         }[]
       }
+      obter_dre: {
+        Args: { p_data_fim: string; p_data_inicio: string }
+        Returns: {
+          conta_codigo: string
+          conta_id: number
+          conta_nome: string
+          tipo_conta: Database["public"]["Enums"]["tipo_conta_contabil"]
+          valor_total: number
+        }[]
+      }
+      obter_salario_vigente: {
+        Args: { p_data?: string; p_usuario_id: number }
+        Returns: {
+          ativo: boolean
+          cargo_id: number | null
+          created_at: string
+          created_by: number | null
+          data_fim_vigencia: string | null
+          data_inicio_vigencia: string
+          id: number
+          observacoes: string | null
+          salario_bruto: number
+          updated_at: string
+          usuario_id: number
+        }
+        SetofOptions: {
+          from: "*"
+          to: "salarios"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
       random_acervo_sample: {
         Args: { limit_n: number }
         Returns: {
@@ -7028,7 +7336,6 @@ export type Database = {
           classe_judicial_id: number | null
           codigo_status_processo: string
           created_at: string
-          dados_anteriores: Json | null
           data_arquivamento: string | null
           data_autuacao: string
           data_proxima_audiencia: string | null
@@ -7063,8 +7370,8 @@ export type Database = {
         Args: { use_concurrent?: boolean }
         Returns: undefined
       }
-      refresh_orcamento_vs_realizado: { Args: never; Returns: undefined }
       refresh_processos_cliente_por_cpf: { Args: never; Returns: undefined }
+      refresh_v_dre: { Args: never; Returns: undefined }
       registrar_baixa_expediente: {
         Args: {
           p_expediente_id: number
@@ -7083,37 +7390,32 @@ export type Database = {
         }
         Returns: undefined
       }
-      user_can_access_chat_room: {
-        Args: { p_sala_id: number; p_usuario_id: number }
-        Returns: boolean
-      }
-      user_can_view_chamada: {
-        Args: { p_chamada_id: number; p_current_user_id: number }
-        Returns: boolean
-      }
-      user_can_view_participant: {
-        Args: {
-          p_chamada_id: number
-          p_current_user_id: number
-          p_participante_usuario_id: number
-        }
-        Returns: boolean
-      }
-      user_has_document_access: {
-        Args: { p_documento_id: number; p_usuario_id: number }
-        Returns: boolean
-      }
-      user_initiated_chamada: {
-        Args: { p_chamada_id: number; p_usuario_id: number }
-        Returns: boolean
+      sugerir_conciliacao_automatica: {
+        Args: { p_transacao_id: number }
+        Returns: {
+          lancamento_data: string
+          lancamento_descricao: string
+          lancamento_id: number
+          lancamento_valor: number
+          score_similaridade: number
+        }[]
       }
       user_is_chamada_participant: {
         Args: { p_chamada_id: number; p_usuario_id: number }
         Returns: boolean
       }
-      user_is_sala_member: {
-        Args: { p_sala_id: number; p_usuario_id: number }
-        Returns: boolean
+      verificar_consistencia_parcela_lancamento: {
+        Args: { p_acordo_id?: number }
+        Returns: {
+          descricao: string
+          lancamento_id: number
+          lancamento_status: string
+          lancamento_valor: number
+          parcela_id: number
+          parcela_status: string
+          parcela_valor: number
+          tipo_inconsistencia: string
+        }[]
       }
       verificar_e_notificar_prazos: {
         Args: never
@@ -7250,7 +7552,12 @@ export type Database = {
         | "consultoria"
         | "extrajudicial"
         | "parecer"
-      tipo_lancamento: "receita" | "despesa"
+      tipo_lancamento:
+        | "receita"
+        | "despesa"
+        | "transferencia"
+        | "aplicacao"
+        | "resgate"
       tipo_notificacao_usuario:
         | "processo_atribuido"
         | "processo_movimentacao"
@@ -7260,7 +7567,6 @@ export type Database = {
         | "expediente_alterado"
         | "prazo_vencendo"
         | "prazo_vencido"
-        | "sistema_alerta"
       tipo_peca_juridica:
         | "peticao_inicial"
         | "contestacao"
@@ -7575,7 +7881,13 @@ export const Constants = {
         "extrajudicial",
         "parecer",
       ],
-      tipo_lancamento: ["receita", "despesa"],
+      tipo_lancamento: [
+        "receita",
+        "despesa",
+        "transferencia",
+        "aplicacao",
+        "resgate",
+      ],
       tipo_notificacao_usuario: [
         "processo_atribuido",
         "processo_movimentacao",
@@ -7585,7 +7897,6 @@ export const Constants = {
         "expediente_alterado",
         "prazo_vencendo",
         "prazo_vencido",
-        "sistema_alerta",
       ],
       tipo_peca_juridica: [
         "peticao_inicial",

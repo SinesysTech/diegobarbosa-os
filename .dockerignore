@@ -52,7 +52,7 @@ analyze/
 *.heapprofile
 *.cpuprofile
 
-# Variáveis de ambiente (serão configuradas no CapRover)
+# Variaveis de ambiente (serao configuradas no Cloudron)
 .env
 .env.local
 .env.development
@@ -88,11 +88,9 @@ public/sw.js
 public/workbox-*.js
 public/fallback-*.js
 
-# Docker
-Dockerfile*
+# Docker/Cloudron (ignorar arquivos de config, nao o Dockerfile principal)
 docker-compose*.yml
 .dockerignore
-captain-definition
 
 # CI/CD
 .github/

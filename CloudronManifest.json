@@ -1,0 +1,24 @@
+{
+  "id": "io.sinesys.app",
+  "title": "Sinesys",
+  "author": "Diego Barbosa",
+  "description": "Sistema de gestao juridica",
+  "tagline": "Gestao completa para escritorios de advocacia",
+  "version": "1.0.0",
+  "healthCheckPath": "/api/health",
+  "httpPort": 8000,
+  "manifestVersion": 2,
+  "website": "https://sinesys.io",
+  "contactEmail": "suporte@sinesys.io",
+  "minBoxVersion": "7.0.0",
+  "memoryLimit": 1073741824,
+  "addons": {
+    "localstorage": {}
+  },
+  "tags": [
+    "productivity",
+    "business"
+  ],
+  "postInstallMessage": "Sinesys foi instalado com sucesso!\n\nConfigure as variaveis de ambiente no painel de administracao:\n- NEXT_PUBLIC_SUPABASE_URL\n- NEXT_PUBLIC_SUPABASE_PUBLISHABLE_OR_ANON_KEY\n- SUPABASE_SECRET_KEY\n- SERVICE_API_KEY\n\nAcesse {{origin}} para comecar.",
+  "optionalSso": true
+}
