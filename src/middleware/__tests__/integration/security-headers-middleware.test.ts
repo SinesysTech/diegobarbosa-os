@@ -191,8 +191,8 @@ describe("Security Headers Middleware Integration", () => {
       { path: "/sitemap.xml", shouldApply: false },
       { path: "/_next/static/chunks/main.js", shouldApply: false },
       { path: "/workbox-12345.js", shouldApply: false },
-      { path: "/android-chrome-192x192.png", shouldApply: false },
-      { path: "/apple-touch-icon.png", shouldApply: false },
+      { path: "/logos/android-chrome-192x192.png", shouldApply: false },
+      { path: "/logos/apple-touch-icon.png", shouldApply: false },
     ];
 
     testCases.forEach(({ path, shouldApply }) => {

@@ -227,7 +227,7 @@ export function TipoDescricaoCell({
         <button
           type="button"
           onClick={() => setIsDescricaoDialogOpen(true)}
-          className="text-xs text-muted-foreground w-full text-justify whitespace-pre-wrap leading-relaxed cursor-pointer hover:text-foreground transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-1 rounded"
+          className="text-xs text-muted-foreground w-full text-left whitespace-pre-wrap leading-relaxed cursor-pointer hover:text-foreground transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-1 rounded"
         >
           {descricaoExibicao}
         </button>

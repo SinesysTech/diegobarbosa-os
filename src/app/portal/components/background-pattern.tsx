@@ -14,7 +14,7 @@ export function BackgroundPattern({ className }: BackgroundPatternProps) {
   return (
     <div className={cn("absolute inset-0 -z-10 overflow-hidden", className)}>
       {/* Gradient Overlay */}
-      <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-primary/5" />
+      <div className="absolute inset-0 bg-linear-to-br from-primary/5 via-transparent to-primary/5" />
 
       {/* Dot Pattern */}
       <svg

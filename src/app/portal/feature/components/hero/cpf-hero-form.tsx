@@ -2,20 +2,9 @@
 import { useEffect, useMemo, useState, useTransition } from "react";
 import { motion } from "framer-motion";
 import { Input } from "@/components/ui/input";
-import dynamic from "next/dynamic";
+import { Button } from "@/components/ui/button";
+import { Loader2 } from "lucide-react";
 import { actionLoginPortal } from "../../actions/portal-actions";
-
-const MagnetizeButton = dynamic(
-  () => import("./magnetize-button").then((m) => m.MagnetizeButton),
-  {
-    ssr: false,
-    loading: () => (
-      <div className="min-w-40 h-12 px-6 rounded-md bg-[#5523eb] text-white flex items-center justify-center opacity-80">
-        Consultar
-      </div>
-    ),
-  }
-);
 
 export function CpfHeroForm() {
   const [titleNumber, setTitleNumber] = useState(0);
@@ -66,14 +55,14 @@ export function CpfHeroForm() {
       <div className="container mx-auto">
         <div className="flex gap-8 py-12 lg:py-16 items-center justify-center flex-col">
           <div className="flex gap-4 flex-col">
-            <h1 className="text-5xl md:text-7xl max-w-3xl tracking-tighter text-center font-regular">
-              <span className="text-spektr-cyan-50">Consulte</span>
+            <h1 className="text-5xl md:text-7xl max-w-3xl tracking-tighter text-center font-serif font-bold">
+              <span className="text-foreground">Consulte</span>
               <span className="relative flex w-full justify-center overflow-hidden text-center md:pb-4 md:pt-1">
                 &nbsp;
                 {titles.map((title, index) => (
                   <motion.span
                     key={index}
-                    className="absolute font-semibold"
+                    className="absolute font-bold"
                     initial={{ opacity: 0, y: "-100" }}
                     transition={{ type: "spring", stiffness: 50 }}
                     animate={
@@ -109,15 +98,25 @@ export function CpfHeroForm() {
               className="flex-1 py-6 px-4 text-base bg-white dark:bg-card shadow-sm"
               disabled={isPending}
             />
-            <MagnetizeButton 
+            <Button
               onClick={handleConsultar}
               disabled={isPending}
-              className={isPending ? 'opacity-70 cursor-not-allowed' : ''}
-            />
+              size="lg"
+              className="min-w-40 h-12 px-6 text-base shadow-md hover:shadow-lg cursor-pointer"
+            >
+              {isPending ? (
+                <>
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  Consultando...
+                </>
+              ) : (
+                'Consultar'
+              )}
+            </Button>
           </div>
           
           {error && (
-            <p className="text-red-500 text-sm text-center">{error}</p>
+            <p className="text-destructive text-sm text-center">{error}</p>
           )}
         </div>
       </div>

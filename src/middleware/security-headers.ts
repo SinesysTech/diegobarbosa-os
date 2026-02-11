@@ -63,8 +63,7 @@ const PUBLIC_ASSETS = [
  */
 const PUBLIC_ASSET_PREFIXES = [
   "/workbox-",
-  "/android-chrome-",
-  "/apple-touch-icon",
+  "/logos/",
   "/_next/static/",
 ] as const;
 

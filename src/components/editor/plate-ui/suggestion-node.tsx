@@ -127,7 +127,7 @@ function SuggestionLineBreakContent({
           <span
             ref={spanRef}
             className={cn(
-              'absolute text-justify',
+              'absolute text-left',
               suggestionVariants({
                 insertActive: isInsert && (isActive || isHover),
                 remove: isRemove,
