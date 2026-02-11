@@ -15,7 +15,7 @@ import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Progress } from "@/components/ui/progress";
 import { cn } from "@/lib/utils";
-import { useTwoFAuth, TwoFAuthAccount } from "@/hooks/use-twofauth";
+import { useTwoFAuth } from "@/hooks/use-twofauth";
 
 export function AuthenticatorPopover() {
   const {
@@ -42,13 +42,14 @@ export function AuthenticatorPopover() {
     }
   }, [isOpen, accounts.length, isLoading, fetchAccounts]);
 
-  // Reset estado quando fecha o popover
-  useEffect(() => {
-    if (!isOpen) {
+  // Manipular alteração de estado do popover
+  const handleOpenChange = (open: boolean) => {
+    setIsOpen(open);
+    if (!open) {
       selectAccount(null);
       setCopied(false);
     }
-  }, [isOpen, selectAccount]);
+  };
 
   // Copiar OTP
   const handleCopy = async () => {
@@ -69,13 +70,7 @@ export function AuthenticatorPopover() {
   const period = selectedAccount?.period || 30;
   const progress = (timeRemaining / period) * 100;
 
-  // Formatar nome da conta
-  const getAccountLabel = (account: TwoFAuthAccount) => {
-    if (account.service && account.account) {
-      return `${account.service} (${account.account})`;
-    }
-    return account.service || account.account || `Conta #${account.id}`;
-  };
+
 
   // Formatar código OTP com espaço no meio (123 456)
   const formatOTP = (code: string) => {
@@ -86,7 +81,7 @@ export function AuthenticatorPopover() {
   };
 
   return (
-    <Popover open={isOpen} onOpenChange={setIsOpen}>
+    <Popover open={isOpen} onOpenChange={handleOpenChange}>
       <PopoverTrigger asChild>
         <Button size="icon" variant="ghost" className="relative">
           <ShieldCheckIcon className="h-5 w-5" />
@@ -237,7 +232,7 @@ export function AuthenticatorPopover() {
                     )}
                     onClick={() => selectAccount(account)}
                   >
-                    <div className="flex-shrink-0">
+                    <div className="shrink-0">
                       <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
                         <ShieldCheckIcon className="h-5 w-5 text-primary" />
                       </div>
@@ -250,7 +245,7 @@ export function AuthenticatorPopover() {
                         {account.account || account.otp_type.toUpperCase()}
                       </div>
                     </div>
-                    <div className="flex-shrink-0 text-xs text-muted-foreground">
+                    <div className="shrink-0 text-xs text-muted-foreground">
                       {account.digits} dígitos
                     </div>
                   </button>
