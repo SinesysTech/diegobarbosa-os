@@ -279,7 +279,9 @@ export const ResponsiveGrid = React.forwardRef<HTMLDivElement, ResponsiveGridPro
                     ]
                 );
 
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 return React.cloneElement(child as React.ReactElement<any>, {
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
                     className: cn((child as React.ReactElement<any>).props.className, imageClasses),
                 });
             });

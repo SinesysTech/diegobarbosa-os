@@ -88,6 +88,7 @@ export const ResponsiveFormLayout = React.forwardRef<HTMLDivElement, ResponsiveF
 
                 // Check if this is a button container (div with buttons)
                 // Check if this is a button container (div with buttons)
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 const element = child as React.ReactElement<any>;
                 if (element.type === 'div' && element.props.children) {
                     const hasButtons = React.Children.toArray(element.props.children).some(

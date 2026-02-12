@@ -31,6 +31,7 @@ const InputCPFCNPJ = React.forwardRef<HTMLInputElement, InputCPFCNPJProps>(
           mask={mask}
           dispatch={(appended: string, dynamicMasked: { value: string; compiledMasks: Array<unknown> }) => {
             const number = (dynamicMasked.value + appended).replace(/\D/g, '');
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             return dynamicMasked.compiledMasks[number.length <= 11 ? 0 : 1] as any;
           }}
           unmask={false}
