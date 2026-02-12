@@ -795,7 +795,7 @@ export function ProcessosTableWrapper({
 
   // Função wrapper para refetch que também atualiza localmente se necessário
   // Nota: refetch será definido depois, então precisamos usar uma referência
-  const refetchRef = React.useRef<() => Promise<void>>();
+  const refetchRef = React.useRef<() => Promise<void>>(undefined);
 
   const handleRefetchWithUpdate = React.useCallback((updatedProcesso?: ProcessoUnificado) => {
     console.log('[ProcessosTableWrapper] handleRefetchWithUpdate chamado', { updatedProcesso });

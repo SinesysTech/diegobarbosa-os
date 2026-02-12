@@ -45,9 +45,9 @@ export type PublicActionHandler<TInput, TOutput> = (
 /**
  * Converte erros do Zod para formato de errors por campo
  */
-function formatZodErrors(zodError: ZodError): Record<string, string[]> {
+  function formatZodErrors(zodError: ZodError): Record<string, string[]> {
   const errors: Record<string, string[]> = {};
-  for (const err of zodError.errors) {
+  for (const err of zodError.issues) {
     const key = err.path.join('.');
     if (!errors[key]) {
       errors[key] = [];

@@ -75,7 +75,7 @@ export function ServerCombobox({
   const [search, setSearch] = React.useState("")
   const [options, setOptions] = React.useState<ComboboxOption[]>([])
   const [isLoading, setIsLoading] = React.useState(false)
-  const searchTimeoutRef = React.useRef<NodeJS.Timeout>()
+  const searchTimeoutRef = React.useRef<NodeJS.Timeout>(undefined)
 
   const selectedValues = React.useMemo(
     () => multiple ? (value || []) : (value?.[0] ? [value[0]] : []),

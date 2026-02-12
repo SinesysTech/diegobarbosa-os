@@ -91,7 +91,7 @@ export function useEffectDebug(
   deps: React.DependencyList,
   debugName: string = 'Effect'
 ) {
-  const previousDeps = useRef<React.DependencyList>();
+  const previousDeps = useRef<React.DependencyList>(undefined);
   const renderCount = useRef(0);
 
   renderCount.current += 1;

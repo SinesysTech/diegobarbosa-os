@@ -87,10 +87,10 @@ function NoteModalBase({ mode, note, children }: NoteModalBaseProps) {
 
   const triggerNode = children ?? defaultTrigger;
   const trigger = React.isValidElement(triggerNode)
-    ? React.cloneElement(triggerNode as React.ReactElement, {
+    ? React.cloneElement(triggerNode as React.ReactElement<any>, {
         onClick: (e: unknown) => {
           // Preserva onClick original (se existir)
-          const original = (triggerNode as React.ReactElement).props?.onClick;
+          const original = (triggerNode as React.ReactElement<any>).props?.onClick;
           if (typeof original === "function") original(e);
           setOpen(true);
         },
