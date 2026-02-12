@@ -111,7 +111,7 @@ const InputTelefone = React.forwardRef<HTMLInputElement, InputTelefoneProps>(
           mask={mask}
           dispatch={(appended: string, dynamicMasked: { value: string; compiledMasks: Array<unknown> }) => {
             const number = (dynamicMasked.value + appended).replace(/\D/g, '');
-            return dynamicMasked.compiledMasks[number.length > 10 ? 1 : 0];
+            return dynamicMasked.compiledMasks[number.length <= 10 ? 0 : 1] as any;
           }}
           unmask={false}
           value={internalValue}

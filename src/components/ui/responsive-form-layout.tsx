@@ -87,8 +87,10 @@ export const ResponsiveFormLayout = React.forwardRef<HTMLDivElement, ResponsiveF
                 if (child.type === React.Fragment) return child;
 
                 // Check if this is a button container (div with buttons)
-                if (child.type === 'div' && child.props.children) {
-                    const hasButtons = React.Children.toArray(child.props.children).some(
+                // Check if this is a button container (div with buttons)
+                const element = child as React.ReactElement<any>;
+                if (element.type === 'div' && element.props.children) {
+                    const hasButtons = React.Children.toArray(element.props.children).some(
                         (c) => {
                             if (!React.isValidElement(c) || !c.type) return false;
                             const componentType = c.type as React.ComponentType & { displayName?: string };
@@ -97,9 +99,9 @@ export const ResponsiveFormLayout = React.forwardRef<HTMLDivElement, ResponsiveF
                     );
 
                     if (hasButtons) {
-                        return React.cloneElement(child as React.ReactElement, {
+                        return React.cloneElement(element, {
                             className: cn(
-                                child.props.className,
+                                element.props.className,
                                 stackButtonsOnMobile && 'flex flex-col gap-2',
                                 fullWidthButtonsOnMobile && '[&>button]:w-full'
                             ),

@@ -279,9 +279,8 @@ export const ResponsiveGrid = React.forwardRef<HTMLDivElement, ResponsiveGridPro
                     ]
                 );
 
-                return React.cloneElement(child as React.ReactElement<{ className?: string }>, {
-
-                    className: cn(child.props.className, imageClasses),
+                return React.cloneElement(child as React.ReactElement<any>, {
+                    className: cn((child as React.ReactElement<any>).props.className, imageClasses),
                 });
             });
         }, [children, scaleImages, imageAspectRatio]);
