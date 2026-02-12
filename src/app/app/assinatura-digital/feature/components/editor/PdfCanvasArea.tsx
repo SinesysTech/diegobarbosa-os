@@ -55,7 +55,7 @@ const FIELD_TYPE_LABEL: Record<TipoCampo, string> = {
 
 interface PdfCanvasAreaProps {
   // Canvas
-  canvasRef: React.RefObject<HTMLDivElement>;
+  canvasRef: React.RefObject<HTMLDivElement | null>;
   canvasSize: { width: number; height: number };
   zoom: number;
 

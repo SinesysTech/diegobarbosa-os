@@ -5,7 +5,7 @@ import { toast } from 'sonner';
 import type { EditorField, SignatureFieldType, Signatario } from '../types';
 
 interface UsePaletteDragProps {
-  canvasRef: React.RefObject<HTMLDivElement>;
+  canvasRef: React.RefObject<HTMLDivElement | null>;
   zoom: number;
   templateId: string | number;
   currentPage: number;
