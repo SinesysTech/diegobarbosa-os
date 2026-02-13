@@ -74,11 +74,12 @@ export function AdvogadosDialog({ advogado, open, onOpenChange, onSuccess }: Pro
   React.useEffect(() => {
     if (open) {
       if (advogado) {
+        const primaryOab = advogado.oabs[0];
         form.reset({
           nome_completo: advogado.nome_completo,
           cpf: advogado.cpf,
-          oab: advogado.oab,
-          uf_oab: advogado.uf_oab,
+          oab: primaryOab?.numero || '',
+          uf_oab: primaryOab?.uf || '',
         });
       } else {
         form.reset({
@@ -102,8 +103,7 @@ export function AdvogadosDialog({ advogado, open, onOpenChange, onSuccess }: Pro
         const result = await actionAtualizarAdvogado(advogado.id, {
           nome_completo: values.nome_completo,
           cpf: cpfLimpo,
-          oab: values.oab,
-          uf_oab: values.uf_oab,
+          oabs: [{ numero: values.oab, uf: values.uf_oab }],
         });
 
         if (!result.success) {
@@ -115,8 +115,7 @@ export function AdvogadosDialog({ advogado, open, onOpenChange, onSuccess }: Pro
         const result = await actionCriarAdvogado({
           nome_completo: values.nome_completo,
           cpf: cpfLimpo,
-          oab: values.oab,
-          uf_oab: values.uf_oab,
+          oabs: [{ numero: values.oab, uf: values.uf_oab }],
         });
 
         if (!result.success) {

@@ -1,41 +1,9 @@
 "use client";
 
 import { useState, useCallback, useEffect, useRef } from "react";
-<<<<<<< HEAD
 import type { TwoFAuthAccount, OTPResult } from "@/lib/integrations/twofauth/types";
 
 export type { TwoFAuthAccount, OTPResult };
-=======
-<<<<<<< HEAD
-
-/**
- * Interface de conta 2FAuth
- */
-export interface TwoFAuthAccount {
-  id: number;
-  service: string | null;
-  account: string | null;
-  icon: string | null;
-  otp_type: "totp" | "hotp";
-  digits: number;
-  algorithm: "sha1" | "sha256" | "sha512";
-  period: number | null;
-  counter: number | null;
-}
-
-/**
- * Interface de OTP
- */
-export interface OTPResult {
-  password: string;
-  nextPassword?: string;
-}
-=======
-import type { TwoFAuthAccount, OTPResult } from "@/lib/integrations/twofauth/types";
-
-export type { TwoFAuthAccount, OTPResult };
->>>>>>> upstream/master
->>>>>>> 2c451d192a5a5c197ce2d59138f3c33e45a1cf53
 
 /**
  * Estado do hook
@@ -145,20 +113,9 @@ export function useTwoFAuth(): UseTwoFAuthReturn {
 
       if (isMountedRef.current) {
         setCurrentOTP(otpResult);
-<<<<<<< HEAD
         const period = selectedAccount?.period || 30;
         const now = Math.floor(Date.now() / 1000);
         setTimeRemaining(period - (now % period));
-=======
-<<<<<<< HEAD
-        // Resetar timer para 30 segundos (período padrão TOTP)
-        setTimeRemaining(30);
-=======
-        const period = selectedAccount?.period || 30;
-        const now = Math.floor(Date.now() / 1000);
-        setTimeRemaining(period - (now % period));
->>>>>>> upstream/master
->>>>>>> 2c451d192a5a5c197ce2d59138f3c33e45a1cf53
       }
 
       return otpResult;
@@ -173,15 +130,7 @@ export function useTwoFAuth(): UseTwoFAuthReturn {
         setOtpLoading(false);
       }
     }
-<<<<<<< HEAD
   }, [selectedAccount]);
-=======
-<<<<<<< HEAD
-  }, []);
-=======
-  }, [selectedAccount]);
->>>>>>> upstream/master
->>>>>>> 2c451d192a5a5c197ce2d59138f3c33e45a1cf53
 
   // Selecionar uma conta (e automaticamente buscar OTP)
   const selectAccount = useCallback(
