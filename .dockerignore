@@ -1,100 +1,110 @@
 # ============================================================================
-# .dockerignore - Otimiza contexto de build do Docker
-# ============================================================================
-# Reduz contexto de ~1GB para ~100MB, acelerando builds e reduzindo uso de RAM
+# .dockerignore - Otimiza contexto de build do Docker / Cloudron
 # ============================================================================
 
-# Dependências (serão instaladas no container)
+# Dependencias (instaladas no container)
+**/node_modules
 node_modules
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+pnpm-debug.log*
+.pnp.*
+.yarn
 
-# Next.js build output (exceto cache para builds incrementais)
-.next/
-!.next/cache
-out/
+# Next.js build output
+.next
+out
 
-# Arquivos de desenvolvimento
+# Git
 .git
 .gitignore
+.gitattributes
+
+# Documentacao e markdown
 *.md
-!README.md
-docs/
-openspec/
+NOTICE
+LICENSE
+CHANGELOG*
+
+# Docs e specs
+docs
+openspec
 
 # Testes
-e2e/
-tests/
-test-results/
-playwright-report/
-coverage/
-*.test.ts
-*.test.tsx
-*.spec.ts
-*.spec.tsx
-__tests__/
-__mocks__/
-*.integration.test.ts
+e2e
+tests
+test-results
+playwright-report
+coverage
+dist-test
+jest.config*
+playwright.config*
+**/__tests__
+**/__mocks__
+**/*.test.ts
+**/*.test.tsx
+**/*.spec.ts
+**/*.spec.tsx
 
-# Sandbox (páginas de desenvolvimento/teste)
-src/app/sandbox/
-src/app/(dev)/
+# Sandbox
+src/app/sandbox
+src/app/(dev)
 
 # Scripts de desenvolvimento
-scripts/
-!scripts/dev-tools/
-!scripts/setup/
-dev_data/
+scripts
+dev_data
 
-# Análise e debug
-analyze/
-*.heapprofile
-*.cpuprofile
-
-# Variaveis de ambiente (serao configuradas no Cloudron)
-.env
-.env.local
-.env.development
-.env.test
-.env.production
-.env*.local
-
-# IDEs
-.vscode/
-.idea/
-*.swp
-*.swo
-*~
-.DS_Store
-
-# Logs
-logs/
-*.log
-pnpm-debug.log*
-
-# Temporários
-tmp/
-temp/
-*.tmp
-
-# Configurações locais
+# AI / IDE / Editor configs
+.claude
+.gemini
+.agent
+.opencode
+.shared
+.cursor
+.kiro
+.vscode
+.idea
 .editorconfig
 .eslintcache
 tsconfig.tsbuildinfo
 
+# Analise e debug
+analyze
+*.heapprofile
+*.cpuprofile
+
+# Env (configuradas no Cloudron)
+.env
+.env.*
+!.env.example
+
+# Husky (git hooks, nao necessarios no build)
+.husky
+
 # Serwist (service worker gerado no build)
 public/sw*
 public/swe-worker*
+public/pdfjs
 
-# Docker/Cloudron (ignorar arquivos de config, nao o Dockerfile principal)
+# Docker / CI
 docker-compose*.yml
 .dockerignore
-
-# CI/CD
-.github/
+.github
 .gitlab-ci.yml
 
-# Outros
+# OS / temp
+.DS_Store
+*.swp
+*.swo
+*~
+tmp
+temp
+*.tmp
+logs
+*.log
 *.pem
 .npmrc
+
+# Library (component library separada)
+library
