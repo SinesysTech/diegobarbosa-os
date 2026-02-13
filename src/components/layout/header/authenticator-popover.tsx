@@ -14,8 +14,60 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Progress } from "@/components/ui/progress";
+<<<<<<< HEAD
 import { cn } from "@/lib/utils";
 import { useTwoFAuth } from "@/hooks/use-twofauth";
+=======
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { cn } from "@/lib/utils";
+import { useTwoFAuth, type TwoFAuthAccount } from "@/hooks/use-twofauth";
+
+/**
+ * Componente para exibir o ícone de uma conta 2FA
+ * Suporta URLs e base64, com fallback para ícone padrão
+ */
+function AccountIcon({ account, size = "md" }: { account: TwoFAuthAccount; size?: "sm" | "md" }) {
+  const sizeClasses = size === "sm" ? "h-8 w-8" : "h-10 w-10";
+  const iconSizeClasses = size === "sm" ? "h-4 w-4" : "h-5 w-5";
+
+  // Gerar iniciais do serviço para fallback
+  const initials = account.service
+    ? account.service
+        .split(" ")
+        .map((word) => word[0])
+        .join("")
+        .slice(0, 2)
+        .toUpperCase()
+    : "2F";
+
+  // Verificar se o ícone é uma URL válida ou base64
+  const hasValidIcon = account.icon && (
+    account.icon.startsWith("http") ||
+    account.icon.startsWith("data:image") ||
+    account.icon.startsWith("/")
+  );
+
+  return (
+    <Avatar className={cn(sizeClasses, "bg-primary/10")}>
+      {hasValidIcon ? (
+        <AvatarImage
+          src={account.icon!}
+          alt={account.service || "2FA"}
+          className="object-cover"
+        />
+      ) : null}
+      <AvatarFallback className="bg-primary/10 text-primary text-xs font-medium">
+        {account.icon && !hasValidIcon ? (
+          // Se há um ícone mas não é URL/base64, pode ser um nome de ícone
+          <ShieldCheckIcon className={iconSizeClasses} />
+        ) : (
+          initials
+        )}
+      </AvatarFallback>
+    </Avatar>
+  );
+}
+>>>>>>> upstream/master
 
 export function AuthenticatorPopover() {
   const {
@@ -42,7 +94,11 @@ export function AuthenticatorPopover() {
     }
   }, [isOpen, accounts.length, isLoading, fetchAccounts]);
 
+<<<<<<< HEAD
   // Manipular alteração de estado do popover
+=======
+  // Manipular alteracao de estado do popover
+>>>>>>> upstream/master
   const handleOpenChange = (open: boolean) => {
     setIsOpen(open);
     if (!open) {
@@ -72,7 +128,11 @@ export function AuthenticatorPopover() {
 
 
 
+<<<<<<< HEAD
   // Formatar código OTP com espaço no meio (123 456)
+=======
+  // Formatar codigo OTP com espaco no meio (123 456)
+>>>>>>> upstream/master
   const formatOTP = (code: string) => {
     if (code.length === 6) {
       return `${code.slice(0, 3)} ${code.slice(3)}`;
@@ -111,11 +171,20 @@ export function AuthenticatorPopover() {
 
         {/* Content */}
         {selectedAccount ? (
+<<<<<<< HEAD
           // Visualização do OTP
           <div className="p-4 space-y-4">
             {/* Nome da conta */}
             <div className="text-center">
               <div className="text-sm text-muted-foreground mb-1">
+=======
+          // Visualizacao do OTP
+          <div className="p-4 space-y-4">
+            {/* Ícone e nome da conta */}
+            <div className="flex flex-col items-center text-center">
+              <AccountIcon account={selectedAccount} size="md" />
+              <div className="mt-2 text-sm text-muted-foreground">
+>>>>>>> upstream/master
                 {selectedAccount.service || "Conta"}
               </div>
               <div className="text-xs text-muted-foreground/70">
@@ -123,7 +192,11 @@ export function AuthenticatorPopover() {
               </div>
             </div>
 
+<<<<<<< HEAD
             {/* Código OTP */}
+=======
+            {/* Codigo OTP */}
+>>>>>>> upstream/master
             <div className="flex flex-col items-center gap-2">
               {otpLoading ? (
                 <div className="flex items-center justify-center h-16">
@@ -170,7 +243,11 @@ export function AuthenticatorPopover() {
                     </div>
                   </div>
 
+<<<<<<< HEAD
                   {/* Botão copiar */}
+=======
+                  {/* Botao copiar */}
+>>>>>>> upstream/master
                   <Button
                     variant="outline"
                     size="sm"
@@ -185,7 +262,11 @@ export function AuthenticatorPopover() {
                     ) : (
                       <>
                         <CopyIcon className="h-4 w-4 mr-2" />
+<<<<<<< HEAD
                         Copiar Código
+=======
+                        Copiar Codigo
+>>>>>>> upstream/master
                       </>
                     )}
                   </Button>
@@ -233,9 +314,13 @@ export function AuthenticatorPopover() {
                     onClick={() => selectAccount(account)}
                   >
                     <div className="shrink-0">
+<<<<<<< HEAD
                       <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
                         <ShieldCheckIcon className="h-5 w-5 text-primary" />
                       </div>
+=======
+                      <AccountIcon account={account} />
+>>>>>>> upstream/master
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="font-medium text-sm truncate">
@@ -246,7 +331,11 @@ export function AuthenticatorPopover() {
                       </div>
                     </div>
                     <div className="shrink-0 text-xs text-muted-foreground">
+<<<<<<< HEAD
                       {account.digits} dígitos
+=======
+                      {account.digits} digitos
+>>>>>>> upstream/master
                     </div>
                   </button>
                 ))}

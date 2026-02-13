@@ -281,6 +281,7 @@ export function getAudienciasColumns(
         const audiencia = row.original;
         const tipo = audiencia.tipoDescricao || '-';
         return (
+<<<<<<< HEAD
           <Tooltip>
             <TooltipTrigger asChild>
               <div className="flex items-center py-2 max-w-full">
@@ -293,6 +294,16 @@ export function getAudienciasColumns(
               {tipo}
             </TooltipContent>
           </Tooltip>
+=======
+          <div className="flex items-center py-2 min-w-0">
+            <span
+              className="text-sm text-muted-foreground truncate"
+              title={audiencia.tipoDescricao || undefined}
+            >
+              {audiencia.tipoDescricao || '-'}
+            </span>
+          </div>
+>>>>>>> upstream/master
         );
       },
       enableSorting: true,

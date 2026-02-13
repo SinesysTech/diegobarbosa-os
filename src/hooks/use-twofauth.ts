@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useEffect, useRef } from "react";
+<<<<<<< HEAD
 
 /**
  * Interface de conta 2FAuth
@@ -24,6 +25,11 @@ export interface OTPResult {
   password: string;
   nextPassword?: string;
 }
+=======
+import type { TwoFAuthAccount, OTPResult } from "@/lib/integrations/twofauth/types";
+
+export type { TwoFAuthAccount, OTPResult };
+>>>>>>> upstream/master
 
 /**
  * Estado do hook
@@ -133,8 +139,14 @@ export function useTwoFAuth(): UseTwoFAuthReturn {
 
       if (isMountedRef.current) {
         setCurrentOTP(otpResult);
+<<<<<<< HEAD
         // Resetar timer para 30 segundos (período padrão TOTP)
         setTimeRemaining(30);
+=======
+        const period = selectedAccount?.period || 30;
+        const now = Math.floor(Date.now() / 1000);
+        setTimeRemaining(period - (now % period));
+>>>>>>> upstream/master
       }
 
       return otpResult;
@@ -149,7 +161,11 @@ export function useTwoFAuth(): UseTwoFAuthReturn {
         setOtpLoading(false);
       }
     }
+<<<<<<< HEAD
   }, []);
+=======
+  }, [selectedAccount]);
+>>>>>>> upstream/master
 
   // Selecionar uma conta (e automaticamente buscar OTP)
   const selectAccount = useCallback(
