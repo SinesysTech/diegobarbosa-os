@@ -15,6 +15,30 @@ export type {
   CriarCredencialParams,
   AtualizarCredencialParams,
   ListarCredenciaisParams,
+  // Credenciais em Lote
+  GrauCredencial,
+  ModoDuplicata,
+  CriarCredenciaisEmLoteParams,
+  ResultadoCredencialLote,
+  ResumoCriacaoEmLote,
+} from './domain';
+
+// Constants
+export {
+  TRIBUNAIS_ATIVOS,
+  TRIBUNAIS_LABELS,
+  GRAUS_LABELS,
+  UFS_BRASIL,
+} from './domain';
+
+// Schemas
+export {
+  criarAdvogadoSchema,
+  atualizarAdvogadoSchema,
+  criarCredencialSchema,
+  atualizarCredencialSchema,
+  criarCredenciaisEmLoteSchema,
+  oabEntrySchema,
 } from './domain';
 
 // Helper functions
@@ -39,12 +63,12 @@ export {
   actionBuscarCredencial,
   actionCriarCredencial,
   actionAtualizarCredencial,
+  actionCriarCredenciaisEmLote,
 } from './actions/credenciais-actions';
 
 // Hooks
 export { useAdvogados } from './hooks/use-advogados';
 export { useCredenciais } from './hooks/use-credenciais';
 
-// Components (To be migrated/created)
-// export { AdvogadoTable } from './components/advogados/advogados-table';
-// export { CredencialTable } from './components/credenciais/credenciais-table';
+// Components
+export { CredenciaisLoteDialog } from './components';

@@ -13,6 +13,9 @@ import {
   criarCredencial as criarCredencialDb,
   buscarCredencial as buscarCredencialDb,
   atualizarCredencial as atualizarCredencialDb,
+  buscarCredenciaisExistentes,
+  criarCredenciaisEmLoteBatch,
+  atualizarSenhaCredenciais,
 } from './repository';
 
 import type {
@@ -22,6 +25,10 @@ import type {
   ListarCredenciaisParams,
   CriarCredencialParams,
   AtualizarCredencialParams,
+  CriarCredenciaisEmLoteParams,
+  ResumoCriacaoEmLote,
+  ResultadoCredencialLote,
+  GrauCredencial,
 } from './domain';
 
 // ============================================================================
@@ -139,4 +146,143 @@ export async function buscarCredencial(id: number) {
 
 export async function atualizarCredencial(id: number, params: AtualizarCredencialParams) {
     return atualizarCredencialDb(id, params);
+}
+
+// ============================================================================
+// Credenciais em Lote
+// ============================================================================
+
+/**
+ * Cria credenciais em lote para múltiplos tribunais e graus.
+ * Retorna um resumo detalhado de cada credencial criada/atualizada/pulada.
+ */
+export async function criarCredenciaisEmLote(
+  params: CriarCredenciaisEmLoteParams
+): Promise<ResumoCriacaoEmLote> {
+  const { advogado_id, tribunais, graus, senha, modo_duplicata = 'pular' } = params;
+
+  // Validar advogado existe
+  const advogado = await buscarAdvogadoDb(advogado_id);
+  if (!advogado) {
+    throw new Error('Advogado não encontrado');
+  }
+
+  // Gerar todas as combinações tribunal × grau
+  const combinacoes: Array<{ tribunal: string; grau: GrauCredencial }> = [];
+  for (const tribunal of tribunais) {
+    for (const grau of graus) {
+      combinacoes.push({ tribunal, grau });
+    }
+  }
+
+  if (combinacoes.length === 0) {
+    return {
+      total: 0,
+      criadas: 0,
+      atualizadas: 0,
+      puladas: 0,
+      erros: 0,
+      detalhes: [],
+    };
+  }
+
+  // Buscar credenciais existentes para este advogado
+  const existentes = await buscarCredenciaisExistentes(advogado_id, tribunais, graus);
+  const existentesMap = new Map(
+    existentes.map((e) => [`${e.tribunal}-${e.grau}`, e])
+  );
+
+  // Separar em: criar, atualizar, pular
+  const aCriar: Array<{ tribunal: string; grau: GrauCredencial }> = [];
+  const aAtualizar: number[] = [];
+  const detalhes: ResultadoCredencialLote[] = [];
+
+  for (const combo of combinacoes) {
+    const key = `${combo.tribunal}-${combo.grau}`;
+    const existente = existentesMap.get(key);
+
+    if (existente) {
+      if (modo_duplicata === 'sobrescrever') {
+        aAtualizar.push(existente.id);
+        detalhes.push({
+          tribunal: combo.tribunal,
+          grau: combo.grau,
+          status: 'atualizada',
+          credencial_id: existente.id,
+        });
+      } else {
+        detalhes.push({
+          tribunal: combo.tribunal,
+          grau: combo.grau,
+          status: 'pulada',
+          mensagem: 'Credencial já existe',
+          credencial_id: existente.id,
+        });
+      }
+    } else {
+      aCriar.push(combo);
+    }
+  }
+
+  // Criar novas credenciais em lote
+  if (aCriar.length > 0) {
+    try {
+      const novas = await criarCredenciaisEmLoteBatch(
+        aCriar.map((c) => ({
+          advogado_id,
+          tribunal: c.tribunal,
+          grau: c.grau,
+          usuario: null,
+          senha,
+          active: true,
+        }))
+      );
+
+      for (const nova of novas) {
+        detalhes.push({
+          tribunal: nova.tribunal,
+          grau: nova.grau as GrauCredencial,
+          status: 'criada',
+          credencial_id: nova.id,
+        });
+      }
+    } catch (error) {
+      // Em caso de erro, marcar todas como erro
+      for (const combo of aCriar) {
+        detalhes.push({
+          tribunal: combo.tribunal,
+          grau: combo.grau,
+          status: 'erro',
+          mensagem: error instanceof Error ? error.message : 'Erro desconhecido',
+        });
+      }
+    }
+  }
+
+  // Atualizar credenciais existentes (atualizar senha e reativar)
+  if (aAtualizar.length > 0) {
+    try {
+      await atualizarSenhaCredenciais(aAtualizar, senha);
+    } catch (error) {
+      // Atualizar status para erro nos detalhes
+      for (const detalhe of detalhes) {
+        if (detalhe.status === 'atualizada' && aAtualizar.includes(detalhe.credencial_id!)) {
+          detalhe.status = 'erro';
+          detalhe.mensagem = error instanceof Error ? error.message : 'Erro ao atualizar';
+        }
+      }
+    }
+  }
+
+  // Calcular resumo
+  const resumo: ResumoCriacaoEmLote = {
+    total: combinacoes.length,
+    criadas: detalhes.filter((d) => d.status === 'criada').length,
+    atualizadas: detalhes.filter((d) => d.status === 'atualizada').length,
+    puladas: detalhes.filter((d) => d.status === 'pulada').length,
+    erros: detalhes.filter((d) => d.status === 'erro').length,
+    detalhes,
+  };
+
+  return resumo;
 }

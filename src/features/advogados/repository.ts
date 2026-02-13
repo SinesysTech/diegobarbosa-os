@@ -493,3 +493,77 @@ export async function listarCredenciais(
     };
   });
 }
+
+// ============================================================================
+// Credenciais em Lote
+// ============================================================================
+
+/**
+ * Busca credenciais existentes para um advogado com tribunais/graus específicos
+ */
+export async function buscarCredenciaisExistentes(
+  advogado_id: number,
+  tribunais: string[],
+  graus: string[]
+): Promise<{ tribunal: string; grau: string; id: number; active: boolean }[]> {
+  const supabase = createServiceClient();
+
+  const { data, error } = await supabase
+    .from('credenciais')
+    .select('id, tribunal, grau, active')
+    .eq('advogado_id', advogado_id)
+    .in('tribunal', tribunais)
+    .in('grau', graus);
+
+  if (error) {
+    throw new Error(`Erro ao buscar credenciais existentes: ${error.message}`);
+  }
+
+  return (data || []) as { tribunal: string; grau: string; id: number; active: boolean }[];
+}
+
+/**
+ * Criar múltiplas credenciais em uma única operação (insert em lote)
+ */
+export async function criarCredenciaisEmLoteBatch(
+  credenciais: Array<{
+    advogado_id: number;
+    tribunal: string;
+    grau: string;
+    usuario?: string | null;
+    senha: string;
+    active: boolean;
+  }>
+): Promise<Credencial[]> {
+  const supabase = createServiceClient();
+
+  const { data, error } = await supabase
+    .from('credenciais')
+    .insert(credenciais)
+    .select('id, advogado_id, tribunal, grau, usuario, active, created_at, updated_at');
+
+  if (error) {
+    throw new Error(`Erro ao criar credenciais em lote: ${error.message}`);
+  }
+
+  return (data || []) as Credencial[];
+}
+
+/**
+ * Atualizar senha de múltiplas credenciais
+ */
+export async function atualizarSenhaCredenciais(
+  ids: number[],
+  senha: string
+): Promise<void> {
+  const supabase = createServiceClient();
+
+  const { error } = await supabase
+    .from('credenciais')
+    .update({ senha, active: true })
+    .in('id', ids);
+
+  if (error) {
+    throw new Error(`Erro ao atualizar credenciais: ${error.message}`);
+  }
+}
