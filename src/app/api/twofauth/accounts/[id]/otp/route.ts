@@ -1,16 +1,16 @@
-// Rota de API para obter OTP de uma conta específica do 2FAuth
-// GET: Retorna o código OTP atual de uma conta
+// Rota de API para obter OTP de uma conta especifica do 2FAuth
+// GET: Retorna o codigo OTP atual de uma conta
 
 import { NextRequest, NextResponse } from "next/server";
 import { authenticateRequest } from "@/lib/auth/api-auth";
-import { getOTPByAccountId, TwoFAuthError } from "@/lib/integrations/twofauth";
+import { getOTP, TwoFAuthError } from "@/lib/integrations/twofauth/";
 
 /**
  * @swagger
  * /api/twofauth/accounts/{id}/otp:
  *   get:
- *     summary: Obtém OTP de uma conta
- *     description: Retorna o código OTP atual e próximo (se disponível) de uma conta específica
+ *     summary: Obtem OTP de uma conta
+ *     description: Retorna o codigo OTP atual e proximo (se disponivel) de uma conta especifica
  *     tags:
  *       - 2FAuth
  *     security:
@@ -38,23 +38,23 @@ import { getOTPByAccountId, TwoFAuthError } from "@/lib/integrations/twofauth";
  *                   properties:
  *                     password:
  *                       type: string
- *                       description: Código OTP atual
+ *                       description: Codigo OTP atual
  *                     nextPassword:
  *                       type: string
- *                       description: Próximo código OTP (se disponível)
+ *                       description: Proximo codigo OTP (se disponivel)
  *       401:
- *         description: Não autenticado
+ *         description: Nao autenticado
  *       404:
- *         description: Conta não encontrada
+ *         description: Conta nao encontrada
  *       500:
- *         description: Erro interno ou 2FAuth não configurado
+ *         description: Erro interno ou 2FAuth nao configurado
  */
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    // 1. Autenticação
+    // 1. Autenticacao
     const authResult = await authenticateRequest(request);
     if (!authResult.authenticated) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -66,13 +66,13 @@ export async function GET(
 
     if (isNaN(accountId)) {
       return NextResponse.json(
-        { success: false, error: "ID inválido" },
+        { success: false, error: "ID invalido" },
         { status: 400 }
       );
     }
 
     // 3. Obter OTP da conta
-    const otpResult = await getOTPByAccountId(accountId);
+    const otpResult = await getOTP(accountId);
 
     // 4. Retornar resultado
     return NextResponse.json({
