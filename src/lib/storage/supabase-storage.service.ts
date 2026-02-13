@@ -41,7 +41,7 @@ export interface SupabaseUploadResult {
  * Obtém o nome do bucket padrão
  */
 function getDefaultBucket(): string {
-    return process.env.SUPABASE_STORAGE_BUCKET || 'zattar-advogados';
+    return process.env.SUPABASE_STORAGE_BUCKET || 'diegobarbosa-os';
 }
 
 /**

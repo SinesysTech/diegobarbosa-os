@@ -21,7 +21,7 @@ function getEnvVar(...keys: string[]): string | undefined {
 }
 
 const getBucketName = () =>
-  getEnvVar("SUPABASE_STORAGE_BUCKET") || "zattar-advogados";
+  getEnvVar("SUPABASE_STORAGE_BUCKET") || "diegobarbosa-os";
 
 /**
  * Gera um nome único para o arquivo

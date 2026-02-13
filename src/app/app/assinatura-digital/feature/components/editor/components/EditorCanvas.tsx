@@ -11,7 +11,7 @@ interface CanvasSize {
 }
 
 interface EditorCanvasProps {
-  canvasRef: RefObject<HTMLDivElement | null>;
+  canvasRef: RefObject<HTMLDivElement>;
   canvasSize: CanvasSize;
   zoom: number;
   pdfUrl: string | null;
