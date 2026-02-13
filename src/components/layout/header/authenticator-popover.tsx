@@ -14,13 +14,6 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Progress } from "@/components/ui/progress";
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-import { cn } from "@/lib/utils";
-import { useTwoFAuth } from "@/hooks/use-twofauth";
-=======
->>>>>>> 2c451d192a5a5c197ce2d59138f3c33e45a1cf53
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { cn } from "@/lib/utils";
 import { useTwoFAuth, type TwoFAuthAccount } from "@/hooks/use-twofauth";
@@ -70,10 +63,6 @@ function AccountIcon({ account, size = "md" }: { account: TwoFAuthAccount; size?
     </Avatar>
   );
 }
-<<<<<<< HEAD
-=======
->>>>>>> upstream/master
->>>>>>> 2c451d192a5a5c197ce2d59138f3c33e45a1cf53
 
 export function AuthenticatorPopover() {
   const {
@@ -100,15 +89,7 @@ export function AuthenticatorPopover() {
     }
   }, [isOpen, accounts.length, isLoading, fetchAccounts]);
 
-<<<<<<< HEAD
   // Manipular alteracao de estado do popover
-=======
-<<<<<<< HEAD
-  // Manipular alteração de estado do popover
-=======
-  // Manipular alteracao de estado do popover
->>>>>>> upstream/master
->>>>>>> 2c451d192a5a5c197ce2d59138f3c33e45a1cf53
   const handleOpenChange = (open: boolean) => {
     setIsOpen(open);
     if (!open) {
@@ -138,15 +119,7 @@ export function AuthenticatorPopover() {
 
 
 
-<<<<<<< HEAD
   // Formatar codigo OTP com espaco no meio (123 456)
-=======
-<<<<<<< HEAD
-  // Formatar código OTP com espaço no meio (123 456)
-=======
-  // Formatar codigo OTP com espaco no meio (123 456)
->>>>>>> upstream/master
->>>>>>> 2c451d192a5a5c197ce2d59138f3c33e45a1cf53
   const formatOTP = (code: string) => {
     if (code.length === 6) {
       return `${code.slice(0, 3)} ${code.slice(3)}`;
@@ -185,26 +158,12 @@ export function AuthenticatorPopover() {
 
         {/* Content */}
         {selectedAccount ? (
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-          // Visualização do OTP
-          <div className="p-4 space-y-4">
-            {/* Nome da conta */}
-            <div className="text-center">
-              <div className="text-sm text-muted-foreground mb-1">
-=======
->>>>>>> 2c451d192a5a5c197ce2d59138f3c33e45a1cf53
           // Visualizacao do OTP
           <div className="p-4 space-y-4">
             {/* Ícone e nome da conta */}
             <div className="flex flex-col items-center text-center">
               <AccountIcon account={selectedAccount} size="md" />
               <div className="mt-2 text-sm text-muted-foreground">
-<<<<<<< HEAD
-=======
->>>>>>> upstream/master
->>>>>>> 2c451d192a5a5c197ce2d59138f3c33e45a1cf53
                 {selectedAccount.service || "Conta"}
               </div>
               <div className="text-xs text-muted-foreground/70">
@@ -212,15 +171,7 @@ export function AuthenticatorPopover() {
               </div>
             </div>
 
-<<<<<<< HEAD
             {/* Codigo OTP */}
-=======
-<<<<<<< HEAD
-            {/* Código OTP */}
-=======
-            {/* Codigo OTP */}
->>>>>>> upstream/master
->>>>>>> 2c451d192a5a5c197ce2d59138f3c33e45a1cf53
             <div className="flex flex-col items-center gap-2">
               {otpLoading ? (
                 <div className="flex items-center justify-center h-16">
@@ -267,15 +218,7 @@ export function AuthenticatorPopover() {
                     </div>
                   </div>
 
-<<<<<<< HEAD
                   {/* Botao copiar */}
-=======
-<<<<<<< HEAD
-                  {/* Botão copiar */}
-=======
-                  {/* Botao copiar */}
->>>>>>> upstream/master
->>>>>>> 2c451d192a5a5c197ce2d59138f3c33e45a1cf53
                   <Button
                     variant="outline"
                     size="sm"
@@ -290,15 +233,7 @@ export function AuthenticatorPopover() {
                     ) : (
                       <>
                         <CopyIcon className="h-4 w-4 mr-2" />
-<<<<<<< HEAD
                         Copiar Codigo
-=======
-<<<<<<< HEAD
-                        Copiar Código
-=======
-                        Copiar Codigo
->>>>>>> upstream/master
->>>>>>> 2c451d192a5a5c197ce2d59138f3c33e45a1cf53
                       </>
                     )}
                   </Button>
@@ -346,17 +281,7 @@ export function AuthenticatorPopover() {
                     onClick={() => selectAccount(account)}
                   >
                     <div className="shrink-0">
-<<<<<<< HEAD
                       <AccountIcon account={account} />
-=======
-<<<<<<< HEAD
-                      <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
-                        <ShieldCheckIcon className="h-5 w-5 text-primary" />
-                      </div>
-=======
-                      <AccountIcon account={account} />
->>>>>>> upstream/master
->>>>>>> 2c451d192a5a5c197ce2d59138f3c33e45a1cf53
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="font-medium text-sm truncate">
@@ -367,15 +292,7 @@ export function AuthenticatorPopover() {
                       </div>
                     </div>
                     <div className="shrink-0 text-xs text-muted-foreground">
-<<<<<<< HEAD
                       {account.digits} digitos
-=======
-<<<<<<< HEAD
-                      {account.digits} dígitos
-=======
-                      {account.digits} digitos
->>>>>>> upstream/master
->>>>>>> 2c451d192a5a5c197ce2d59138f3c33e45a1cf53
                     </div>
                   </button>
                 ))}

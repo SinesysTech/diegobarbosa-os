@@ -280,23 +280,6 @@ export function getAudienciasColumns(
       cell: ({ row }) => {
         const audiencia = row.original;
         return (
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <div className="flex items-center py-2 max-w-full">
-                <span className="text-sm text-muted-foreground truncate">
-                  {tipo}
-                </span>
-              </div>
-            </TooltipTrigger>
-            <TooltipContent side="top" className="max-w-xs">
-              {tipo}
-            </TooltipContent>
-          </Tooltip>
-=======
->>>>>>> 2c451d192a5a5c197ce2d59138f3c33e45a1cf53
           <div className="flex items-center py-2 min-w-0">
             <span
               className="text-sm text-muted-foreground truncate"
@@ -305,10 +288,6 @@ export function getAudienciasColumns(
               {audiencia.tipoDescricao || '-'}
             </span>
           </div>
-<<<<<<< HEAD
-=======
->>>>>>> upstream/master
->>>>>>> 2c451d192a5a5c197ce2d59138f3c33e45a1cf53
         );
       },
       enableSorting: true,
