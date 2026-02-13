@@ -44,6 +44,23 @@
  * └─────────────────────────────────────────────────────────────────┘
  */
 
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+import { autenticarPJE, type AuthResult } from './trt-auth.service';
+import type { CapturaAudienciasParams } from './trt-capture.service';
+import { obterTodasAudiencias } from '@/features/captura/pje-trt';
+import type { Audiencia, PagedResponse } from '../../types/types';
+import { salvarAudiencias, type SalvarAudienciasResult } from '../persistence/audiencias-persistence.service';
+import { obterTimeline } from '@/features/captura/pje-trt/timeline/obter-timeline';
+import { obterDocumento } from '@/features/captura/pje-trt/timeline/obter-documento';
+import { baixarDocumento } from '@/features/captura/pje-trt/timeline/baixar-documento';
+import { uploadToSupabase } from '@/lib/storage/supabase-storage.service';
+import { gerarNomeDocumentoAudiencia, gerarCaminhoDocumento } from '@/lib/storage/file-naming.utils';
+import { buscarOuCriarAdvogadoPorCpf } from '../advogado-helper.service';
+import { captureLogService, type LogEntry } from '../persistence/capture-log.service';
+=======
+>>>>>>> 2c451d192a5a5c197ce2d59138f3c33e45a1cf53
 import { autenticarPJE, type AuthResult } from "./trt-auth.service";
 import type { CapturaAudienciasParams } from "./trt-capture.service";
 import { obterTodasAudiencias } from "@/features/captura/pje-trt";
@@ -65,6 +82,10 @@ import {
   captureLogService,
   type LogEntry,
 } from "../persistence/capture-log.service";
+<<<<<<< HEAD
+=======
+>>>>>>> upstream/master
+>>>>>>> 2c451d192a5a5c197ce2d59138f3c33e45a1cf53
 import {
   buscarDadosComplementaresProcessos,
   extrairProcessosUnicos,
@@ -637,6 +658,13 @@ export async function audienciasCapture(
               },
             );
             const nomeArquivo = gerarNomeDocumentoAudiencia(a.id);
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+            const key = gerarCaminhoDocumento(a.nrProcesso || a.processo?.numero || '', 'audiencias', nomeArquivo);
+            const upload = await uploadToSupabase({ buffer: pdf, key, contentType: 'application/pdf' });
+=======
+>>>>>>> 2c451d192a5a5c197ce2d59138f3c33e45a1cf53
             const key = gerarCaminhoDocumento(
               a.nrProcesso || a.processo?.numero || "",
               "audiencias",
@@ -647,6 +675,10 @@ export async function audienciasCapture(
               key,
               contentType: "application/pdf",
             });
+<<<<<<< HEAD
+=======
+>>>>>>> upstream/master
+>>>>>>> 2c451d192a5a5c197ce2d59138f3c33e45a1cf53
             atasMap[a.id] = { documentoId: docDetalhes.id, url: upload.url };
           }
         } catch (e) {
