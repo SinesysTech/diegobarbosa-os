@@ -176,9 +176,14 @@ Buttons must feel "clickable" and prominent. Always add `cursor-pointer`.
 
 **Sizes:** `h-8` (sm), `h-9` (default), `h-10` (lg), `size-9` (icon)
 
+**Critical Rules:**
+- Use shadcn/ui `<Button>` component, NOT custom CSS buttons.
+- All variants are pre-configured with proper theme colors.
+
 ### 4.2 Cards
 
 Cards should look like physical objects on a digital table.
+
 
 ```css
 /* shadcn/ui Card (current implementation) */
@@ -191,6 +196,11 @@ hover:border-border           /* darker border on hover */
 transition-all duration-200   /* smooth transition */
 py-6                          /* vertical padding */
 ```
+
+**Critical Rules:**
+- Always use `bg-card` (white), not `bg-background` (off-white/light gray).
+- Add `cursor-pointer` to clickable cards.
+- Use `hover:-translate-y-0.5` (subtle), NOT `hover:-translate-y-2` (too jarring).
 
 ### 4.3 Motion & Feedback
 
@@ -394,6 +404,8 @@ The design includes the *words* inside the components.
 | `DataShell` | Table/list container | `header`, `footer`, `scrollableContent` |
 | `DialogFormShell` | Modal forms | White bg, no X button, cancel in footer |
 
+**Critical Rule:** Prefer `DialogFormShell` over raw `Dialog` for consistency with internal patterns.
+
 ### 11.2 Form Pattern
 
 Always use `react-hook-form` + Zod + shadcn `Form`:
@@ -410,6 +422,11 @@ Always use `react-hook-form` + Zod + shadcn `Form`:
 </Form>
 ```
 
+**Critical Rules:**
+- All inputs must have a `<Label>` or `<FormLabel>` (accessibility).
+- Use `h-9` height to match toolbar components (36px standard).
+- Minimum 16px font size to prevent iOS zoom on focus.
+
 ### 11.3 Data Table Pattern
 
 Use `useReactTable` (TanStack Table) + shadcn `Table`:
@@ -417,6 +434,13 @@ Use `useReactTable` (TanStack Table) + shadcn `Table`:
 - Action bar for bulk operations
 - Sorting, filtering, pagination via `DataTableToolbar`
 - Action buttons in `DataTableToolbar` via `actionButton` prop
+
+**Critical DataShell Rules:**
+- Toolbar elements must be `h-9` (36px height).
+- Table has `rounded-md border bg-card`.
+- No vertical dividers between columns (set `meta.align` for alignment).
+- Always use `useDebounce` for search (500ms delay).
+- Reset `pageIndex` to 0 when filters change.
 
 ### 11.4 Status Badges (Traffic Light System)
 
@@ -446,6 +470,9 @@ Use `getSemanticBadgeVariant()` from `@/lib/design-system` — never hardcode ba
 10. **NO Hardcoded Colors:** Use CSS variables or design tokens only.
 11. **NO `shadow-xl`:** Maximum elevation is `shadow-lg`.
 12. **NO Deep Imports:** Always import from feature barrel exports (`index.ts`).
+13. **NO Vertical Dividers:** In tables, avoid vertical borders between columns.
+14. **NO Instant State Changes:** Always use transitions (150-300ms).
+15. **NO Invisible Focus:** Focus states must be visible for a11y.
 
 ---
 
@@ -456,12 +483,14 @@ Use `getSemanticBadgeVariant()` from `@/lib/design-system` — never hardcode ba
 - [ ] All icons from consistent set with same stroke width
 - [ ] Hover states don't cause layout shift
 - [ ] Uses theme colors (`bg-primary`, not hardcoded hex)
+- [ ] No vertical dividers in tables
 
 ### Interaction
 - [ ] All clickable elements have `cursor-pointer`
 - [ ] Hover states with smooth transitions (150–300ms)
 - [ ] Focus states visible for keyboard navigation
 - [ ] Loading buttons disabled during async operations
+- [ ] No instant state changes
 
 ### Accessibility
 - [ ] Text contrast ratio meets 4.5:1 minimum

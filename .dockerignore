@@ -52,7 +52,10 @@ src/app/sandbox
 src/app/(dev)
 
 # Scripts de desenvolvimento
-scripts
+scripts/*
+!scripts/dev-tools
+scripts/dev-tools/*
+!scripts/dev-tools/architecture
 dev_data
 
 # AI / IDE / Editor configs
