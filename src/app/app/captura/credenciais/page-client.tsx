@@ -216,6 +216,7 @@ export default function CredenciaisPage() {
           table ? (
             <DataTableToolbar
               table={table}
+              title="Credenciais"
               density={density}
               onDensityChange={setDensity}
               searchValue={busca}
@@ -228,11 +229,11 @@ export default function CredenciaisPage() {
               filtersSlot={
                 <>
                   <Select value={tribunalFilter} onValueChange={setTribunalFilter}>
-                    <SelectTrigger className="h-10 w-[140px]">
+                    <SelectTrigger className="h-9 w-32 border-dashed bg-card font-normal">
                       <SelectValue placeholder="Tribunal" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="all">Todos</SelectItem>
+                      <SelectItem value="all">Tribunal</SelectItem>
                       {tribunaisUnicos.map((tribunal) => (
                         <SelectItem key={tribunal} value={tribunal}>
                           {tribunal}
@@ -242,11 +243,11 @@ export default function CredenciaisPage() {
                   </Select>
 
                   <Select value={grauFilter} onValueChange={setGrauFilter}>
-                    <SelectTrigger className="h-10 w-[150px]">
+                    <SelectTrigger className="h-9 w-32 border-dashed bg-card font-normal">
                       <SelectValue placeholder="Grau" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="all">Todos</SelectItem>
+                      <SelectItem value="all">Grau</SelectItem>
                       {grausUnicos.map((grau) => (
                         <SelectItem key={grau} value={grau}>
                           {grau}
@@ -256,11 +257,11 @@ export default function CredenciaisPage() {
                   </Select>
 
                   <Select value={statusFilter} onValueChange={setStatusFilter}>
-                    <SelectTrigger className="h-10 w-[120px]">
+                    <SelectTrigger className="h-9 w-32 border-dashed bg-card font-normal">
                       <SelectValue placeholder="Status" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="all">Todos</SelectItem>
+                      <SelectItem value="all">Status</SelectItem>
                       <SelectItem value="ativo">Ativas</SelectItem>
                       <SelectItem value="inativo">Inativas</SelectItem>
                     </SelectContent>

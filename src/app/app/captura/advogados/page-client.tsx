@@ -178,6 +178,7 @@ export default function AdvogadosClient() {
           table ? (
             <DataTableToolbar
               table={table}
+              title="Advogados"
               density={density}
               onDensityChange={setDensity}
               searchValue={busca}
@@ -189,12 +190,12 @@ export default function AdvogadosClient() {
               }}
               filtersSlot={
                 <Select value={ufFilter} onValueChange={setUfFilter}>
-                  <SelectTrigger className="h-10 w-[120px]">
-                    <SelectValue placeholder="UF OAB" />
+                  <SelectTrigger className="h-9 w-32 border-dashed bg-card font-normal">
+                    <SelectValue placeholder="UF" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="all">Todas UFs</SelectItem>
-                    {(ufsDisponiveis.length > 0 ? ufsDisponiveis : UFS_BRASIL).map((uf) => (
+                    <SelectItem value="all">UF</SelectItem>
+                    {UFS_BRASIL.map((uf) => (
                       <SelectItem key={uf} value={uf}>
                         {uf}
                       </SelectItem>
