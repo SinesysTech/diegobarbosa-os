@@ -18,14 +18,14 @@ import {
   DataTableToolbar,
 } from '@/components/shared/data-shell';
 import { DataTableColumnHeader } from '@/components/shared/data-shell/data-table-column-header';
+import { PageShell } from '@/components/shared/page-shell';
 import {
   AlertasInadimplencia,
   cancelarContaReceber,
   ContaReceberFormDialog,
   type ContaReceberComDetalhes,
   excluirContaReceber,
-  FiltroCentroCusto,
-  FiltroContaContabil,
+  MaisFiltrosReceberPopover,
   type OrigemLancamento,
   ReceberContaDialog,
   type StatusContaReceber,
@@ -34,6 +34,7 @@ import {
   useContasReceber,
   usePlanoContasAnaliticas,
 } from '@/features/financeiro';
+import { FilterPopover } from '@/features/partes';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
@@ -537,7 +538,7 @@ export default function ContasReceberPage() {
   );
 
   return (
-    <div className="space-y-3">
+    <PageShell>
       {/* Alertas de Inadimplência */}
       <AlertasInadimplencia
         resumo={resumoInadimplencia ?? null}
@@ -553,6 +554,7 @@ export default function ContasReceberPage() {
           table ? (
             <DataTableToolbar
               table={table}
+              title="Contas a Receber"
               density={density}
               onDensityChange={setDensity}
               searchValue={globalFilter}
@@ -567,118 +569,80 @@ export default function ContasReceberPage() {
               }}
               filtersSlot={
                 <>
-                  <Select
-                    value={status || 'all'}
+                  {/* Filtros primários (3) */}
+                  <FilterPopover
+                    label="Status"
+                    options={[
+                      { value: 'pendente', label: 'Pendente' },
+                      { value: 'confirmado', label: 'Recebido' },
+                      { value: 'cancelado', label: 'Cancelado' },
+                      { value: 'estornado', label: 'Estornado' },
+                    ]}
+                    value={status}
                     onValueChange={(val) => {
-                      setStatus(val === 'all' ? '' : val as StatusContaReceber | '');
+                      setStatus(val === 'all' ? '' : (val as StatusContaReceber | ''));
                       setPageIndex(0);
                     }}
-                  >
-                    <SelectTrigger className="h-10 w-[140px]">
-                      <SelectValue placeholder="Status" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">Todos</SelectItem>
-                      <SelectItem value="pendente">Pendente</SelectItem>
-                      <SelectItem value="confirmado">Recebido</SelectItem>
-                      <SelectItem value="cancelado">Cancelado</SelectItem>
-                      <SelectItem value="estornado">Estornado</SelectItem>
-                    </SelectContent>
-                  </Select>
-
-                  <Select
+                    defaultValue=""
+                  />
+                  <FilterPopover
+                    label="Vencimento"
+                    options={[
+                      { value: 'vencidas', label: 'Vencidas' },
+                      { value: 'hoje', label: 'Vencem hoje' },
+                      { value: '7dias', label: 'Próximos 7 dias' },
+                      { value: '30dias', label: 'Próximos 30 dias' },
+                    ]}
                     value={vencimento}
                     onValueChange={(val) => {
                       setVencimento(val === 'all' ? '' : val);
                       setPageIndex(0);
                     }}
-                  >
-                    <SelectTrigger className="h-10 w-[160px]">
-                      <SelectValue placeholder="Vencimento" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">Todos</SelectItem>
-                      <SelectItem value="vencidas">Vencidas</SelectItem>
-                      <SelectItem value="hoje">Vencem hoje</SelectItem>
-                      <SelectItem value="7dias">Próximos 7 dias</SelectItem>
-                      <SelectItem value="30dias">Próximos 30 dias</SelectItem>
-                    </SelectContent>
-                  </Select>
-
-                  <Select
+                    defaultValue=""
+                  />
+                  <FilterPopover
+                    label="Categoria"
+                    options={CATEGORIAS}
                     value={categoria}
                     onValueChange={(val) => {
                       setCategoria(val === 'all' ? '' : val);
                       setPageIndex(0);
                     }}
-                  >
-                    <SelectTrigger className="h-10 w-[180px]">
-                      <SelectValue placeholder="Categoria" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">Todas</SelectItem>
-                      {CATEGORIAS.map((cat) => (
-                        <SelectItem key={cat.value} value={cat.value}>
-                          {cat.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-
-                  <Select
-                    value={tipoRecorrente}
-                    onValueChange={(val) => {
-                      setTipoRecorrente(val === 'all' ? '' : val);
-                      setPageIndex(0);
-                    }}
-                  >
-                    <SelectTrigger className="h-10 w-[140px]">
-                      <SelectValue placeholder="Tipo" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">Todos</SelectItem>
-                      <SelectItem value="recorrente">Recorrentes</SelectItem>
-                      <SelectItem value="avulsa">Avulsas</SelectItem>
-                    </SelectContent>
-                  </Select>
-
-                  <Select
-                    value={origem}
-                    onValueChange={(val) => {
-                      setOrigem(val === 'all' ? '' : val as OrigemLancamento | '');
-                      setPageIndex(0);
-                    }}
-                  >
-                    <SelectTrigger className="h-10 w-[160px]">
-                      <SelectValue placeholder="Origem" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">Todas as origens</SelectItem>
-                      <SelectItem value="manual">Manual</SelectItem>
-                      <SelectItem value="acordo_judicial">Acordo Judicial</SelectItem>
-                      <SelectItem value="contrato">Contrato</SelectItem>
-                    </SelectContent>
-                  </Select>
-
-                  <FiltroContaContabil
-                    value={contaContabilId}
-                    onChange={(value) => {
-                      setContaContabilId(value);
-                      setPageIndex(0);
-                    }}
-                    tiposConta={['receita']}
-                    placeholder="Conta Contábil"
-                    className="w-[200px]"
+                    defaultValue=""
                   />
 
-                  <FiltroCentroCusto
-                    value={centroCustoId}
-                    onChange={(value) => {
-                      setCentroCustoId(value);
+                  {/* Filtros avançados (dropdown) */}
+                  <MaisFiltrosReceberPopover
+                    tipoRecorrente={tipoRecorrente}
+                    onTipoRecorrenteChange={(val) => {
+                      setTipoRecorrente(val);
                       setPageIndex(0);
                     }}
-                    placeholder="Centro de Custo"
-                    className="w-[180px]"
+                    tipoRecorrenteOptions={[
+                      { value: 'recorrente', label: 'Recorrentes' },
+                      { value: 'avulsa', label: 'Avulsas' },
+                    ]}
+                    origem={origem}
+                    onOrigemChange={(val) => {
+                      setOrigem(val as OrigemLancamento | '');
+                      setPageIndex(0);
+                    }}
+                    origemOptions={[
+                      { value: 'manual', label: 'Manual' },
+                      { value: 'acordo_judicial', label: 'Acordo Judicial' },
+                      { value: 'contrato', label: 'Contrato' },
+                    ]}
+                    contaContabilId={contaContabilId}
+                    onContaContabilIdChange={(val) => {
+                      setContaContabilId(val);
+                      setPageIndex(0);
+                    }}
+                    tiposContaContabil={['receita']}
+                    centroCustoId={centroCustoId}
+                    onCentroCustoIdChange={(val) => {
+                      setCentroCustoId(val);
+                      setPageIndex(0);
+                    }}
                   />
                 </>
               }
@@ -804,6 +768,6 @@ export default function ContasReceberPage() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-    </div>
+    </PageShell>
   );
 }

@@ -367,6 +367,7 @@ export {
   FiltroCliente,
   FiltroFornecedor,
   MaisFiltrosPopover,
+  MaisFiltrosReceberPopover,
   // Contas a Pagar
   AlertasVencimento,
   ContaPagarFormDialog,
@@ -395,6 +396,7 @@ export {
   buildPlanoContasFilterOptions,
   buildPlanoContasFilterGroups,
   parsePlanoContasFilters,
+  MaisFiltrosPlanoContasPopover,
   // Orçamentos
   OrcamentoFormDialog,
   OrcamentoItemDialog,

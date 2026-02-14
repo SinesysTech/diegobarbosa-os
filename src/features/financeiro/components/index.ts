@@ -26,6 +26,7 @@ export { FiltroCentroCusto } from './shared/filtros/filtro-centro-custo';
 export { FiltroCliente } from './shared/filtros/filtro-cliente';
 export { FiltroFornecedor } from './shared/filtros/filtro-fornecedor';
 export { MaisFiltrosPopover } from './shared/filtros/mais-filtros-popover';
+export { MaisFiltrosReceberPopover } from './shared/filtros/mais-filtros-receber-popover';
 
 // ============================================================================
 // Contas a Pagar
@@ -79,6 +80,7 @@ export {
   buildPlanoContasFilterGroups,
   parsePlanoContasFilters,
 } from './plano-contas/plano-contas-toolbar-filters';
+export { MaisFiltrosPlanoContasPopover } from './plano-contas/mais-filtros-plano-contas-popover';
 
 // ============================================================================
 // Orçamentos
