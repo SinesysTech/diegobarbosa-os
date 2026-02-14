@@ -15,7 +15,7 @@
 # ============================================================================
 # STAGE 1: Dependencies
 # ============================================================================
-FROM node:22-alpine AS deps
+FROM --platform=linux/amd64 node:22-alpine AS deps
 WORKDIR /app
 
 # Desabilitar telemetria e download de browsers do Playwright
@@ -34,7 +34,7 @@ RUN npm ci --legacy-peer-deps --ignore-scripts
 # ============================================================================
 # STAGE 2: Builder
 # ============================================================================
-FROM node:22-alpine AS builder
+FROM --platform=linux/amd64 node:22-alpine AS builder
 WORKDIR /app
 
 # Configuracao de memoria para build
@@ -77,7 +77,7 @@ RUN npm run build:ci
 # ============================================================================
 # STAGE 3: Runner (Cloudron Base Image)
 # ============================================================================
-FROM cloudron/base:4.2.0
+FROM --platform=linux/amd64 cloudron/base:4.2.0
 
 # Instalar Node.js 22 (usar versao pre-instalada no base image se disponivel)
 # O base image inclui multiplas versoes de Node.js em /usr/local/node-<version>
