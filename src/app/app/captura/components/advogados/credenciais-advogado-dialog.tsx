@@ -58,9 +58,9 @@ import { CheckCircle, AlertCircle, XCircle } from 'lucide-react';
 
 type Props = {
   open: boolean;
-  onOpenChange: (open: boolean) => void;
+  onOpenChangeAction: (open: boolean) => void;
   advogado: Advogado | null;
-  onRefresh?: () => void;
+  onRefreshAction?: () => void;
 };
 
 type CredencialFormData = {
@@ -83,7 +83,7 @@ const GRAUS = [
   { value: '2', label: '2° Grau' },
 ] as const;
 
-export function CredenciaisAdvogadoDialog({ open, onOpenChange, advogado, onRefresh }: Props) {
+export function CredenciaisAdvogadoDialog({ open, onOpenChangeAction, advogado, onRefreshAction }: Props) {
   const [credenciais, setCredenciais] = useState<CredencialComAdvogado[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
@@ -214,7 +214,7 @@ export function CredenciaisAdvogadoDialog({ open, onOpenChange, advogado, onRefr
         toast.success('Credencial atualizada com sucesso!');
         resetForm();
         await buscarCredenciais();
-        onRefresh?.();
+        onRefreshAction?.();
       } else if (modoLote) {
         // Create new - MODO LOTE
         if (loteFormData.tribunais.length === 0) {
@@ -253,7 +253,7 @@ export function CredenciaisAdvogadoDialog({ open, onOpenChange, advogado, onRefr
         }
 
         await buscarCredenciais();
-        onRefresh?.();
+        onRefreshAction?.();
       } else {
         // Create new - MODO INDIVIDUAL
         if (!formData.tribunal) {
@@ -280,7 +280,7 @@ export function CredenciaisAdvogadoDialog({ open, onOpenChange, advogado, onRefr
         toast.success('Credencial cadastrada com sucesso!');
         resetForm();
         await buscarCredenciais();
-        onRefresh?.();
+        onRefreshAction?.();
       }
     } catch (error) {
       toast.error(error instanceof Error ? error.message : 'Erro ao salvar credencial');
@@ -308,7 +308,7 @@ export function CredenciaisAdvogadoDialog({ open, onOpenChange, advogado, onRefr
 
       setToggleDialog({ open: false, credencial: null });
       await buscarCredenciais();
-      onRefresh?.();
+      onRefreshAction?.();
     } catch (error) {
       toast.error(error instanceof Error ? error.message : 'Erro ao atualizar status');
     }
@@ -326,7 +326,7 @@ export function CredenciaisAdvogadoDialog({ open, onOpenChange, advogado, onRefr
 
   return (
     <>
-      <Dialog open={open} onOpenChange={onOpenChange}>
+      <Dialog open={open} onOpenChange={onOpenChangeAction}>
         <DialogContent className="sm:max-w-[600px]">
           <DialogHeader>
             <DialogTitle>Credenciais de {advogado.nome_completo}</DialogTitle>
@@ -454,8 +454,8 @@ export function CredenciaisAdvogadoDialog({ open, onOpenChange, advogado, onRefr
                               <td className="py-2">{GRAUS_LABELS[d.grau]}</td>
                               <td className="py-2">
                                 <span className={`flex items-center gap-1 ${d.status === 'criada' ? 'text-green-600' :
-                                    d.status === 'atualizada' ? 'text-blue-600' :
-                                      d.status === 'pulada' ? 'text-yellow-600' : 'text-red-600'
+                                  d.status === 'atualizada' ? 'text-blue-600' :
+                                    d.status === 'pulada' ? 'text-yellow-600' : 'text-red-600'
                                   }`}>
                                   {d.status === 'criada' && <CheckCircle className="h-3 w-3" />}
                                   {d.status === 'atualizada' && <CheckCircle className="h-3 w-3" />}
@@ -746,7 +746,7 @@ export function CredenciaisAdvogadoDialog({ open, onOpenChange, advogado, onRefr
           </div>
 
           <DialogFooter>
-            <Button variant="outline" onClick={() => onOpenChange(false)}>
+            <Button variant="outline" onClick={() => onOpenChangeAction(false)}>
               Fechar
             </Button>
           </DialogFooter>

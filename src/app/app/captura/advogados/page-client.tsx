@@ -187,8 +187,8 @@ export default function AdvogadosPage() {
       <AdvogadosDialog
         advogado={advogadoDialog.advogado}
         open={advogadoDialog.open}
-        onOpenChange={(open) => setAdvogadoDialog({ ...advogadoDialog, open })}
-        onSuccess={() => {
+        onOpenChangeAction={(open) => setAdvogadoDialog({ ...advogadoDialog, open })}
+        onRefreshAction={() => {
           refetch();
           setAdvogadoDialog({ open: false, advogado: null });
         }}
