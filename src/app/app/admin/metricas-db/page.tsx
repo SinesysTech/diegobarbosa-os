@@ -1,9 +1,9 @@
 import { redirect } from "next/navigation";
-
-export const dynamic = 'force-dynamic';
 import { PageShell } from "@/components/shared/page-shell";
 import { actionObterMetricasDB } from "@/features/admin";
 import { MetricasDBContent } from "./components/metricas-db-content";
+
+export const dynamic = 'force-dynamic';
 
 export default async function MetricasDBPage() {
   const result = await actionObterMetricasDB();

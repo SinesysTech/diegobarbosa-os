@@ -1,9 +1,9 @@
 import { redirect } from "next/navigation";
-
-export const dynamic = 'force-dynamic';
 import { PageShell } from "@/components/shared/page-shell";
 import { actionObterMetricasDB } from "@/features/admin";
 import { ConfiguracoesTabsContent } from "./components/configuracoes-tabs-content";
+
+export const dynamic = 'force-dynamic';
 
 export default async function ConfiguracoesPage() {
   const result = await actionObterMetricasDB();

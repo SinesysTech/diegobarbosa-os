@@ -11,10 +11,10 @@ const __dirname = path.dirname(__filename);
 const withBundleAnalyzer =
   process.env.ANALYZE === "true"
     ? bundleAnalyzer({
-        enabled: true,
-        analyzerMode: "static",
-        openAnalyzer: false,
-      })
+      enabled: true,
+      analyzerMode: "static",
+      openAnalyzer: false,
+    })
     : (config) => config;
 
 const APP_MODULES = [
@@ -207,8 +207,14 @@ const nextConfig = {
     resolveExtensions: [".tsx", ".ts", ".jsx", ".js"],
   },
   typescript: {
-    // Build will fail on TypeScript errors - ensures type safety
     ignoreBuildErrors: false,
+  },
+  webpack: (config) => {
+    config.module = {
+      ...config.module,
+      exprContextCritical: false,
+    };
+    return config;
   },
   // Fetch logging desabilitado - use DEBUG_SUPABASE=true para logs legíveis
   // logging: {

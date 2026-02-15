@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
-
-export const dynamic = 'force-dynamic';
 import { startOfMonth, endOfMonth } from "date-fns";
 
 import EventCalendarApp from "./components/event-calendar-app";
 import { actionListarEventosCalendar, type UnifiedCalendarEvent } from "@/features/calendar";
+
+export const dynamic = 'force-dynamic';
 
 export async function generateMetadata(): Promise<Metadata> {
   return {
