@@ -15,6 +15,9 @@
   "addons": {
     "localstorage": {}
   },
+  "runtimeDirs": [
+    ".next/cache"
+  ],
   "tags": [
     "productivity",
     "business"

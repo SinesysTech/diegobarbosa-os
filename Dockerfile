@@ -81,14 +81,21 @@ RUN npm run build:ci
 # ============================================================================
 # STAGE 3: Runner (Cloudron Base Image)
 # ============================================================================
+# Obter Node.js 22 de imagem oficial Debian (glibc compativel com Ubuntu 22.04)
+FROM --platform=linux/amd64 node:22-slim AS node22
+
 FROM --platform=linux/amd64 cloudron/base:4.2.0
 
-# Instalar Node.js 22 (usar versao pre-instalada no base image se disponivel)
-# O base image inclui multiplas versoes de Node.js em /usr/local/node-<version>
-# Verificar versao disponivel e usar a mais recente
-ENV PATH="/usr/local/node-22.16.0/bin:$PATH"
+# cloudron/base:4.2.0 so inclui Node.js 18.18.0 em /usr/local/node-18.18.0/bin
+# Copiar Node.js 22 de imagem oficial Debian (mesma glibc do Ubuntu 22.04)
+COPY --from=node22 /usr/local/bin/node /usr/local/node-22/bin/
+COPY --from=node22 /usr/local/lib/node_modules /usr/local/node-22/lib/node_modules
+RUN cd /usr/local/node-22/bin \
+    && ln -s ../lib/node_modules/npm/bin/npm-cli.js npm \
+    && ln -s ../lib/node_modules/npm/bin/npx-cli.js npx
+ENV PATH="/usr/local/node-22/bin:$PATH"
 
-# Verificar versao do Node.js (para debug)
+# Verificar versao do Node.js (deve mostrar v22.x)
 RUN node --version && npm --version
 
 # Configurar diretorio da aplicacao (padrao Cloudron)
@@ -100,8 +107,8 @@ COPY --from=builder /app/public ./public
 COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static
 
-# Criar diretorio de cache do Next.js
-RUN mkdir -p .next/cache/custom
+# Criar diretorios de cache do Next.js (writable via runtimeDirs no manifest)
+RUN mkdir -p .next/cache/custom .next/cache/images
 
 # Copiar script de inicializacao
 COPY start.sh /app/code/start.sh

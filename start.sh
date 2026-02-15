@@ -28,8 +28,10 @@ mkdir -p "${DATA_DIR}/cache"
 mkdir -p "${DATA_DIR}/logs"
 mkdir -p "${DATA_DIR}/uploads"
 
-# Criar diretorio de cache do Next.js (necessario para cache-handler.js)
+# Criar subdiretorios de cache do Next.js
+# O diretorio .next/cache eh writable via runtimeDirs no CloudronManifest.json
 mkdir -p "/app/code/.next/cache/custom"
+mkdir -p "/app/code/.next/cache/images"
 
 # Verificar se eh primeira execucao
 if [[ ! -f "${DATA_DIR}/.initialized" ]]; then
@@ -76,6 +78,7 @@ fi
 export NODE_OPTIONS="--max-old-space-size=768"
 
 echo "=> Environment configured"
+echo "   - Node.js: $(node --version)"
 echo "   - PORT: ${PORT}"
 echo "   - HOSTNAME: ${HOSTNAME}"
 echo "   - NODE_ENV: ${NODE_ENV}"
