@@ -26,6 +26,19 @@ function isValidEnvValue(value: string | undefined | null): value is string {
 }
 
 /**
+ * Lê variável de ambiente em RUNTIME, evitando que o webpack DefinePlugin
+ * inline valores de build-time (como `__PLACEHOLDER__`).
+ *
+ * O webpack substitui `process.env.NEXT_PUBLIC_*` (dot notation) pelo valor
+ * literal do build. Usando uma função com parâmetro dinâmico, o webpack
+ * não consegue resolver o acesso e usa o `process.env` real do Node.js.
+ */
+function readRuntimeEnv(key: string): string {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  return (process as any)['env'][key] ?? '';
+}
+
+/**
  * Lê uma variável de ambiente pública no cliente.
  *
  * Ordem de resolução:
@@ -35,9 +48,9 @@ function isValidEnvValue(value: string | undefined | null): value is string {
  * Valores placeholder do Docker build (ex: `__PLACEHOLDER__`) são rejeitados.
  */
 export function getPublicEnv<K extends keyof PublicEnv>(key: K): string | undefined {
-  // No servidor, ler direto de process.env
+  // No servidor, ler direto de process.env (runtime)
   if (typeof window === 'undefined') {
-    const value = process.env[key];
+    const value = readRuntimeEnv(key);
     return isValidEnvValue(value) ? value : undefined;
   }
 
@@ -54,17 +67,28 @@ export function getPublicEnv<K extends keyof PublicEnv>(key: K): string | undefi
 }
 
 /**
+ * Lista de chaves NEXT_PUBLIC_* que devem ser expostas ao cliente.
+ * Usar array de strings para que o webpack NÃO inline os valores.
+ */
+const PUBLIC_ENV_KEYS: (keyof PublicEnv)[] = [
+  'NEXT_PUBLIC_SUPABASE_URL',
+  'NEXT_PUBLIC_SUPABASE_PUBLISHABLE_OR_ANON_KEY',
+  'NEXT_PUBLIC_APP_URL',
+  'NEXT_PUBLIC_DYTE_ORG_ID',
+];
+
+/**
  * Gera o script de injeção para ser incluído no <head> do layout.
  * Deve ser chamado apenas em Server Components.
+ *
+ * Usa `readRuntimeEnv()` para ler de `process.env` em runtime,
+ * evitando que o webpack inline valores de build-time.
  */
 export function getPublicEnvScript(): string {
-  const env: PublicEnv = {
-    NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL ?? '',
-    NEXT_PUBLIC_SUPABASE_PUBLISHABLE_OR_ANON_KEY:
-      process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_OR_ANON_KEY ?? '',
-    NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL ?? '',
-    NEXT_PUBLIC_DYTE_ORG_ID: process.env.NEXT_PUBLIC_DYTE_ORG_ID ?? '',
-  };
+  const env = {} as Record<string, string>;
+  for (const key of PUBLIC_ENV_KEYS) {
+    env[key] = readRuntimeEnv(key);
+  }
 
   if (!isValidEnvValue(env.NEXT_PUBLIC_SUPABASE_URL)) {
     console.error(
