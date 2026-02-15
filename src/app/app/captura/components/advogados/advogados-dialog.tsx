@@ -52,11 +52,11 @@ type FormValues = z.infer<typeof formSchema>;
 interface Props {
   advogado: Advogado | null;
   open: boolean;
-  onOpenChange: (open: boolean) => void;
-  onSuccess: () => void;
+  onOpenChangeAction: (open: boolean) => void;
+  onSuccessAction: () => void;
 }
 
-export function AdvogadosDialog({ advogado, open, onOpenChange, onSuccess }: Props) {
+export function AdvogadosDialog({ advogado, open, onOpenChangeAction, onSuccessAction }: Props) {
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const isEditing = !!advogado;
 
@@ -125,7 +125,7 @@ export function AdvogadosDialog({ advogado, open, onOpenChange, onSuccess }: Pro
         toast.success('Advogado cadastrado com sucesso!');
       }
 
-      onSuccess();
+      onSuccessAction();
     } catch (error) {
       toast.error(error instanceof Error ? error.message : 'Erro ao salvar advogado');
     } finally {
@@ -151,7 +151,7 @@ export function AdvogadosDialog({ advogado, open, onOpenChange, onSuccess }: Pro
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={open} onOpenChange={onOpenChangeAction}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>{isEditing ? 'Editar Advogado' : 'Novo Advogado'}</DialogTitle>
@@ -242,7 +242,7 @@ export function AdvogadosDialog({ advogado, open, onOpenChange, onSuccess }: Pro
               <Button
                 type="button"
                 variant="outline"
-                onClick={() => onOpenChange(false)}
+                onClick={() => onOpenChangeAction(false)}
                 disabled={isSubmitting}
               >
                 Cancelar

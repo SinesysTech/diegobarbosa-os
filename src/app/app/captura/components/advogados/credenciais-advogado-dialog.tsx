@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import { useState, useEffect, useCallback } from 'react';
-import { Plus, Pencil, Power, Loader2, Eye, EyeOff } from 'lucide-react';
+import { Plus, Pencil, Power, Loader2, Eye, EyeOff, CheckCircle, AlertCircle, XCircle } from 'lucide-react';
 
 import {
   Dialog,
@@ -54,7 +54,6 @@ import { GRAU_LABELS } from '@/lib/design-system';
 import { Checkbox } from '@/components/ui/checkbox';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { CheckCircle, AlertCircle, XCircle } from 'lucide-react';
 
 type Props = {
   open: boolean;
