@@ -20,13 +20,7 @@ import {
   getBlockInfo,
   recordSuspiciousActivity,
 } from "@/lib/security/ip-blocking-edge";
-
-// CRITICAL: Add safety check at module load time
-if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_OR_ANON_KEY) {
-  console.warn(
-    '[Middleware Init] Missing critical env vars - will handle gracefully at runtime'
-  );
-}
+import { readRuntimeEnv } from "@/lib/env/public-env";
 
 /**
  * Middleware para gerenciar autenticação Supabase e roteamento multi-app
@@ -241,9 +235,9 @@ export async function middleware(request: NextRequest) {
     publicDashboardRoutes.some((route) => pathname.startsWith(route)) ||
     globalPublicRoutes.some((route) => pathname.startsWith(route));
 
-  // Validar variáveis de ambiente obrigatórias
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_OR_ANON_KEY;
+  // Validar variáveis de ambiente obrigatórias (readRuntimeEnv evita inlining do webpack)
+  const supabaseUrl = readRuntimeEnv('NEXT_PUBLIC_SUPABASE_URL');
+  const supabaseKey = readRuntimeEnv('NEXT_PUBLIC_SUPABASE_PUBLISHABLE_OR_ANON_KEY');
 
   if (!supabaseUrl || !supabaseKey) {
     console.error(

@@ -33,7 +33,7 @@ function isValidEnvValue(value: string | undefined | null): value is string {
  * literal do build. Usando uma função com parâmetro dinâmico, o webpack
  * não consegue resolver o acesso e usa o `process.env` real do Node.js.
  */
-function readRuntimeEnv(key: string): string {
+export function readRuntimeEnv(key: string): string {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return (process as any)['env'][key] ?? '';
 }

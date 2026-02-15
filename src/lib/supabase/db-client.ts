@@ -8,6 +8,7 @@
  */
 
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
+import { readRuntimeEnv } from '@/lib/env/public-env';
 
 /**
  * Tipo do cliente Supabase para uso nos repositórios
@@ -18,7 +19,7 @@ export type DbClient = SupabaseClient;
  * Configuração do Supabase obtida das variáveis de ambiente
  */
 function getSupabaseConfig() {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const url = readRuntimeEnv('NEXT_PUBLIC_SUPABASE_URL');
 
   // Para operações de service (backend), usar secret key
   // Prioridade: SUPABASE_SECRET_KEY (nova) > SUPABASE_SERVICE_ROLE_KEY (legacy)

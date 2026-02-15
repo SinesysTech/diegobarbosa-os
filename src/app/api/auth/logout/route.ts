@@ -7,13 +7,14 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { createServerClient } from '@supabase/ssr';
+import { readRuntimeEnv } from '@/lib/env/public-env';
 
 export async function POST(request: NextRequest) {
   try {
     // Criar cliente Supabase para acessar cookies
     const supabase = createServerClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_OR_ANON_KEY!,
+      readRuntimeEnv('NEXT_PUBLIC_SUPABASE_URL'),
+      readRuntimeEnv('NEXT_PUBLIC_SUPABASE_PUBLISHABLE_OR_ANON_KEY'),
       {
         cookies: {
           getAll() {
@@ -53,7 +54,7 @@ export async function POST(request: NextRequest) {
     ];
 
     // Também limpar cookies com prefixo do projeto (formato: sb-{project-ref}-auth-token)
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const supabaseUrl = readRuntimeEnv('NEXT_PUBLIC_SUPABASE_URL');
     if (supabaseUrl) {
       try {
         const projectRef = new URL(supabaseUrl).hostname.split('.')[0];
@@ -97,7 +98,7 @@ export async function POST(request: NextRequest) {
     ];
 
     // Também limpar cookies com prefixo do projeto (formato: sb-{project-ref}-auth-token)
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const supabaseUrl = readRuntimeEnv('NEXT_PUBLIC_SUPABASE_URL');
     if (supabaseUrl) {
       try {
         const projectRef = new URL(supabaseUrl).hostname.split('.')[0];

@@ -3,6 +3,7 @@
 import { NextRequest } from "next/server";
 import { createServerClient } from "@supabase/ssr";
 import { createServiceClient } from "@/lib/supabase/service-client";
+import { readRuntimeEnv } from "@/lib/env/public-env";
 import { getClientIp } from "@/lib/utils/get-client-ip";
 import { recordSuspiciousActivity } from "@/lib/security/ip-blocking";
 
@@ -177,8 +178,8 @@ export async function authenticateRequest(
     // Criar cliente Supabase a partir dos cookies da requisição
     // Isso é necessário porque em rotas de API não podemos usar cookies() do Next.js
     const supabase = createServerClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_OR_ANON_KEY!,
+      readRuntimeEnv('NEXT_PUBLIC_SUPABASE_URL'),
+      readRuntimeEnv('NEXT_PUBLIC_SUPABASE_PUBLISHABLE_OR_ANON_KEY'),
       {
         cookies: {
           getAll() {

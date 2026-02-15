@@ -13,6 +13,8 @@
  * @see https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS
  */
 
+import { readRuntimeEnv } from "@/lib/env/public-env";
+
 /**
  * Origens padrão permitidas quando ALLOWED_ORIGINS não está definida
  */
@@ -91,8 +93,8 @@ export function getAllowedOrigins(): string[] {
     return origins;
   }
 
-  // Adiciona Supabase URL se disponível
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  // Adiciona Supabase URL se disponível (readRuntimeEnv evita inlining do webpack)
+  const supabaseUrl = readRuntimeEnv('NEXT_PUBLIC_SUPABASE_URL');
   const origins = [...DEFAULT_ALLOWED_ORIGINS];
 
   if (supabaseUrl) {

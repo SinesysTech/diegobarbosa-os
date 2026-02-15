@@ -8,6 +8,7 @@
  */
 
 import { getRedisClient } from "@/lib/redis/client";
+import { readRuntimeEnv } from "@/lib/env/public-env";
 
 interface DiskIOMetrics {
   disk_io_budget_percent: number;
@@ -55,7 +56,7 @@ function getMetricsApiConfig(): {
   projectUrl: string | null;
   serviceRoleKey: string | null;
 } {
-  const projectUrl = process.env.NEXT_PUBLIC_SUPABASE_URL?.trim() || null;
+  const projectUrl = readRuntimeEnv('NEXT_PUBLIC_SUPABASE_URL').trim() || null;
   const serviceRoleKey = process.env.SUPABASE_SECRET_KEY?.trim() || null;
   return { projectUrl, serviceRoleKey };
 }

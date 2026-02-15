@@ -3,18 +3,19 @@
 // Este cliente bypassa RLS e deve ser usado apenas em serviços backend
 
 import { createClient } from '@supabase/supabase-js';
+import { readRuntimeEnv } from '@/lib/env/public-env';
 
 /**
  * Obtém configuração do Supabase a partir das variáveis de ambiente
- * 
+ *
  * Com as novas API keys do Supabase:
  * - Publishable Key: para uso no frontend (NEXT_PUBLIC_SUPABASE_PUBLISHABLE_OR_ANON_KEY)
  * - Secret Key: para operações administrativas no backend (SUPABASE_SECRET_KEY)
- * 
+ *
  * A Secret Key substitui a antiga service_role key e deve ser usada para operações que bypassam RLS.
  */
 function getSupabaseConfig() {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const url = readRuntimeEnv('NEXT_PUBLIC_SUPABASE_URL');
   
   // Prioridade: SUPABASE_SECRET_KEY (nova chave) > SUPABASE_SERVICE_ROLE_KEY (legacy)
   const secretKey = process.env.SUPABASE_SECRET_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY;
