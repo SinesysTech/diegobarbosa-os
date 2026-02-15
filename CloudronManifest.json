@@ -16,7 +16,7 @@
     "localstorage": {}
   },
   "runtimeDirs": [
-    ".next/cache"
+    "/app/code/.next/cache"
   ],
   "tags": [
     "productivity",
