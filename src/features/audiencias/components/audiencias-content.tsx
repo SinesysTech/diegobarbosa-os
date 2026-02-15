@@ -1,70 +1,43 @@
 'use client';
 
 /**
- * AudienciasContent - Componente principal da página de audiências
+ * AudienciasContent - Orquestrador da página de audiências
  *
- * Gerencia:
- * - Seleção de visualização (dia, mês, ano, lista)
- * - Navegação de data para visualizações de calendário
- * - Renderização condicional das visualizações
+ * Thin router que delega para wrappers auto-contidos:
+ * - semana → AudienciasTableWrapper
+ * - lista  → AudienciasListWrapper
+ * - mês    → AudienciasMonthWrapper
+ * - ano    → AudienciasYearWrapper
  *
- * Usa os componentes do System Design para visualizações temporais:
- * - Tabs (estilo simples/flat): Tabs separadas do carrossel
- * - DaysCarousel: Carrossel de dias (na visualização de dia)
- * - MonthsCarousel: Carrossel de meses (na visualização de mês)
- * - YearsCarousel: Carrossel de anos (na visualização de ano)
+ * Gerencia apenas:
+ * - Routing por URL (sync visualização ↔ pathname)
+ * - ViewModePopover (seletor de view compartilhado)
+ * - Settings dialog (compartilhado entre views)
+ * - Dados auxiliares (usuarios, tiposAudiencia) para evitar fetch duplicado
  */
 
 import * as React from 'react';
 import { useRouter, usePathname } from 'next/navigation';
-import {
-  startOfMonth,
-  endOfMonth,
-  startOfYear,
-  endOfYear,
-
-} from 'date-fns';
-import { Plus, Search, Settings } from 'lucide-react';
+import { Settings } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { DialogFormShell } from '@/components/shared/dialog-shell';
 
 import {
-  StatusAudiencia,
-  ModalidadeAudiencia,
-  GrauTribunal,
-  CODIGO_TRIBUNAL,
-  STATUS_AUDIENCIA_LABELS,
-  MODALIDADE_AUDIENCIA_LABELS,
-  GRAU_TRIBUNAL_LABELS,
-  type BuscarAudienciasParams,
-  type CodigoTribunal,
-} from '../domain';
-
-import {
-  TemporalViewLoading,
-  TemporalViewError,
-  MonthsCarousel,
-  YearsCarousel,
   ViewModePopover,
-
   useWeekNavigator,
   type ViewType,
 } from '@/components/shared';
 
-import { useAudiencias, useTiposAudiencias } from '../hooks';
+import { useTiposAudiencias } from '../hooks';
 import { useUsuarios } from '@/features/usuarios';
 
 import { AudienciasListWrapper } from './audiencias-list-wrapper';
 import { AudienciasTableWrapper } from './audiencias-table-wrapper';
-import { AudienciasCalendarYearView } from './audiencias-calendar-year-view';
-import { AudienciasCalendarCompact } from './audiencias-calendar-compact';
-import { AudienciasDayList } from './audiencias-day-list';
+import { AudienciasMonthWrapper } from './audiencias-month-wrapper';
+import { AudienciasYearWrapper } from './audiencias-year-wrapper';
 import { TiposAudienciasList } from './tipos-audiencias-list';
-import { NovaAudienciaDialog } from './nova-audiencia-dialog';
 
 // =============================================================================
 // MAPEAMENTO URL -> VIEW
@@ -106,8 +79,6 @@ export function AudienciasContent({ visualizacao: initialView = 'semana' }: Audi
 
   // View State - sync with URL
   const [visualizacao, setVisualizacao] = React.useState<ViewType>(viewFromUrl);
-  const [currentDate, setCurrentDate] = React.useState(new Date());
-
 
   // Sync view state when URL changes
   React.useEffect(() => {
@@ -117,67 +88,15 @@ export function AudienciasContent({ visualizacao: initialView = 'semana' }: Audi
     }
   }, [pathname, visualizacao]);
 
-  // Filters State
-  const [globalFilter, setGlobalFilter] = React.useState('');
-  const [statusFilter, setStatusFilter] = React.useState<StatusAudiencia | ''>('');
-  const [modalidadeFilter, setModalidadeFilter] = React.useState<ModalidadeAudiencia | ''>('');
-  const [tribunalFilter, setTribunalFilter] = React.useState<CodigoTribunal | ''>('');
-  const [grauFilter, setGrauFilter] = React.useState<GrauTribunal | ''>('');
-  const [responsavelFilter, setResponsavelFilter] = React.useState<'todos' | 'sem_responsavel' | number>('todos');
-  const [tipoAudienciaFilter, setTipoAudienciaFilter] = React.useState<number | ''>('');
-
-  // Dialog State
+  // Dialog State (compartilhado)
   const [isSettingsOpen, setIsSettingsOpen] = React.useState(false);
-  const [isCreateDialogOpen, setIsCreateDialogOpen] = React.useState(false);
 
-  // Month Master-Detail State
-  const [monthSelectedDate, setMonthSelectedDate] = React.useState<Date>(new Date());
-  const [monthCurrentMonth, setMonthCurrentMonth] = React.useState<Date>(new Date());
-
-  // Dados Auxiliares
+  // Dados Auxiliares (passados como props para evitar fetch duplicado nos wrappers)
   const { usuarios } = useUsuarios();
   const { tiposAudiencia } = useTiposAudiencias();
 
-  // =============================================================================
-  // NAVEGAÇÃO POR SEMANA (visualização 'semana')
-  // =============================================================================
+  // Week Navigator (apenas para view semana)
   const weekNav = useWeekNavigator();
-
-  // =============================================================================
-  // NAVEGAÇÃO POR MÊS (visualização 'mes')
-  // =============================================================================
-  const visibleMonths = 12;
-
-  const [startMonth, setStartMonth] = React.useState(() => {
-    const offset = Math.floor(visibleMonths / 2);
-    return new Date(new Date().getFullYear(), new Date().getMonth() - offset, 1);
-  });
-
-  const handlePreviousMonth = React.useCallback(() => {
-    setStartMonth(prev => new Date(prev.getFullYear(), prev.getMonth() - 1, 1));
-  }, []);
-
-  const handleNextMonth = React.useCallback(() => {
-    setStartMonth(prev => new Date(prev.getFullYear(), prev.getMonth() + 1, 1));
-  }, []);
-
-  // =============================================================================
-  // NAVEGAÇÃO POR ANO (visualização 'ano')
-  // =============================================================================
-  const visibleYears = 20;
-
-  const [startYear, setStartYear] = React.useState(() => {
-    const offset = Math.floor(visibleYears / 2);
-    return new Date().getFullYear() - offset;
-  });
-
-  const handlePreviousYear = React.useCallback(() => {
-    setStartYear(prev => prev - 1);
-  }, []);
-
-  const handleNextYear = React.useCallback(() => {
-    setStartYear(prev => prev + 1);
-  }, []);
 
   // Handle visualization change - navigate to the correct URL
   const handleVisualizacaoChange = React.useCallback((value: string) => {
@@ -190,274 +109,30 @@ export function AudienciasContent({ visualizacao: initialView = 'semana' }: Audi
   }, [pathname, router]);
 
   // =============================================================================
-  // DATE RANGE PARA BUSCA DE AUDIÊNCIAS
+  // SLOTS COMPARTILHADOS
   // =============================================================================
 
-  const dateRange = React.useMemo(() => {
-    // Não buscar para lista e semana - eles têm seus próprios wrappers
-    if (visualizacao === 'lista' || visualizacao === 'semana') {
-      return {};
-    }
+  const viewModePopover = (
+    <ViewModePopover
+      value={visualizacao}
+      onValueChange={handleVisualizacaoChange}
+    />
+  );
 
-    let start: Date;
-    let end: Date;
-
-    switch (visualizacao) {
-      case 'mes':
-        // Usar monthCurrentMonth para a view Master-Detail
-        start = startOfMonth(monthCurrentMonth);
-        end = endOfMonth(monthCurrentMonth);
-        break;
-      case 'ano':
-        start = startOfYear(currentDate);
-        end = endOfYear(currentDate);
-        break;
-      default:
-        return {};
-    }
-
-    return {
-      data_inicio_inicio: start.toISOString(),
-      data_inicio_fim: end.toISOString(),
-    };
-  }, [visualizacao, currentDate, monthCurrentMonth]);
-
-  // Build params for calendar views (memoized to prevent infinite loops)
-  const calendarParams = React.useMemo<BuscarAudienciasParams>(() => ({
-    pagina: 1,
-    limite: 1000, // Large limit for calendar views
-    busca: globalFilter || undefined,
-    status: statusFilter || undefined,
-    modalidade: modalidadeFilter || undefined,
-    trt: tribunalFilter || undefined,
-    grau: grauFilter || undefined,
-    responsavel_id:
-      responsavelFilter === 'todos'
-        ? undefined
-        : responsavelFilter === 'sem_responsavel'
-          ? 'null'
-          : responsavelFilter,
-    tipo_audiencia_id: tipoAudienciaFilter || undefined,
-    ...dateRange,
-  }), [globalFilter, statusFilter, modalidadeFilter, tribunalFilter, grauFilter, responsavelFilter, tipoAudienciaFilter, dateRange]);
-
-  // Only fetch for calendar views (mes and ano - semana and lista have their own wrappers)
-  const { audiencias, isLoading, error, refetch } = useAudiencias(calendarParams, {
-    enabled: visualizacao === 'mes' || visualizacao === 'ano',
-  });
-
-  // Handler para criação de audiência bem-sucedida
-  const handleCreateSuccess = React.useCallback(() => {
-    refetch();
-    setIsCreateDialogOpen(false);
-  }, [refetch]);
-
-  // =============================================================================
-  // CARROSSEL BASEADO NA VISUALIZAÇÃO
-  // =============================================================================
-
-  const renderCarousel = () => {
-    switch (visualizacao) {
-      case 'mes':
-        return (
-          <MonthsCarousel
-            selectedDate={currentDate}
-            onDateSelect={setCurrentDate}
-            startMonth={startMonth}
-            onPrevious={handlePreviousMonth}
-            onNext={handleNextMonth}
-            visibleMonths={visibleMonths}
-          />
-        );
-      case 'ano':
-        return (
-          <YearsCarousel
-            selectedDate={currentDate}
-            onDateSelect={setCurrentDate}
-            startYear={startYear}
-            onPrevious={handlePreviousYear}
-            onNext={handleNextYear}
-            visibleYears={visibleYears}
-          />
-        );
-      case 'semana':
-      case 'lista':
-      default:
-        return null;
-    }
-  };
-
-  // =============================================================================
-  // BARRA DE FILTROS
-  // =============================================================================
-
-  const renderFiltersBar = () => (
-    <div className="bg-card border rounded-md">
-      {/* Linha 1: Título */}
-      <div className="flex items-center justify-between px-4 py-4">
-        <h1 className="text-2xl font-bold tracking-tight font-heading">Audiências</h1>
-      </div>
-
-      {/* Linha 2: Filtros */}
-      <div className="flex items-center justify-between gap-4 px-4 pb-4">
-        <div className="flex items-center gap-2 flex-wrap">
-          {/* Busca */}
-          <div className="relative w-80">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input
-              placeholder="Buscar..."
-              value={globalFilter}
-              onChange={(e) => setGlobalFilter(e.target.value)}
-              className="h-9 w-full pl-9 bg-card"
-            />
-          </div>
-
-        {/* Tribunal */}
-        <Select
-          value={tribunalFilter || '_all'}
-          onValueChange={(v) => setTribunalFilter(v === '_all' ? '' : v as CodigoTribunal)}
+  const settingsButton = (
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <Button
+          variant="outline"
+          size="icon"
+          className="h-9 w-9 bg-card"
+          onClick={() => setIsSettingsOpen(true)}
         >
-          <SelectTrigger className="h-9 w-32 border-dashed bg-card font-normal">
-            <SelectValue placeholder="Tribunal" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="_all">Tribunal</SelectItem>
-            {CODIGO_TRIBUNAL.map((trt) => (
-              <SelectItem key={trt} value={trt}>
-                {trt}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-
-        {/* Grau */}
-        <Select
-          value={grauFilter || '_all'}
-          onValueChange={(v) => setGrauFilter(v === '_all' ? '' : (v as GrauTribunal))}
-        >
-          <SelectTrigger className="h-9 w-32 border-dashed bg-card font-normal">
-            <SelectValue placeholder="Grau" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="_all">Grau</SelectItem>
-            {Object.entries(GRAU_TRIBUNAL_LABELS).map(([value, label]) => (
-              <SelectItem key={value} value={value}>
-                {label}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-
-        {/* Status */}
-        <Select
-          value={statusFilter || '_all'}
-          onValueChange={(v) => setStatusFilter(v === '_all' ? '' : (v as StatusAudiencia))}
-        >
-          <SelectTrigger className="h-9 w-32 border-dashed bg-card font-normal">
-            <SelectValue placeholder="Status" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="_all">Status</SelectItem>
-            {Object.entries(STATUS_AUDIENCIA_LABELS).map(([value, label]) => (
-              <SelectItem key={value} value={value}>
-                {label}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-
-        {/* Modalidade */}
-        <Select
-          value={modalidadeFilter || '_all'}
-          onValueChange={(v) => setModalidadeFilter(v === '_all' ? '' : (v as ModalidadeAudiencia))}
-        >
-          <SelectTrigger className="h-9 w-32 border-dashed bg-card font-normal">
-            <SelectValue placeholder="Modalidade" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="_all">Modalidade</SelectItem>
-            {Object.entries(MODALIDADE_AUDIENCIA_LABELS).map(([value, label]) => (
-              <SelectItem key={value} value={value}>
-                {label}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-
-        {/* Tipo de Audiência */}
-        <Select
-          value={tipoAudienciaFilter ? String(tipoAudienciaFilter) : '_all'}
-          onValueChange={(v) => setTipoAudienciaFilter(v === '_all' ? '' : Number(v))}
-        >
-          <SelectTrigger className="h-9 w-32 border-dashed bg-card font-normal">
-            <SelectValue placeholder="Tipo" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="_all">Tipo</SelectItem>
-            {tiposAudiencia.map((tipo) => (
-              <SelectItem key={tipo.id} value={String(tipo.id)}>
-                {tipo.descricao}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-
-        {/* Responsável */}
-        <Select
-          value={
-            responsavelFilter === 'todos'
-              ? 'todos'
-              : responsavelFilter === 'sem_responsavel'
-                ? 'sem_responsavel'
-                : String(responsavelFilter)
-          }
-          onValueChange={(v) => {
-            if (v === 'todos') {
-              setResponsavelFilter('todos');
-            } else if (v === 'sem_responsavel') {
-              setResponsavelFilter('sem_responsavel');
-            } else {
-              setResponsavelFilter(parseInt(v, 10));
-            }
-          }}
-        >
-          <SelectTrigger className="h-9 w-32 border-dashed bg-card font-normal">
-            <SelectValue placeholder="Responsável" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="todos">Responsável</SelectItem>
-            <SelectItem value="sem_responsavel">Sem Responsável</SelectItem>
-            {usuarios.map((usuario) => (
-              <SelectItem key={usuario.id} value={String(usuario.id)}>
-                {usuario.nomeExibicao || usuario.nomeCompleto || `Usuário ${usuario.id}`}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
-
-        {/* Ações à direita */}
-        <div className="flex items-center gap-2">
-          {/* View Mode Popover */}
-          {viewModePopover}
-
-          {/* Configurações */}
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-9 w-9"
-                onClick={() => setIsSettingsOpen(true)}
-              >
-                <Settings className="h-4 w-4" />
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>Configurações</TooltipContent>
-          </Tooltip>
-        </div>
-      </div>
-    </div>
+          <Settings className="h-4 w-4" />
+        </Button>
+      </TooltipTrigger>
+      <TooltipContent>Configurações</TooltipContent>
+    </Tooltip>
   );
 
   // =============================================================================
@@ -497,218 +172,21 @@ export function AudienciasContent({ visualizacao: initialView = 'semana' }: Audi
 
       case 'mes':
         return (
-          <div className="flex flex-col h-full gap-4">
-            {/* Toolbar - sem card, direto no background */}
-            {/* Linha 1: Título + Ação */}
-            <div className="flex items-center justify-between">
-              <h1 className="text-2xl font-bold tracking-tight font-heading">Audiências</h1>
-              <Button onClick={() => setIsCreateDialogOpen(true)}>
-                <Plus className="h-4 w-4 mr-2" />
-                Nova Audiência
-              </Button>
-            </div>
-
-            {/* Linha 2: Filtros */}
-            <div className="flex items-center justify-between gap-4">
-              <div className="flex items-center gap-2 flex-wrap">
-                {/* Busca */}
-                <div className="relative w-80">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                  <Input
-                    placeholder="Buscar..."
-                    value={globalFilter}
-                    onChange={(e) => setGlobalFilter(e.target.value)}
-                    className="h-9 w-full pl-9 bg-card"
-                  />
-                </div>
-
-                {/* Tribunal */}
-                <Select
-                  value={tribunalFilter || '_all'}
-                  onValueChange={(v) => setTribunalFilter(v === '_all' ? '' : v as CodigoTribunal)}
-                >
-                  <SelectTrigger className="h-9 w-32 border-dashed bg-card font-normal">
-                    <SelectValue placeholder="Tribunal" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="_all">Tribunal</SelectItem>
-                    {CODIGO_TRIBUNAL.map((trt) => (
-                      <SelectItem key={trt} value={trt}>
-                        {trt}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-
-                {/* Grau */}
-                <Select
-                  value={grauFilter || '_all'}
-                  onValueChange={(v) => setGrauFilter(v === '_all' ? '' : (v as GrauTribunal))}
-                >
-                  <SelectTrigger className="h-9 w-32 border-dashed bg-card font-normal">
-                    <SelectValue placeholder="Grau" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="_all">Grau</SelectItem>
-                    {Object.entries(GRAU_TRIBUNAL_LABELS).map(([value, label]) => (
-                      <SelectItem key={value} value={value}>
-                        {label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-
-                {/* Status */}
-                <Select
-                  value={statusFilter || '_all'}
-                  onValueChange={(v) => setStatusFilter(v === '_all' ? '' : (v as StatusAudiencia))}
-                >
-                  <SelectTrigger className="h-9 w-32 border-dashed bg-card font-normal">
-                    <SelectValue placeholder="Status" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="_all">Status</SelectItem>
-                    {Object.entries(STATUS_AUDIENCIA_LABELS).map(([value, label]) => (
-                      <SelectItem key={value} value={value}>
-                        {label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-
-                {/* Modalidade */}
-                <Select
-                  value={modalidadeFilter || '_all'}
-                  onValueChange={(v) => setModalidadeFilter(v === '_all' ? '' : (v as ModalidadeAudiencia))}
-                >
-                  <SelectTrigger className="h-9 w-32 border-dashed bg-card font-normal">
-                    <SelectValue placeholder="Modalidade" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="_all">Modalidade</SelectItem>
-                    {Object.entries(MODALIDADE_AUDIENCIA_LABELS).map(([value, label]) => (
-                      <SelectItem key={value} value={value}>
-                        {label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-
-                {/* Tipo de Audiência */}
-                <Select
-                  value={tipoAudienciaFilter ? String(tipoAudienciaFilter) : '_all'}
-                  onValueChange={(v) => setTipoAudienciaFilter(v === '_all' ? '' : Number(v))}
-                >
-                  <SelectTrigger className="h-9 w-32 border-dashed bg-card font-normal">
-                    <SelectValue placeholder="Tipo" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="_all">Tipo</SelectItem>
-                    {tiposAudiencia.map((tipo) => (
-                      <SelectItem key={tipo.id} value={String(tipo.id)}>
-                        {tipo.descricao}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-
-                {/* Responsável */}
-                <Select
-                  value={
-                    responsavelFilter === 'todos'
-                      ? 'todos'
-                      : responsavelFilter === 'sem_responsavel'
-                        ? 'sem_responsavel'
-                        : String(responsavelFilter)
-                  }
-                  onValueChange={(v) => {
-                    if (v === 'todos') {
-                      setResponsavelFilter('todos');
-                    } else if (v === 'sem_responsavel') {
-                      setResponsavelFilter('sem_responsavel');
-                    } else {
-                      setResponsavelFilter(parseInt(v, 10));
-                    }
-                  }}
-                >
-                  <SelectTrigger className="h-9 w-32 border-dashed bg-card font-normal">
-                    <SelectValue placeholder="Responsável" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="todos">Responsável</SelectItem>
-                    <SelectItem value="sem_responsavel">Sem Responsável</SelectItem>
-                    {usuarios.map((usuario) => (
-                      <SelectItem key={usuario.id} value={String(usuario.id)}>
-                        {usuario.nomeExibicao || usuario.nomeCompleto || `Usuário ${usuario.id}`}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              {/* Ações à direita */}
-              <div className="flex items-center gap-2">
-                {viewModePopover}
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="h-9 w-9"
-                      onClick={() => setIsSettingsOpen(true)}
-                    >
-                      <Settings className="h-4 w-4" />
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent>Configurações</TooltipContent>
-                </Tooltip>
-              </div>
-            </div>
-
-            {/* Master-Detail Layout - ocupa toda a altura restante */}
-            <div className="flex-1 min-h-0 bg-card border rounded-md overflow-hidden">
-              {isLoading ? (
-                <TemporalViewLoading message="Carregando audiências..." />
-              ) : error ? (
-                <TemporalViewError message={`Erro ao carregar audiências: ${error}`} onRetry={refetch} />
-              ) : (
-                <div className="flex h-full">
-                  {/* Calendário compacto (40%) */}
-                  <div className="w-2/5 border-r p-4 overflow-auto">
-                    <AudienciasCalendarCompact
-                      selectedDate={monthSelectedDate}
-                      onDateSelect={setMonthSelectedDate}
-                      audiencias={audiencias}
-                      currentMonth={monthCurrentMonth}
-                      onMonthChange={setMonthCurrentMonth}
-                    />
-                  </div>
-
-                  {/* Lista do dia (60%) */}
-                  <div className="flex-1 min-w-0">
-                    <AudienciasDayList
-                      selectedDate={monthSelectedDate}
-                      audiencias={audiencias}
-                      onAddAudiencia={() => setIsCreateDialogOpen(true)}
-                    />
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
+          <AudienciasMonthWrapper
+            viewModeSlot={viewModePopover}
+            settingsSlot={settingsButton}
+            usuariosData={usuarios}
+            tiposAudienciaData={tiposAudiencia}
+          />
         );
 
       case 'ano':
-        return isLoading ? (
-          <TemporalViewLoading message="Carregando audiências..." />
-        ) : error ? (
-          <TemporalViewError message={`Erro ao carregar audiências: ${error}`} onRetry={refetch} />
-        ) : (
-          <AudienciasCalendarYearView
-            audiencias={audiencias}
-            currentDate={currentDate}
-            onDateChange={setCurrentDate}
-            refetch={refetch}
+        return (
+          <AudienciasYearWrapper
+            viewModeSlot={viewModePopover}
+            settingsSlot={settingsButton}
+            usuariosData={usuarios}
+            tiposAudienciaData={tiposAudiencia}
           />
         );
 
@@ -717,32 +195,14 @@ export function AudienciasContent({ visualizacao: initialView = 'semana' }: Audi
     }
   };
 
-  // ViewModePopover component para passar aos wrappers
-  const viewModePopover = (
-    <ViewModePopover
-      value={visualizacao}
-      onValueChange={handleVisualizacaoChange}
-    />
-  );
-
   return (
-    <div className="flex flex-col h-full gap-4">
-      {/* Carrossel com container branco (apenas para ano - semana usa carrossel dentro do TableWrapper, mês usa Master-Detail) */}
-      {visualizacao === 'ano' && (
-        <div className="bg-card border border-border rounded-lg p-4">
-          {renderCarousel()}
-        </div>
-      )}
-
-      {/* Filtros (apenas para visualização de ano - semana e lista têm toolbar no TableWrapper, mês usa Master-Detail) */}
-      {visualizacao === 'ano' && renderFiltersBar()}
-
+    <div className="flex flex-col h-full">
       {/* Conteúdo principal */}
       <div className="flex-1 min-h-0">
         {renderContent()}
       </div>
 
-      {/* Dialog de Configurações */}
+      {/* Dialog de Configurações (compartilhado entre todas as views) */}
       <DialogFormShell
         open={isSettingsOpen}
         onOpenChange={setIsSettingsOpen}
@@ -759,13 +219,6 @@ export function AudienciasContent({ visualizacao: initialView = 'semana' }: Audi
           <TiposAudienciasList />
         </div>
       </DialogFormShell>
-
-      {/* Dialog de Nova Audiência (para view de mês) */}
-      <NovaAudienciaDialog
-        open={isCreateDialogOpen}
-        onOpenChange={setIsCreateDialogOpen}
-        onSuccess={handleCreateSuccess}
-      />
     </div>
   );
 }
