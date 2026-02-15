@@ -12,9 +12,8 @@ import {
   getGroup,
   updateGroup,
   deleteGroup,
-  type UpdateGroupParams,
 } from "@/lib/integrations/twofauth/groups";
-import { TwoFAuthError } from "@/lib/integrations/twofauth/types";
+import { TwoFAuthError, type UpdateGroupParams } from "@/lib/integrations/twofauth/types";
 
 type RouteParams = { params: Promise<{ id: string }> };
 

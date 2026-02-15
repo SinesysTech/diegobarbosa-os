@@ -10,9 +10,8 @@ import { authenticateRequest } from "@/lib/auth/api-auth";
 import {
   getPreference,
   updatePreference,
-  type PreferenceName,
 } from "@/lib/integrations/twofauth/preferences";
-import { TwoFAuthError } from "@/lib/integrations/twofauth/types";
+import { TwoFAuthError, type PreferenceName } from "@/lib/integrations/twofauth/types";
 
 type RouteParams = { params: Promise<{ name: string }> };
 
