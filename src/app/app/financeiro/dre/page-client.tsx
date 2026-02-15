@@ -659,7 +659,7 @@ export default function DREClient() {
       setIncluirComparativo(true);
       setIncluirOrcado(true);
     }
-  }, []);
+  }, [setIncluirComparativo, setIncluirOrcado]);
 
   // ---- Handlers de período ----
   const handlePeriodoRapido = React.useCallback((periodoTipo: PeriodoRapido) => {
@@ -697,7 +697,7 @@ export default function DREClient() {
       dataFim: format(novoFim, 'yyyy-MM-dd'),
       tipo: novoTipo,
     });
-  }, [hoje]);
+  }, [hoje, setPeriodo]);
 
   const periodoAtivo = React.useMemo((): PeriodoRapido | '' => {
     const inicioDate = new Date(periodo.dataInicio);

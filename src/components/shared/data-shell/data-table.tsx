@@ -185,14 +185,13 @@ interface DraggableTableHeaderProps<TData> {
   header: Header<TData, unknown>;
   className?: string;
   style?: React.CSSProperties;
-  align?: 'left' | 'center' | 'right';
+
 }
 
 function DraggableTableHeader<TData>({
   header,
   className,
   style: extraStyle,
-  align = 'left',
 }: DraggableTableHeaderProps<TData>) {
   const [isMounted, setIsMounted] = React.useState(false);
 
@@ -224,14 +223,6 @@ function DraggableTableHeader<TData>({
   const dndAttributes = isMounted ? attributes : {};
   const dndListeners = isMounted ? listeners : {};
 
-  // Classe de alinhamento do conteúdo
-  const justifyClass =
-    align === 'center'
-      ? 'justify-center'
-      : align === 'right'
-        ? 'justify-end'
-        : 'justify-start';
-
   return (
     <TableHead
       ref={setNodeRef}
@@ -240,7 +231,7 @@ function DraggableTableHeader<TData>({
       {...dndAttributes}
       {...dndListeners}
     >
-      <div className={cn('min-w-0 text-sm text-muted-foreground flex items-center', justifyClass)}>
+      <div className="min-w-0 text-sm text-muted-foreground flex items-center justify-start">
         {header.isPlaceholder
           ? null
           : flexRender(header.column.columnDef.header, header.getContext())}
@@ -330,7 +321,7 @@ export function DataTable<TData, TValue>({
     controlledSorting &&
     !Array.isArray(controlledSorting) &&
     typeof (controlledSorting as DataTableSortingAdapter).onSortingChange ===
-      'function';
+    'function';
 
   const sortingState: SortingState = React.useMemo(() => {
     if (isSortingAdapter) {
@@ -368,31 +359,27 @@ export function DataTable<TData, TValue>({
     return {
       id: 'select',
       header: ({ table }) => (
-        <div className="flex items-center justify-center w-full h-full">
-          <Checkbox
-            checked={
-              table.getIsAllPageRowsSelected() ||
-              (table.getIsSomePageRowsSelected() && 'indeterminate')
-            }
-            onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-            aria-label="Selecionar todas as linhas da página"
-          />
-        </div>
+        <Checkbox
+          checked={
+            table.getIsAllPageRowsSelected() ||
+            (table.getIsSomePageRowsSelected() && 'indeterminate')
+          }
+          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+          aria-label="Selecionar todas as linhas da página"
+        />
       ),
       cell: ({ row }) => (
-        <div className="flex items-center justify-center w-full h-full">
-          <Checkbox
-            checked={row.getIsSelected()}
-            onCheckedChange={(value) => row.toggleSelected(!!value)}
-            aria-label={`Selecionar linha ${row.index + 1}`}
-            onClick={(e) => e.stopPropagation()}
-          />
-        </div>
+        <Checkbox
+          checked={row.getIsSelected()}
+          onCheckedChange={(value) => row.toggleSelected(!!value)}
+          aria-label={`Selecionar linha ${row.index + 1}`}
+          onClick={(e) => e.stopPropagation()}
+        />
       ),
       enableSorting: false,
       enableHiding: false,
       size: 44,
-      meta: { align: 'center' }, // Alinhamento centralizado explícito
+      meta: { align: 'left' },
     };
   }, [rowSelection]);
 
@@ -554,18 +541,6 @@ export function DataTable<TData, TValue>({
                       | undefined;
                     const maxWidth = columnSize ? `${columnSize}px` : undefined;
 
-                    // Alinhamento do header baseado em meta.align (default: left)
-                    const headerMeta = header.column.columnDef.meta as
-                      | { align?: 'left' | 'center' | 'right' }
-                      | undefined;
-                    const headerAlign = headerMeta?.align ?? 'left';
-                    const alignClass =
-                      headerAlign === 'center'
-                        ? 'text-center'
-                        : headerAlign === 'right'
-                          ? 'text-right'
-                          : 'text-left';
-
                     const hasBorder =
                       !hideColumnBorders &&
                       index < headerGroup.headers.length - 1;
@@ -574,10 +549,9 @@ export function DataTable<TData, TValue>({
                       <DraggableTableHeader
                         key={header.id}
                         header={header}
-                        align={headerAlign}
                         className={cn(
                           cellPadding,
-                          alignClass,
+                          'text-left',
                           // Primeira coluna: padding-left padrão (pl-3)
                           index === 0 && 'pl-3',
                           // Última coluna: padding-right padrão (pr-3)
@@ -625,11 +599,11 @@ export function DataTable<TData, TValue>({
                   onKeyDown={
                     onRowClick
                       ? (e) => {
-                          if (e.key === 'Enter' || e.key === ' ') {
-                            e.preventDefault();
-                            onRowClick(row.original);
-                          }
+                        if (e.key === 'Enter' || e.key === ' ') {
+                          e.preventDefault();
+                          onRowClick(row.original);
                         }
+                      }
                       : undefined
                   }
                   role={onRowClick ? 'button' : undefined}
@@ -640,33 +614,15 @@ export function DataTable<TData, TValue>({
                       | undefined;
                     const maxWidth = columnSize ? `${columnSize}px` : undefined;
 
-                    // Alinhamento da coluna (default: 'left')
-                    // Controlado via meta.align na definição da coluna
-                    const meta = cell.column.columnDef.meta as
-                      | { align?: 'left' | 'center' | 'right' }
-                      | undefined;
-                    const align = meta?.align ?? 'left';
-
-                    // Classes de alinhamento de texto para a célula
-                    const alignClass =
-                      align === 'center'
-                        ? 'text-center'
-                        : align === 'right'
-                          ? 'text-right'
-                          : 'text-left';
-
                     const hasBorder =
                       !hideColumnBorders && index < all.length - 1;
-
-                    // Para alinhamento centralizado, usamos flexbox no wrapper interno
-                    const isCentered = align === 'center';
 
                     return (
                       <TableCell
                         key={cell.id}
                         className={cn(
                           cellPadding,
-                          alignClass,
+                          'text-left',
                           // Primeira coluna: padding-left padrão (pl-3)
                           index === 0 && 'pl-3',
                           // Última coluna: padding-right padrão (pr-3)
@@ -679,13 +635,7 @@ export function DataTable<TData, TValue>({
                             : undefined
                         }
                       >
-                        <div
-                          className={cn(
-                            'min-w-0',
-                            // Centralização explícita via flexbox para conteúdo centralizado
-                            isCentered && 'flex items-center justify-center w-full'
-                          )}
-                        >
+                        <div className="min-w-0">
                           {flexRender(
                             cell.column.columnDef.cell,
                             cell.getContext()
