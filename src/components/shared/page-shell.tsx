@@ -7,20 +7,29 @@ import { cn } from '@/lib/utils';
  * PageShell - Container principal para páginas.
  *
  * @ai-context Use este componente como wrapper de todas as páginas.
- * Ele fornece layout consistente com padding, tipografia e área de ações.
+ * Ele fornece layout consistente com padding e estrutura.
+ *
+ * IMPORTANTE: NÃO use a prop 'description' - não utilizamos subtítulos nas páginas.
+ * O título e botões de ação devem estar no DataTableToolbar dentro do DataShell.
  *
  * Segue o Design System Zattar:
- * - Tipografia: font-heading para títulos, font-sans para descrições
+ * - Tipografia: font-heading para títulos
  * - Espaçamento: gap-6 entre seções, gap-4 entre elementos
- * - Cores: text-foreground para títulos, text-muted-foreground para descrições
+ * - Cores: text-foreground para títulos
  *
  * @example
- * <PageShell
- *   title="Processos"
- *   description="Gerencie todos os processos do escritório"
- *   actions={<Button>Novo Processo</Button>}
- * >
- *   <ProcessosTable />
+ * // Uso correto - sem título, título vai no DataTableToolbar
+ * <PageShell>
+ *   <DataShell
+ *     header={
+ *       <DataTableToolbar
+ *         title="Processos"
+ *         actionButton={{ label: 'Novo', onClick: ... }}
+ *       />
+ *     }
+ *   >
+ *     <ProcessosTable />
+ *   </DataShell>
  * </PageShell>
  */
 interface PageShellProps {
@@ -44,7 +53,7 @@ export function PageShell({
   const hasHeader = title || description || actions || badge;
 
   return (
-    <main className={cn('flex-1 space-y-6', className)}>
+    <main className={cn('flex-1 space-y-4', className)}>
       {hasHeader && (
         <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
           <div className="space-y-1.5">

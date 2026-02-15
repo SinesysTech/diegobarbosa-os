@@ -5,15 +5,19 @@ import * as React from 'react';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { useDebounce } from '@/hooks/use-debounce';
-import { DataPagination, DataShell, DataTable } from '@/components/shared/data-shell';
+import {
+  DataPagination,
+  DataShell,
+  DataTable,
+  DataTableToolbar,
+} from '@/components/shared/data-shell';
 import { DataTableColumnHeader } from '@/components/shared/data-shell/data-table-column-header';
-import { DataTableToolbar } from '@/components/shared/data-shell/data-table-toolbar';
 import { SalarioFormDialog } from './salario-form-dialog';
 import type { Table as TanstackTable } from '@tanstack/react-table';
 import { AppBadge as Badge } from '@/components/ui/app-badge';
 import { Button } from '@/components/ui/button';
+import { getSemanticBadgeVariant } from '@/lib/design-system';
 import {
-  MoreHorizontal,
   Pencil,
   History,
   XCircle,
@@ -21,12 +25,10 @@ import {
   CalendarOff,
 } from 'lucide-react';
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -37,14 +39,27 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { useSalarios, encerrarVigenciaSalario, inativarSalario, excluirSalario } from '../../hooks';
+import {
+  useSalarios,
+  encerrarVigenciaSalario,
+  inativarSalario,
+  excluirSalario,
+} from '../../hooks';
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
 import type { ColumnDef } from '@tanstack/react-table';
 import type { SalarioComDetalhes } from '../../types';
+
 
 // ============================================================================
 // Constantes e Helpers
@@ -70,7 +85,7 @@ const isVigente = (salario: SalarioComDetalhes): boolean => {
   hoje.setHours(0, 0, 0, 0);
   const inicio = new Date(salario.dataInicioVigencia);
   inicio.setHours(0, 0, 0, 0);
-  if (inicio > hoje) return false; 
+  if (inicio > hoje) return false;
   if (salario.dataFimVigencia) {
     const fim = new Date(salario.dataFimVigencia);
     fim.setHours(0, 0, 0, 0);
@@ -78,68 +93,6 @@ const isVigente = (salario: SalarioComDetalhes): boolean => {
   }
   return true;
 };
-
-// ============================================================================
-// Componente de Ações
-// ============================================================================
-
-function SalariosActions({
-  salario,
-  onEditar,
-  onEncerrarVigencia,
-  onInativar,
-  onExcluir,
-  onVerHistorico,
-}: {
-  salario: SalarioComDetalhes;
-  onEditar: (salario: SalarioComDetalhes) => void;
-  onEncerrarVigencia: (salario: SalarioComDetalhes) => void;
-  onInativar: (salario: SalarioComDetalhes) => void;
-  onExcluir: (salario: SalarioComDetalhes) => void;
-  onVerHistorico: (salario: SalarioComDetalhes) => void;
-}) {
-  const vigente = isVigente(salario);
-
-  return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="icon" className="h-8 w-8">
-          <MoreHorizontal className="h-4 w-4" />
-          <span className="sr-only">Ações do salário</span>
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
-        <DropdownMenuItem onClick={() => onVerHistorico(salario)}>
-          <History className="mr-2 h-4 w-4" />
-          Ver Histórico (Legacy Page)
-        </DropdownMenuItem>
-        {salario.ativo && (
-          <>
-            <DropdownMenuItem onClick={() => onEditar(salario)}>
-              <Pencil className="mr-2 h-4 w-4" />
-              Editar
-            </DropdownMenuItem>
-            {vigente && (
-              <DropdownMenuItem onClick={() => onEncerrarVigencia(salario)}>
-                <CalendarOff className="mr-2 h-4 w-4" />
-                Encerrar Vigência
-              </DropdownMenuItem>
-            )}
-            <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={() => onInativar(salario)} className="text-amber-600">
-              <XCircle className="mr-2 h-4 w-4" />
-              Inativar
-            </DropdownMenuItem>
-          </>
-        )}
-        <DropdownMenuItem onClick={() => onExcluir(salario)} className="text-destructive">
-          <Trash2 className="mr-2 h-4 w-4" />
-          Excluir
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
-  );
-}
 
 // ============================================================================
 // Definição das Colunas
@@ -155,22 +108,19 @@ function criarColunas(
   return [
     {
       accessorKey: 'usuario',
-      header: ({ column }) => (
-        <div className="flex items-center justify-start">
-          <DataTableColumnHeader column={column} title="Funcionário" />
-        </div>
-      ),
+      header: ({ column }) => <DataTableColumnHeader column={column} title="Funcionário" />,
       enableSorting: true,
-      size: 200,
+      size: 250,
+      meta: { align: 'left' as const },
       cell: ({ row }) => {
         const salario = row.original;
         return (
-          <div className="min-h-10 flex flex-col justify-center">
-            <span className="text-sm font-medium">
+          <div className="flex min-h-10 flex-col justify-center">
+            <span className="text-sm font-medium leading-tight">
               {salario.usuario?.nomeExibicao || `Usuário ${salario.usuarioId}`}
             </span>
             {salario.cargo && (
-              <span className="text-xs text-muted-foreground">
+              <span className="text-xs leading-tight text-muted-foreground">
                 {salario.cargo.nome}
               </span>
             )}
@@ -181,109 +131,165 @@ function criarColunas(
     {
       accessorKey: 'salarioBruto',
       header: ({ column }) => (
-        <div className="flex items-center justify-end">
-          <DataTableColumnHeader column={column} title="Salário Bruto" />
-        </div>
+        <DataTableColumnHeader column={column} title="Salário Bruto" className="justify-end" />
       ),
       enableSorting: true,
-      size: 130,
+      size: 150,
+      meta: { align: 'right' as const },
       cell: ({ row }) => (
-        <div className="text-right font-medium">
+        <span className="text-sm font-medium tabular-nums">
           {formatarValor(row.original.salarioBruto)}
-        </div>
+        </span>
       ),
     },
     {
       accessorKey: 'dataInicioVigencia',
       header: ({ column }) => (
-        <div className="flex items-center justify-center">
-          <DataTableColumnHeader column={column} title="Início Vigência" />
-        </div>
+        <DataTableColumnHeader column={column} title="Início" />
       ),
       enableSorting: true,
-      size: 130,
+      size: 120,
+      meta: { align: 'left' as const },
       cell: ({ row }) => (
-        <div className="text-center">
+        <span className="text-sm tabular-nums">
           {formatarData(row.original.dataInicioVigencia)}
-        </div>
+        </span>
       ),
     },
     {
       accessorKey: 'dataFimVigencia',
       header: ({ column }) => (
-        <div className="flex items-center justify-center">
-          <DataTableColumnHeader column={column} title="Fim Vigência" />
-        </div>
+        <DataTableColumnHeader column={column} title="Fim" />
       ),
       enableSorting: true,
-      size: 130,
+      size: 120,
+      meta: { align: 'left' as const },
       cell: ({ row }) => {
         const salario = row.original;
         const vigente = isVigente(salario);
-        return (
-          <div className="text-center">
-            {salario.dataFimVigencia ? (
-              formatarData(salario.dataFimVigencia)
-            ) : vigente ? (
-              <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
-                Vigente
-              </Badge>
-            ) : (
-              '-'
-            )}
-          </div>
+        return salario.dataFimVigencia ? (
+          <span className="text-sm tabular-nums">{formatarData(salario.dataFimVigencia)}</span>
+        ) : vigente ? (
+          <Badge variant={getSemanticBadgeVariant('salario_status', 'VIGENTE')}>
+            Vigente
+          </Badge>
+        ) : (
+          <span className="text-sm text-muted-foreground">-</span>
         );
       },
     },
     {
       accessorKey: 'ativo',
       header: ({ column }) => (
-        <div className="flex items-center justify-center">
-          <DataTableColumnHeader column={column} title="Status" />
-        </div>
+        <DataTableColumnHeader column={column} title="Status" />
       ),
       enableSorting: true,
       size: 100,
+      meta: { align: 'left' as const },
       cell: ({ row }) => {
         const salario = row.original;
         const vigente = isVigente(salario);
-        return (
-          <div className="flex justify-center">
-            {salario.ativo ? (
-              vigente ? (
-                <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
-                  Ativo
-                </Badge>
-              ) : (
-                <Badge variant="outline" className="bg-gray-50 text-gray-700 border-gray-200">
-                  Encerrado
-                </Badge>
-              )
-            ) : (
-              <Badge variant="outline" className="bg-red-50 text-red-700 border-red-200">
-                Inativo
-              </Badge>
-            )}
-          </div>
+        return salario.ativo ? (
+          vigente ? (
+            <Badge variant={getSemanticBadgeVariant('salario_status', 'ATIVO')}>Ativo</Badge>
+          ) : (
+            <Badge variant={getSemanticBadgeVariant('salario_status', 'ENCERRADO')}>Encerrado</Badge>
+          )
+        ) : (
+          <Badge variant={getSemanticBadgeVariant('salario_status', 'INATIVO')}>Inativo</Badge>
         );
       },
     },
     {
-      id: 'actions',
-      header: () => <div className="text-center">Ações</div>,
-      size: 60,
-      cell: ({ row }) => (
-        <div className="flex justify-center">
-          <SalariosActions
-            salario={row.original}
-            onEditar={onEditar}
-            onEncerrarVigencia={onEncerrarVigencia}
-            onInativar={onInativar}
-            onExcluir={onExcluir}
-            onVerHistorico={onVerHistorico}
-          />
+      id: 'acoes',
+      header: () => (
+        <div className="flex items-center">
+          <span className="text-sm font-medium text-muted-foreground">Ações</span>
         </div>
       ),
+      enableSorting: false,
+      enableHiding: false,
+      size: 140,
+      meta: { align: 'left' as const },
+      cell: ({ row }) => {
+        const salario = row.original;
+        const vigente = isVigente(salario);
+        return (
+          <div className="flex items-center gap-1">
+            {salario.ativo && (
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-8 w-8"
+                    onClick={() => onEditar(salario)}
+                  >
+                    <Pencil className="h-4 w-4" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>Editar</TooltipContent>
+              </Tooltip>
+            )}
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8"
+                  onClick={() => onVerHistorico(salario)}
+                >
+                  <History className="h-4 w-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>Ver Histórico</TooltipContent>
+            </Tooltip>
+            {salario.ativo && vigente && (
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-8 w-8 text-orange-600 hover:text-orange-600"
+                    onClick={() => onEncerrarVigencia(salario)}
+                  >
+                    <CalendarOff className="h-4 w-4" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>Encerrar Vigência</TooltipContent>
+              </Tooltip>
+            )}
+            {salario.ativo && (
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-8 w-8 text-orange-600 hover:text-orange-600"
+                    onClick={() => onInativar(salario)}
+                  >
+                    <XCircle className="h-4 w-4" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>Inativar</TooltipContent>
+              </Tooltip>
+            )}
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8 text-destructive hover:text-destructive"
+                  onClick={() => onExcluir(salario)}
+                >
+                  <Trash2 className="h-4 w-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>Excluir</TooltipContent>
+            </Tooltip>
+          </div>
+        );
+      },
     },
   ];
 }
@@ -296,10 +302,12 @@ export function SalariosList() {
   const router = useRouter();
 
   // Estado da instância da tabela e densidade
-  const [table, setTable] = React.useState<TanstackTable<SalarioComDetalhes> | undefined>(
-    undefined
-  );
-  const [density, setDensity] = React.useState<'compact' | 'standard' | 'relaxed'>('standard');
+  const [table, setTable] = React.useState<
+    TanstackTable<SalarioComDetalhes> | undefined
+  >(undefined);
+  const [density, setDensity] = React.useState<
+    'compact' | 'standard' | 'relaxed'
+  >('standard');
 
   // Estados de filtros
   const [busca, setBusca] = React.useState('');
@@ -309,10 +317,12 @@ export function SalariosList() {
 
   // Estados de dialogs
   const [formDialogOpen, setFormDialogOpen] = React.useState(false);
-  const [salarioParaEditar, setSalarioParaEditar] = React.useState<SalarioComDetalhes | null>(null);
+  const [salarioParaEditar, setSalarioParaEditar] =
+    React.useState<SalarioComDetalhes | null>(null);
   const [alertDialogOpen, setAlertDialogOpen] = React.useState(false);
   const [acao, setAcao] = React.useState<'inativar' | 'excluir' | null>(null);
-  const [salarioSelecionado, setSalarioSelecionado] = React.useState<SalarioComDetalhes | null>(null);
+  const [salarioSelecionado, setSalarioSelecionado] =
+    React.useState<SalarioComDetalhes | null>(null);
   const [encerrarDialogOpen, setEncerrarDialogOpen] = React.useState(false);
   const [dataFimVigencia, setDataFimVigencia] = React.useState('');
 
@@ -337,16 +347,22 @@ export function SalariosList() {
     setFormDialogOpen(true);
   }, []);
 
-  const handleEncerrarVigencia = React.useCallback((salario: SalarioComDetalhes) => {
-    setSalarioSelecionado(salario);
-    setDataFimVigencia(format(new Date(), 'yyyy-MM-dd'));
-    setEncerrarDialogOpen(true);
-  }, []);
+  const handleEncerrarVigencia = React.useCallback(
+    (salario: SalarioComDetalhes) => {
+      setSalarioSelecionado(salario);
+      setDataFimVigencia(format(new Date(), 'yyyy-MM-dd'));
+      setEncerrarDialogOpen(true);
+    },
+    []
+  );
 
   const handleConfirmarEncerramento = React.useCallback(async () => {
     if (!salarioSelecionado || !dataFimVigencia) return;
 
-    const result = await encerrarVigenciaSalario(salarioSelecionado.id, dataFimVigencia);
+    const result = await encerrarVigenciaSalario(
+      salarioSelecionado.id,
+      dataFimVigencia
+    );
 
     if (result.success) {
       toast.success('Vigência encerrada com sucesso');
@@ -381,7 +397,9 @@ export function SalariosList() {
     }
 
     if (result.success) {
-      toast.success(acao === 'inativar' ? 'Salário inativado' : 'Salário excluído');
+      toast.success(
+        acao === 'inativar' ? 'Salário inativado' : 'Salário excluído'
+      );
       setAlertDialogOpen(false);
       setSalarioSelecionado(null);
       setAcao(null);
@@ -391,9 +409,12 @@ export function SalariosList() {
     }
   }, [salarioSelecionado, acao, refetch]);
 
-  const handleVerHistorico = React.useCallback((salario: SalarioComDetalhes) => {
-    router.push(`/rh/salarios/usuario/${salario.usuarioId}`);
-  }, [router]);
+  const handleVerHistorico = React.useCallback(
+    (salario: SalarioComDetalhes) => {
+      router.push(`/rh/salarios/usuario/${salario.usuarioId}`);
+    },
+    [router]
+  );
 
   const handleFormSuccess = React.useCallback(() => {
     setFormDialogOpen(false);
@@ -403,30 +424,30 @@ export function SalariosList() {
 
   // Colunas
   const colunas = React.useMemo(
-    () => criarColunas(handleEditar, handleEncerrarVigencia, handleInativar, handleExcluir, handleVerHistorico),
-    [handleEditar, handleEncerrarVigencia, handleInativar, handleExcluir, handleVerHistorico]
+    () =>
+      criarColunas(
+        handleEditar,
+        handleEncerrarVigencia,
+        handleInativar,
+        handleExcluir,
+        handleVerHistorico
+      ),
+    [
+      handleEditar,
+      handleEncerrarVigencia,
+      handleInativar,
+      handleExcluir,
+      handleVerHistorico,
+    ]
   );
 
   return (
-    <div className="space-y-3">
-      {/* Cards de Resumo */}
-      {totais && (
-        <div className="grid grid-cols-2 gap-4">
-          <div className="rounded-lg border bg-card p-4">
-            <p className="text-sm text-muted-foreground">Total Funcionários com Salário</p>
-            <p className="text-2xl font-bold">{totais.totalFuncionarios}</p>
-          </div>
-          <div className="rounded-lg border bg-card p-4">
-            <p className="text-sm text-muted-foreground">Custo Mensal Bruto</p>
-            <p className="text-2xl font-bold text-green-600">{formatarValor(totais.totalBrutoMensal)}</p>
-          </div>
-        </div>
-      )}
-
+    <>
       <DataShell
         header={
           <DataTableToolbar
             table={table}
+            title="Salários"
             density={density}
             onDensityChange={setDensity}
             searchValue={busca}
@@ -437,6 +458,43 @@ export function SalariosList() {
               onClick: handleNovo,
             }}
           />
+        }
+        subHeader={
+          totais ? (
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+              {/* Card: Total Funcionários */}
+              <div className="group relative overflow-hidden rounded-xl border bg-gradient-to-br from-card to-card/50 p-6 shadow-sm transition-all hover:shadow-md">
+                <div className="absolute right-4 top-4 opacity-10 transition-opacity group-hover:opacity-20">
+                  <svg className="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                  </svg>
+                </div>
+                <div className="relative space-y-1">
+                  <p className="text-sm font-medium text-muted-foreground">
+                    Total Funcionários com Salário
+                  </p>
+                  <p className="text-3xl font-bold tracking-tight">{totais.totalFuncionarios}</p>
+                </div>
+              </div>
+
+              {/* Card: Custo Mensal */}
+              <div className="group relative overflow-hidden rounded-xl border bg-gradient-to-br from-emerald-50/50 to-card dark:from-emerald-950/20 dark:to-card p-6 shadow-sm transition-all hover:shadow-md">
+                <div className="absolute right-4 top-4 opacity-10 transition-opacity group-hover:opacity-20">
+                  <svg className="h-12 w-12 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </div>
+                <div className="relative space-y-1">
+                  <p className="text-sm font-medium text-muted-foreground">
+                    Custo Mensal Bruto
+                  </p>
+                  <p className="text-3xl font-bold tracking-tight text-emerald-600 dark:text-emerald-500">
+                    {formatarValor(totais.totalBrutoMensal)}
+                  </p>
+                </div>
+              </div>
+            </div>
+          ) : null
         }
         footer={
           paginacao && paginacao.totalPaginas > 0 ? (
@@ -460,18 +518,19 @@ export function SalariosList() {
           pagination={
             paginacao
               ? {
-                  pageIndex: pagina - 1,
-                  pageSize: 50,
-                  total: paginacao.total,
-                  totalPages: paginacao.totalPaginas,
-                  onPageChange: (pageIndex) => setPagina(pageIndex + 1),
-                  onPageSizeChange: () => { },
-                }
+                pageIndex: pagina - 1,
+                pageSize: 50,
+                total: paginacao.total,
+                totalPages: paginacao.totalPaginas,
+                onPageChange: (pageIndex) => setPagina(pageIndex + 1),
+                onPageSizeChange: () => { },
+              }
               : undefined
           }
           hidePagination={true}
           onTableReady={setTable}
           density={density}
+          emptyMessage="Nenhum salário encontrado."
         />
       </DataShell>
 
@@ -504,10 +563,16 @@ export function SalariosList() {
             />
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setEncerrarDialogOpen(false)}>
+            <Button
+              variant="outline"
+              onClick={() => setEncerrarDialogOpen(false)}
+            >
               Cancelar
             </Button>
-            <Button onClick={handleConfirmarEncerramento} disabled={!dataFimVigencia}>
+            <Button
+              onClick={handleConfirmarEncerramento}
+              disabled={!dataFimVigencia}
+            >
               Confirmar
             </Button>
           </DialogFooter>
@@ -531,13 +596,17 @@ export function SalariosList() {
             <AlertDialogCancel>Cancelar</AlertDialogCancel>
             <AlertDialogAction
               onClick={handleConfirmarAcao}
-              className={acao === 'excluir' ? 'bg-destructive text-destructive-foreground' : ''}
+              className={
+                acao === 'excluir'
+                  ? 'bg-destructive text-destructive-foreground'
+                  : ''
+              }
             >
               {acao === 'inativar' ? 'Inativar' : 'Excluir'}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-    </div>
+    </>
   );
 }

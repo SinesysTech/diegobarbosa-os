@@ -1,78 +1,143 @@
 'use client';
 
-import * as React from 'react';
 import type { ColumnDef } from '@tanstack/react-table';
-import { Pencil, Key } from 'lucide-react';
+import { Pencil, Key, Trash2 } from 'lucide-react';
 
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import { DataTableColumnHeader } from '@/components/shared/data-shell/data-table-column-header';
+import { Button } from '@/components/ui/button';
+import { AppBadge as Badge } from '@/components/ui/app-badge';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 import type { Advogado } from '@/features/advogados';
 
-type Params = {
-  onEdit?: (advogado: Advogado) => void;
-  onManageCredenciais?: (advogado: Advogado) => void;
-};
+interface ColumnOptions {
+  onEdit: (advogado: Advogado) => void;
+  onDelete: (advogado: Advogado) => void;
+  onViewCredenciais: (advogado: Advogado) => void;
+}
 
-export function criarColunasAdvogados({ onEdit, onManageCredenciais }: Params): ColumnDef<Advogado>[] {
+/**
+ * Formata CPF para exibição: 000.000.000-00
+ */
+function formatarCpf(cpf: string): string {
+  const digits = cpf.replace(/\D/g, '');
+  if (digits.length !== 11) return cpf;
+  return digits.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
+}
+
+export function criarColunasAdvogados({
+  onEdit,
+  onDelete,
+  onViewCredenciais,
+}: ColumnOptions): ColumnDef<Advogado>[] {
   return [
     {
       accessorKey: 'nome_completo',
       header: ({ column }) => <DataTableColumnHeader column={column} title="Nome" />,
+      enableSorting: true,
+      size: 280,
+      meta: { align: 'left' as const },
       cell: ({ row }) => (
-        <div className="min-w-0">
-          <p className="truncate text-sm font-medium">{row.original.nome_completo}</p>
-        </div>
+        <span className="text-sm font-medium">{row.original.nome_completo}</span>
       ),
     },
     {
       accessorKey: 'cpf',
       header: ({ column }) => <DataTableColumnHeader column={column} title="CPF" />,
-      cell: ({ row }) => {
-        const cpf = row.original.cpf;
-        // Formatar CPF: 000.000.000-00
-        const cpfFormatado = cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
-        return <span className="font-mono text-sm">{cpfFormatado}</span>;
-      },
+      enableSorting: false,
+      size: 160,
+      meta: { align: 'left' as const },
+      cell: ({ row }) => (
+        <span className="font-mono text-sm">{formatarCpf(row.original.cpf)}</span>
+      ),
     },
     {
-      accessorKey: 'oabs',
+      accessorKey: 'oab',
       header: ({ column }) => <DataTableColumnHeader column={column} title="OAB" />,
+      enableSorting: false,
+      size: 160,
+      meta: { align: 'left' as const },
       cell: ({ row }) => (
-        <div className="flex flex-wrap gap-1">
-          {row.original.oabs.map((oab, index) => (
-            <Badge key={index} variant="outline" className="text-xs">
-              {oab.numero}/{oab.uf}
-            </Badge>
-          ))}
+        <div className="flex items-center gap-2">
+          <span className="font-mono text-sm">{row.original.oab}</span>
+          <Badge variant="outline" tone="soft" className="text-xs">
+            {row.original.uf_oab}
+          </Badge>
         </div>
       ),
     },
     {
-      id: 'actions',
-      header: '',
+      accessorKey: 'uf_oab',
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="UF" className="justify-center" />
+      ),
+      enableSorting: true,
+      size: 80,
+      meta: { align: 'center' as const },
       cell: ({ row }) => (
-        <div className="flex justify-end gap-1">
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => onManageCredenciais?.(row.original)}
-            aria-label="Gerenciar credenciais"
-            title="Gerenciar credenciais"
-          >
-            <Key className="h-4 w-4" />
-          </Button>
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => onEdit?.(row.original)}
-            aria-label="Editar advogado"
-            title="Editar advogado"
-          >
-            <Pencil className="h-4 w-4" />
-          </Button>
+        <Badge variant="secondary">{row.original.uf_oab}</Badge>
+      ),
+    },
+    {
+      id: 'acoes',
+      header: () => (
+        <div className="flex items-center justify-center">
+          <span className="text-sm font-medium text-muted-foreground">Ações</span>
         </div>
       ),
+      enableSorting: false,
+      enableHiding: false,
+      size: 120,
+      meta: { align: 'center' as const },
+      cell: ({ row }) => {
+        const advogado = row.original;
+        return (
+          <div className="flex items-center justify-center gap-1">
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8"
+                  onClick={() => onEdit(advogado)}
+                >
+                  <Pencil className="h-4 w-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>Editar</TooltipContent>
+            </Tooltip>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8"
+                  onClick={() => onViewCredenciais(advogado)}
+                >
+                  <Key className="h-4 w-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>Ver Credenciais</TooltipContent>
+            </Tooltip>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8 text-destructive hover:text-destructive"
+                  onClick={() => onDelete(advogado)}
+                >
+                  <Trash2 className="h-4 w-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>Excluir</TooltipContent>
+            </Tooltip>
+          </div>
+        );
+      },
     },
   ];
 }

@@ -28,5 +28,6 @@
   "enabledMcpjsonServers": [
     "supabase",
     "copilotkit"
-  ]
+  ],
+  "outputStyle": "Explanatory"
 }
