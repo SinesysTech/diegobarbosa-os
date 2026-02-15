@@ -36,6 +36,7 @@ yarn-error.log*
 !.env.local
 .env*.local.bak
 .env.build
+env.sh
 
 # vercel
 #.vercel

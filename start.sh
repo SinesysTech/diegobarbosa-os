@@ -44,6 +44,23 @@ if [[ ! -f "${DATA_DIR}/.initialized" ]]; then
     echo "=> Initialization complete"
 fi
 
+# ============================================================================
+# Carregar variaveis de ambiente customizadas
+# ============================================================================
+# Mecanismo 1: /app/data/env.sh (arquivo persistente)
+# Crie este arquivo via File Manager do Cloudron com seus exports.
+# Ele persiste entre restarts e updates da aplicacao.
+#
+# Mecanismo 2: cloudron env set KEY=VALUE (CLI)
+# Vars definidas via CLI ja estao em process.env automaticamente.
+# ============================================================================
+if [[ -f "/app/data/env.sh" ]]; then
+    echo "=> Loading custom environment from /app/data/env.sh"
+    source /app/data/env.sh
+else
+    echo "=> No /app/data/env.sh found (using cloudron env or defaults)"
+fi
+
 # Configurar variaveis de ambiente para Next.js
 export NODE_ENV=production
 export PORT=8000
@@ -63,6 +80,11 @@ echo "   - PORT: ${PORT}"
 echo "   - HOSTNAME: ${HOSTNAME}"
 echo "   - NODE_ENV: ${NODE_ENV}"
 echo "   - Data directory: ${DATA_DIR}"
+echo "   - CLOUDRON_APP_ORIGIN: ${CLOUDRON_APP_ORIGIN:-not set}"
+echo "   - NEXT_PUBLIC_SUPABASE_URL: ${NEXT_PUBLIC_SUPABASE_URL:+set (hidden)}"
+echo "   - SUPABASE_SECRET_KEY: ${SUPABASE_SECRET_KEY:+set (hidden)}"
+echo "   - SERVICE_API_KEY: ${SERVICE_API_KEY:+set (hidden)}"
+echo "   - OPENAI_API_KEY: ${OPENAI_API_KEY:+set (hidden)}"
 
 # Mudar para o diretorio da aplicacao
 cd /app/code
