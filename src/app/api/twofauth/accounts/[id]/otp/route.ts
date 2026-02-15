@@ -3,7 +3,7 @@
 
 import { NextRequest, NextResponse } from "next/server";
 import { authenticateRequest } from "@/lib/auth/api-auth";
-import { getOTP, TwoFAuthError } from "@/lib/integrations/twofauth/";
+import { getOTP, TwoFAuthError } from "@/lib/integrations/twofauth";
 
 /**
  * @swagger

@@ -12,7 +12,7 @@ import {
   createGroup,
   TwoFAuthError,
   type CreateGroupParams,
-} from "@/lib/integrations/twofauth/";
+} from "@/lib/integrations/twofauth";
 
 /**
  * @swagger

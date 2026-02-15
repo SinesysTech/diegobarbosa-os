@@ -12,7 +12,7 @@ import {
   updatePreference,
   TwoFAuthError,
   type PreferenceName,
-} from "@/lib/integrations/twofauth/";
+} from "@/lib/integrations/twofauth";
 
 type RouteParams = { params: Promise<{ name: string }> };
 

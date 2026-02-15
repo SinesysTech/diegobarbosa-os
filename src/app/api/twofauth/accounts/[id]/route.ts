@@ -14,7 +14,7 @@ import {
   deleteAccount,
   TwoFAuthError,
   type UpdateAccountParams,
-} from "@/lib/integrations/twofauth/";
+} from "@/lib/integrations/twofauth";
 
 type RouteParams = { params: Promise<{ id: string }> };
 

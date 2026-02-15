@@ -14,7 +14,7 @@ import {
   deleteGroup,
   TwoFAuthError,
   type UpdateGroupParams,
-} from "@/lib/integrations/twofauth/";
+} from "@/lib/integrations/twofauth";
 
 type RouteParams = { params: Promise<{ id: string }> };
 

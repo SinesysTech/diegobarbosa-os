@@ -6,7 +6,7 @@
 
 import { NextRequest, NextResponse } from "next/server";
 import { authenticateRequest } from "@/lib/auth/api-auth";
-import { generateQRCode, TwoFAuthError } from "@/lib/integrations/twofauth/";
+import { generateQRCode, TwoFAuthError } from "@/lib/integrations/twofauth";
 
 type RouteParams = { params: Promise<{ id: string }> };
 

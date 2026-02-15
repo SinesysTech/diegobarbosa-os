@@ -12,7 +12,7 @@ import {
   createAccount,
   TwoFAuthError,
   type CreateAccountParams,
-} from "@/lib/integrations/twofauth/";
+} from "@/lib/integrations/twofauth";
 
 /**
  * @swagger
