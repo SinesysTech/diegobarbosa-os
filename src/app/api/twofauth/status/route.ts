@@ -6,7 +6,9 @@
 
 import { NextRequest, NextResponse } from "next/server";
 import { authenticateRequest } from "@/lib/auth/api-auth";
-import { checkConnection, getUser, TwoFAuthError } from "@/lib/integrations/twofauth";
+import { checkConnection } from "@/lib/integrations/twofauth/client";
+import { getUser } from "@/lib/integrations/twofauth/user";
+import { TwoFAuthError } from "@/lib/integrations/twofauth/types";
 
 /**
  * @swagger

@@ -10,9 +10,9 @@ import { authenticateRequest } from "@/lib/auth/api-auth";
 import {
   listGroups,
   createGroup,
-  TwoFAuthError,
   type CreateGroupParams,
-} from "@/lib/integrations/twofauth";
+} from "@/lib/integrations/twofauth/groups";
+import { TwoFAuthError } from "@/lib/integrations/twofauth/types";
 
 /**
  * @swagger

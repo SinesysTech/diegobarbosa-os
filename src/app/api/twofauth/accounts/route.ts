@@ -10,9 +10,9 @@ import { authenticateRequest } from "@/lib/auth/api-auth";
 import {
   listAccounts,
   createAccount,
-  TwoFAuthError,
   type CreateAccountParams,
-} from "@/lib/integrations/twofauth";
+} from "@/lib/integrations/twofauth/accounts";
+import { TwoFAuthError } from "@/lib/integrations/twofauth/types";
 
 /**
  * @swagger

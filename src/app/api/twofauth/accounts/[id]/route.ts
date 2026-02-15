@@ -12,9 +12,9 @@ import {
   getAccount,
   updateAccount,
   deleteAccount,
-  TwoFAuthError,
   type UpdateAccountParams,
-} from "@/lib/integrations/twofauth";
+} from "@/lib/integrations/twofauth/accounts";
+import { TwoFAuthError } from "@/lib/integrations/twofauth/types";
 
 type RouteParams = { params: Promise<{ id: string }> };
 
