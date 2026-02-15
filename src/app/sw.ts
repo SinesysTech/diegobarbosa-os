@@ -19,6 +19,13 @@ declare const self: WorkerGlobalScope &
 // Custom runtime caching strategy that NEVER caches Server Actions and APIs
 // This prevents "Failed to find Server Action" errors after deployments
 const apiOnlyCache: RuntimeCaching[] = [
+  // Navigation requests (HTML) - NEVER cache
+  // HTML contains window.__ENV__ with runtime env vars that must always be fresh.
+  // Caching HTML could serve stale env values (e.g. __PLACEHOLDER__ from Docker build).
+  {
+    matcher: ({ request }) => request.mode === "navigate",
+    handler: new NetworkOnly(),
+  },
   // API routes - NEVER cache (includes Server Actions endpoints)
   {
     matcher: /\/api\/.*/i,

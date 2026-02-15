@@ -3,6 +3,7 @@
 import * as React from "react"
 import { useRouter } from "next/navigation"
 import { useTheme } from "next-themes"
+import { getPublicEnv } from '@/lib/env/public-env'
 import {
   BadgeCheck,
   Bell,
@@ -46,7 +47,7 @@ function getInitials(name: string): string {
 
 function getAvatarPublicUrl(avatarPath: string | null | undefined): string {
   if (!avatarPath) return ""
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const supabaseUrl = getPublicEnv('NEXT_PUBLIC_SUPABASE_URL')
   if (!supabaseUrl) return ""
   return `${supabaseUrl}/storage/v1/object/public/avatar/${avatarPath}`
 }

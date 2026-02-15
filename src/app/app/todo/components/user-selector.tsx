@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import { Check, UserPlusIcon, X } from "lucide-react";
+import { getPublicEnv } from '@/lib/env/public-env';
 import {
   Command,
   CommandEmpty,
@@ -23,7 +24,7 @@ import type { TodoAssignee } from "../types";
 
 function getAvatarPublicUrl(avatarPath: string | null | undefined): string {
   if (!avatarPath) return "";
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseUrl = getPublicEnv('NEXT_PUBLIC_SUPABASE_URL');
   if (!supabaseUrl) return "";
   return `${supabaseUrl}/storage/v1/object/public/avatar/${avatarPath}`;
 }

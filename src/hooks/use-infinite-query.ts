@@ -5,10 +5,14 @@ import { PostgrestQueryBuilder, type PostgrestClientOptions } from '@supabase/po
 import { type SupabaseClient } from '@supabase/supabase-js'
 import { useEffect, useMemo, useSyncExternalStore } from 'react'
 
-const supabase = createClient()
+let _supabase: ReturnType<typeof createClient> | null = null
+function getSupabase() {
+  if (!_supabase) _supabase = createClient()
+  return _supabase
+}
 
 // The following types are used to make the hook type-safe. It extracts the database type from the supabase client.
-type SupabaseClientType = typeof supabase
+type SupabaseClientType = ReturnType<typeof createClient>
 
 // Utility type to check if the type is any
 type IfAny<T, Y, N> = 0 extends 1 & T ? Y : N
@@ -128,7 +132,7 @@ function createStore<TData extends SupabaseTableData<T>, T extends SupabaseTable
 
     setState({ isFetching: true })
 
-    let query = supabase
+    let query = getSupabase()
       .from(tableName)
       .select(columns, { count: 'exact' }) as unknown as SupabaseSelectBuilder<T>
 

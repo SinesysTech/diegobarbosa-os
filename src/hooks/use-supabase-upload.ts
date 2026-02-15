@@ -1,8 +1,10 @@
 import { createClient } from '@/lib/supabase/client'
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useMemo, useRef, useState } from 'react'
 import { type FileError, type FileRejection, useDropzone } from 'react-dropzone'
 
-const supabase = createClient()
+function getSupabase() {
+  return createClient()
+}
 
 interface FileWithPreview extends File {
   preview?: string
@@ -159,7 +161,7 @@ const useSupabaseUpload = (options: UseSupabaseUploadOptions) => {
 
     const responses = await Promise.all(
       filesToUpload.map(async (file) => {
-        const { error } = await supabase.storage
+        const { error } = await getSupabase().storage
           .from(bucketName)
           .upload(!!path ? `${path}/${file.name}` : file.name, file, {
             cacheControl: cacheControl.toString(),

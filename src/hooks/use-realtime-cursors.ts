@@ -37,7 +37,11 @@ const useThrottleCallback = <Params extends unknown[], Return>(
   )
 }
 
-const supabase = createClient()
+let _supabase: ReturnType<typeof createClient> | null = null
+function getSupabase() {
+  if (!_supabase) _supabase = createClient()
+  return _supabase
+}
 
 const generateRandomColor = () => `hsl(${Math.floor(Math.random() * 360)}, 100%, 70%)`
 
@@ -105,7 +109,7 @@ export const useRealtimeCursors = ({
   const handleMouseMove = useThrottleCallback(callback, throttleMs)
 
   useEffect(() => {
-    const channel = supabase.channel(roomName)
+    const channel = getSupabase().channel(roomName)
 
     channel
       .on('presence', { event: 'leave' }, ({ leftPresences }) => {

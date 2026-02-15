@@ -23,7 +23,7 @@ export interface LogAlteracao {
 }
 
 export class AuditLogService {
-  private supabase = createClient();
+  private get supabase() { return createClient(); }
 
   async getLogs(entityType: string, entityId: number): Promise<LogAlteracao[]> {
     const { data, error } = await this.supabase

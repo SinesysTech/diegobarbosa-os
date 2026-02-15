@@ -1,5 +1,6 @@
 
 import { GENERO_LABELS } from './domain';
+import { getPublicEnv } from '@/lib/env/public-env';
 
 /**
  * Formata CPF (000.000.000-00)
@@ -135,7 +136,7 @@ export function getAvatarUrl(avatarUrl: string | null | undefined): string | nul
     return avatarUrl;
   }
   // Caso contrário, construir URL (retrocompatibilidade)
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseUrl = getPublicEnv('NEXT_PUBLIC_SUPABASE_URL');
   if (!supabaseUrl) return null;
   return `${supabaseUrl}/storage/v1/object/public/avatars/${avatarUrl}`;
 }
@@ -151,7 +152,7 @@ export function getCoverUrl(coverUrl: string | null | undefined): string | null 
     return coverUrl;
   }
   // Caso contrário, construir URL (retrocompatibilidade)
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseUrl = getPublicEnv('NEXT_PUBLIC_SUPABASE_URL');
   if (!supabaseUrl) return null;
   return `${supabaseUrl}/storage/v1/object/public/covers/${coverUrl}`;
 }
