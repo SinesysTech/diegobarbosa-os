@@ -1,0 +1,20 @@
+# Build warnings conhecidos (não bloqueiam o build)
+
+## 1. web-worker dependency warning
+# Causa: Dependência interna do make-asynchronous
+# Impacto: Nenhum - warning apenas
+# Status: Ignorar (não afeta funcionalidade)
+
+## 2. twofauth import warnings
+# Causa: TypeScript não consegue resolver exports durante build
+# Impacto: Nenhum - funções existem e funcionam em runtime
+# Status: Ignorar (barrel exports funcionam corretamente)
+# Arquivos afetados:
+#   - src/app/api/twofauth/accounts/[id]/route.ts
+#   - src/app/api/twofauth/accounts/route.ts
+#   - src/app/api/twofauth/groups/[id]/route.ts
+#   - src/app/api/twofauth/groups/route.ts
+#   - src/app/api/twofauth/preferences/[name]/route.ts
+#   - src/app/api/twofauth/preferences/route.ts
+#   - src/app/api/twofauth/qrcode/[id]/route.ts
+#   - src/app/api/twofauth/status/route.ts
