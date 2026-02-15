@@ -1,7 +1,12 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { ApiReferenceReact } from '@scalar/api-reference-react';
+import dynamic from 'next/dynamic';
+
+const ApiReferenceReact = dynamic(
+  () => import('@scalar/api-reference-react').then((mod) => ({ default: mod.ApiReferenceReact })),
+  { ssr: false }
+);
 import '@scalar/api-reference-react/style.css';
 import { Code, Loader2 } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
