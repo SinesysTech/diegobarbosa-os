@@ -28,6 +28,9 @@ mkdir -p "${DATA_DIR}/cache"
 mkdir -p "${DATA_DIR}/logs"
 mkdir -p "${DATA_DIR}/uploads"
 
+# Criar diretorio de cache do Next.js (necessario para cache-handler.js)
+mkdir -p "/app/code/.next/cache/custom"
+
 # Verificar se eh primeira execucao
 if [[ ! -f "${DATA_DIR}/.initialized" ]]; then
     echo "=> First run detected, initializing..."

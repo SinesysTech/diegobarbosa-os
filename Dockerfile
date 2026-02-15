@@ -81,7 +81,11 @@ FROM --platform=linux/amd64 cloudron/base:4.2.0
 
 # Instalar Node.js 22 (usar versao pre-instalada no base image se disponivel)
 # O base image inclui multiplas versoes de Node.js em /usr/local/node-<version>
+# Verificar versao disponivel e usar a mais recente
 ENV PATH="/usr/local/node-22.16.0/bin:$PATH"
+
+# Verificar versao do Node.js (para debug)
+RUN node --version && npm --version
 
 # Configurar diretorio da aplicacao (padrao Cloudron)
 WORKDIR /app/code
@@ -91,6 +95,9 @@ WORKDIR /app/code
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static
+
+# Criar diretorio de cache do Next.js
+RUN mkdir -p .next/cache/custom
 
 # Copiar script de inicializacao
 COPY start.sh /app/code/start.sh
