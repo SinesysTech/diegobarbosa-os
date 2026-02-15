@@ -65,5 +65,6 @@
     "TRADEMARK": "plaintext",
     "NOTICE": "plaintext",
     "AGENTS": "markdown"
-  }
+  },
+  "kiroAgent.configureMCP": "Disabled"
 }
