@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { headers } from "next/headers";
 import { Inter, Montserrat, Geist_Mono, Playfair_Display } from "next/font/google";
 import { CSPNonceMeta } from "@/lib/csp/csp-nonce-meta";
+import { getPublicEnvScript } from "@/lib/env/public-env";
 import RootLayoutClient from "./layout-client";
 import "./globals.css";
 
@@ -72,6 +73,10 @@ export default async function RootLayout({
     <html lang="pt-BR" suppressHydrationWarning>
       <head>
         <CSPNonceMeta nonce={nonce} />
+        <script
+          nonce={nonce}
+          dangerouslySetInnerHTML={{ __html: getPublicEnvScript() }}
+        />
       </head>
       <body
         className={`${inter.variable} ${montserrat.variable} ${playfairDisplay.variable} ${geistMono.variable} antialiased font-sans bg-background text-foreground`}

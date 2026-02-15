@@ -50,15 +50,19 @@ RUN mkdir -p .next/cache
 # ============================================================================
 # BUILD ARGS - Variaveis NEXT_PUBLIC_* (inlined no build)
 # ============================================================================
-ARG NEXT_PUBLIC_SUPABASE_URL
-ARG NEXT_PUBLIC_SUPABASE_PUBLISHABLE_OR_ANON_KEY
-ARG NEXT_PUBLIC_DASHBOARD_URL
-ARG NEXT_PUBLIC_MEU_PROCESSO_URL
-ARG NEXT_PUBLIC_WEBSITE_URL
-ARG NEXT_PUBLIC_APP_URL
-ARG NEXT_PUBLIC_DYTE_ORG_ID
-ARG NEXT_PUBLIC_AI_FAKE_STREAMING
-ARG NEXT_PUBLIC_FORMSIGN_SUBMIT_ENABLED
+# Placeholders usados em tempo de build. Os valores reais sao injetados
+# em runtime via window.__ENV__ no root layout (Server Component).
+# Se --build-arg for passado, o valor real sera usado; caso contrario,
+# o placeholder garante que o build nao falhe.
+ARG NEXT_PUBLIC_SUPABASE_URL=__PLACEHOLDER__
+ARG NEXT_PUBLIC_SUPABASE_PUBLISHABLE_OR_ANON_KEY=__PLACEHOLDER__
+ARG NEXT_PUBLIC_DASHBOARD_URL=
+ARG NEXT_PUBLIC_MEU_PROCESSO_URL=
+ARG NEXT_PUBLIC_WEBSITE_URL=
+ARG NEXT_PUBLIC_APP_URL=
+ARG NEXT_PUBLIC_DYTE_ORG_ID=
+ARG NEXT_PUBLIC_AI_FAKE_STREAMING=
+ARG NEXT_PUBLIC_FORMSIGN_SUBMIT_ENABLED=
 
 # Converter ARGs para ENVs para o build
 ENV NEXT_PUBLIC_SUPABASE_URL=${NEXT_PUBLIC_SUPABASE_URL}
