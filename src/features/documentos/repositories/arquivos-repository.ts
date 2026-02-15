@@ -9,7 +9,7 @@ import type {
 } from "../domain";
 import { listarDocumentos } from "./documentos-repository";
 import { listarPastasComContadores } from "./pastas-repository";
-import { buildArquivoWithCreatorSelect } from "./shared/query-builders";
+
 
 // ============================================================================
 // ARQUIVOS GENÉRICOS
@@ -143,9 +143,9 @@ export async function listarArquivos(
   // Since I can't easily edit query-builders.ts without viewing it, I will replace usages here
   // or I should go edit query-builders.ts too.
   // Checking imports: import { buildArquivoWithCreatorSelect } from "./shared/query-builders";
-  
+
   let query = supabase.from("arquivos").select(
-      `
+    `
       *,
       storage_path:b2_key,
       storage_url:b2_url,

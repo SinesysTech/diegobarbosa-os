@@ -1,4 +1,4 @@
-import { createClient } from '@/lib/supabase/server';
+
 import { downloadFromSupabase } from '@/lib/storage/supabase-storage.service';
 
 export type StorageProvider = 'supabase' | 'google_drive';
@@ -40,23 +40,23 @@ export function extractKeyFromUrl(url: string): string {
         // Let's assume standard public URL structure: /storage/v1/object/public/BUCKET/KEY
         // If we found 'public', bucket is next, key starts after bucket.
         // If we found 'object' and next is 'public', same.
-        
+
         let bucketIndex = -1;
         if (pathParts[objectIndex] === 'public') {
-             bucketIndex = objectIndex + 1;
-        } else if (pathParts[objectIndex] === 'object' && pathParts[objectIndex+1] === 'public') {
-             bucketIndex = objectIndex + 2;
+          bucketIndex = objectIndex + 1;
+        } else if (pathParts[objectIndex] === 'object' && pathParts[objectIndex + 1] === 'public') {
+          bucketIndex = objectIndex + 2;
         }
 
         if (bucketIndex !== -1 && bucketIndex < pathParts.length) {
-            return pathParts.slice(bucketIndex + 1).join('/');
+          return pathParts.slice(bucketIndex + 1).join('/');
         }
       }
     }
 
     // Fallback: retorna o pathname sem a barra inicial
     // Caution: this might be wrong if it includes /storage/v1... but for now keeping fallback behavior but simplified
-    return urlObj.pathname.replace(/^\//, ''); 
+    return urlObj.pathname.replace(/^\//, '');
   } catch {
     // Se não for uma URL válida, assume que já é uma key
     return url;

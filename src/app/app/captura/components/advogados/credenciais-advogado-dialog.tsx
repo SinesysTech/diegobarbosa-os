@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import { useState, useEffect, useCallback } from 'react';
-import { Plus, Pencil, Power, Trash2, Loader2, Eye, EyeOff } from 'lucide-react';
+import { Plus, Pencil, Power, Loader2, Eye, EyeOff } from 'lucide-react';
 
 import {
   Dialog,
@@ -34,7 +34,6 @@ import {
 } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Separator } from '@/components/ui/separator';
 import { TribunalBadge } from '@/components/ui/tribunal-badge';
 import { toast } from 'sonner';
 
@@ -131,7 +130,7 @@ export function CredenciaisAdvogadoDialog({ open, onOpenChange, advogado, onRefr
       } else {
         toast.error(result.error || 'Erro ao buscar credenciais');
       }
-    } catch (error) {
+    } catch (_error) {
       toast.error('Erro ao buscar credenciais');
     } finally {
       setIsLoading(false);
@@ -363,9 +362,8 @@ export function CredenciaisAdvogadoDialog({ open, onOpenChange, advogado, onRefr
                       {credenciais.map((credencial) => (
                         <div
                           key={credencial.id}
-                          className={`flex items-center justify-between p-3 rounded-lg border ${
-                            credencial.active ? 'bg-card' : 'bg-muted/50 opacity-60'
-                          }`}
+                          className={`flex items-center justify-between p-3 rounded-lg border ${credencial.active ? 'bg-card' : 'bg-muted/50 opacity-60'
+                            }`}
                         >
                           <div className="flex items-center gap-3">
                             <TribunalBadge codigo={credencial.tribunal} />
@@ -455,18 +453,17 @@ export function CredenciaisAdvogadoDialog({ open, onOpenChange, advogado, onRefr
                               <td className="py-2">{d.tribunal}</td>
                               <td className="py-2">{GRAUS_LABELS[d.grau]}</td>
                               <td className="py-2">
-                                <span className={`flex items-center gap-1 ${
-                                  d.status === 'criada' ? 'text-green-600' :
-                                  d.status === 'atualizada' ? 'text-blue-600' :
-                                  d.status === 'pulada' ? 'text-yellow-600' : 'text-red-600'
-                                }`}>
+                                <span className={`flex items-center gap-1 ${d.status === 'criada' ? 'text-green-600' :
+                                    d.status === 'atualizada' ? 'text-blue-600' :
+                                      d.status === 'pulada' ? 'text-yellow-600' : 'text-red-600'
+                                  }`}>
                                   {d.status === 'criada' && <CheckCircle className="h-3 w-3" />}
                                   {d.status === 'atualizada' && <CheckCircle className="h-3 w-3" />}
                                   {d.status === 'pulada' && <AlertCircle className="h-3 w-3" />}
                                   {d.status === 'erro' && <XCircle className="h-3 w-3" />}
                                   {d.status === 'criada' ? 'Criada' :
-                                   d.status === 'atualizada' ? 'Atualizada' :
-                                   d.status === 'pulada' ? 'Pulada' : 'Erro'}
+                                    d.status === 'atualizada' ? 'Atualizada' :
+                                      d.status === 'pulada' ? 'Pulada' : 'Erro'}
                                 </span>
                               </td>
                             </tr>
