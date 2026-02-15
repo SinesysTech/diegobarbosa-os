@@ -23,7 +23,8 @@
       "mcp__supabase__list_migrations",
       "mcp__supabase__generate_typescript_types",
       "WebFetch(domain:docs.cloudron.io)",
-      "WebFetch(domain:forum.cloudron.io)"
+      "WebFetch(domain:forum.cloudron.io)",
+      "WebFetch(domain:git.cloudron.io)"
     ]
   },
   "enableAllProjectMcpServers": true,
