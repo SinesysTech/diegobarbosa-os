@@ -84,10 +84,11 @@ export async function GET(request: NextRequest) {
     // 2. Buscar credenciais com informações dos advogados
     const supabase = createServiceClient();
     
-    // Verificar se há filtro de active na query string
+    // Verificar filtros na query string
     const { searchParams } = new URL(request.url);
     const activeFilter = searchParams.get('active');
-    
+    const advogadoIdFilter = searchParams.get('advogado_id');
+
     let query = supabase
       .from('credenciais')
       .select(`
@@ -106,10 +107,18 @@ export async function GET(request: NextRequest) {
           oabs
         )
       `);
-    
+
     // Aplicar filtro de active se fornecido
     if (activeFilter !== null) {
       query = query.eq('active', activeFilter === 'true');
+    }
+
+    // Aplicar filtro de advogado_id se fornecido
+    if (advogadoIdFilter) {
+      const advId = parseInt(advogadoIdFilter, 10);
+      if (!isNaN(advId)) {
+        query = query.eq('advogado_id', advId);
+      }
     }
     
     const { data: credenciais, error } = await query

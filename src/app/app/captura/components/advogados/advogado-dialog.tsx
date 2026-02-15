@@ -22,6 +22,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Loader2, Plus, Trash2 } from 'lucide-react';
+import { toast } from 'sonner';
 
 import type {
   Advogado,
@@ -83,7 +84,7 @@ export function AdvogadoDialog({ open, onOpenChange, advogado, mode, onSave }: P
       );
 
       if (oabsValidas.length === 0) {
-        alert('Pelo menos uma OAB é obrigatória');
+        toast.error('Pelo menos uma OAB é obrigatória');
         setIsSaving(false);
         return;
       }
@@ -93,6 +94,8 @@ export function AdvogadoDialog({ open, onOpenChange, advogado, mode, onSave }: P
         cpf: formData.cpf,
         oabs: oabsValidas,
       });
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : 'Erro ao salvar advogado');
     } finally {
       setIsSaving(false);
     }
