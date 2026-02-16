@@ -66,5 +66,6 @@
     "NOTICE": "plaintext",
     "AGENTS": "markdown"
   },
-  "kiroAgent.configureMCP": "Disabled"
+  "kiroAgent.configureMCP": "Enabled",
+  "chat.mcp.assisted.nuget.enabled": true
 }
