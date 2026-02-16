@@ -1,9 +1,8 @@
 "use client";
 
 import * as React from "react";
-import { useRouter } from "next/navigation";
 
-import { Badge } from "@/components/ui/badge";
+import { AppBadge } from "@/components/ui/app-badge";
 import * as Kanban from "@/components/ui/kanban";
 
 import type { SystemBoardData, UnifiedKanbanCard as CardType, KanbanBoardSource } from "../domain";
@@ -17,12 +16,11 @@ interface SystemBoardViewProps {
 }
 
 export function SystemBoardView({ data, source, onRefresh }: SystemBoardViewProps) {
-  const router = useRouter();
-  const [isPending, startTransition] = React.useTransition();
+  const [, startTransition] = React.useTransition();
   const [syncError, setSyncError] = React.useState<string | null>(null);
 
   // Converter SystemBoardData para o formato que Kanban.Root espera: Record<string, CardType[]>
-  const columnOrder = data.columns.map((c) => c.id);
+  const columnOrder = data.columns.map((c: { id: string; title: string; statusKey: string }) => c.id);
 
   const [columns, setColumns] = React.useState<Record<string, CardType[]>>(() => {
     const initial: Record<string, CardType[]> = {};
@@ -68,7 +66,7 @@ export function SystemBoardView({ data, source, onRefresh }: SystemBoardViewProp
             if (!result.success) {
               setSyncError(result.message || result.error || "Falha ao atualizar status.");
               // Reverter
-              setColumns((prev) => {
+              setColumns((_prev) => {
                 const reverted: Record<string, CardType[]> = {};
                 for (const c of data.columns) {
                   reverted[c.id] = data.cardsByColumn[c.id] ?? [];
@@ -104,7 +102,7 @@ export function SystemBoardView({ data, source, onRefresh }: SystemBoardViewProp
         getItemValue={(item) => item.id}
       >
         <Kanban.Board className="flex w-full gap-4 overflow-x-auto pb-4">
-          {columnOrder.map((columnValue) => {
+          {columnOrder.map((columnValue: string) => {
             const cards = columns[columnValue] ?? [];
             return (
               <Kanban.Column
@@ -114,7 +112,7 @@ export function SystemBoardView({ data, source, onRefresh }: SystemBoardViewProp
               >
                 <div className="flex items-center gap-2 mb-2">
                   <span className="text-sm font-semibold">{columnTitles[columnValue]}</span>
-                  <Badge variant="outline">{cards.length}</Badge>
+                  <AppBadge variant="outline">{cards.length}</AppBadge>
                 </div>
                 {cards.length > 0 ? (
                   <div className="flex flex-col gap-2 p-0.5">
