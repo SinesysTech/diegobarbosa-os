@@ -69,7 +69,7 @@ Opcionais (dependem dos módulos):
 - Dyte (chamadas): `NEXT_PUBLIC_DYTE_ORG_ID`, `DYTE_API_KEY`, `DYTE_ENABLE_RECORDING`
 - Storage Backblaze B2: `STORAGE_PROVIDER`, `B2_*`
 - Browser service (scraping): `BROWSER_WS_ENDPOINT`, `BROWSER_SERVICE_URL`, `BROWSER_SERVICE_TOKEN`
-- MCP (integrações): `MCP_SINESYS_API_URL`, `MCP_SINESYS_API_KEY`
+- MCP (integrações): `MCP_DBOS_API_URL`, `MCP_DBOS_API_KEY`
 - Segurança: `CSP_REPORT_ONLY`, `ALLOWED_ORIGINS`, `RATE_LIMIT_FAIL_MODE`
 
 ## Comandos úteis

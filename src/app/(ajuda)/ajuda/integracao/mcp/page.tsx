@@ -889,12 +889,12 @@ export default function MCPDocsPage() {
             <pre className="text-sm bg-muted p-4 rounded-md overflow-x-auto">
 {`{
   "mcpServers": {
-    "sinesys": {
+    "dbos": {
       "command": "node",
       "args": ["E:\\\\Development\\\\mcp\\\\dist\\\\index.js"],
       "env": {
-        "SINESYS_API_URL": "http://localhost:3000",
-        "SINESYS_API_KEY": "sinesys_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+        "DBOS_API_URL": "http://localhost:3000",
+        "DBOS_API_KEY": "sua_api_key_segura"
       }
     }
   }
@@ -906,10 +906,10 @@ export default function MCPDocsPage() {
             <p className="text-sm font-medium">3. Variáveis de Ambiente:</p>
             <ul className="list-disc list-inside text-sm text-muted-foreground space-y-1">
               <li>
-                <code className="bg-muted px-1 rounded">SINESYS_API_URL</code>: URL base da API do Sinesys
+                <code className="bg-muted px-1 rounded">DBOS_API_URL</code>: URL base da API
               </li>
               <li>
-                <code className="bg-muted px-1 rounded">SINESYS_API_KEY</code>: Chave de autenticação (Perfil → API Keys)
+                <code className="bg-muted px-1 rounded">DBOS_API_KEY</code>: Chave de autenticação (Perfil → API Keys)
               </li>
             </ul>
           </div>

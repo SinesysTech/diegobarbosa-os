@@ -335,7 +335,7 @@ AI_EMBEDDING_PROVIDER=openai  # ou cohere
 AI_EMBEDDING_CACHE_ENABLED=true
 
 # MCP
-SINESYS_API_TOKEN=
+DBOS_API_TOKEN=
 ```
 
 ## Princípios de Design

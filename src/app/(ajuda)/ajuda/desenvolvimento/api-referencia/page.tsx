@@ -319,9 +319,9 @@ curl -X GET "http://localhost:3000/api/audiencias/cliente/cpf/12345678901" \\
           <div>
             <h4 className="font-semibold mb-2">Variáveis de Ambiente</h4>
             <ul className="text-sm text-muted-foreground space-y-1">
-              <li>• <code className="bg-muted px-1 rounded">{'{{$env.SINESYS_BASE_URL}}'}</code> - URL base da API</li>
-              <li>• <code className="bg-muted px-1 rounded">{'{{$env.SINESYS_API_TOKEN}}'}</code> - Token de autenticação</li>
-              <li>• <code className="bg-muted px-1 rounded">{'{{$env.SINESYS_SERVICE_KEY}}'}</code> - API Key de serviço</li>
+              <li>• <code className="bg-muted px-1 rounded">{'{{$env.DBOS_BASE_URL}}'}</code> - URL base da API</li>
+              <li>• <code className="bg-muted px-1 rounded">{'{{$env.DBOS_API_TOKEN}}'}</code> - Token de autenticação</li>
+              <li>• <code className="bg-muted px-1 rounded">{'{{$env.DBOS_SERVICE_KEY}}'}</code> - API Key de serviço</li>
             </ul>
           </div>
 
@@ -330,12 +330,12 @@ curl -X GET "http://localhost:3000/api/audiencias/cliente/cpf/12345678901" \\
             <pre className="text-xs bg-muted p-3 rounded-md overflow-x-auto">
 {`{
   "method": "GET",
-  "url": "={{$env.SINESYS_BASE_URL}}/api/acervo",
+  "url": "={{$env.DBOS_BASE_URL}}/api/acervo",
   "authentication": "genericCredentialType",
   "genericAuthType": "httpHeaderAuth",
   "options": {
     "headerName": "Authorization",
-    "headerValue": "Bearer {{$env.SINESYS_API_TOKEN}}"
+    "headerValue": "Bearer {{$env.DBOS_API_TOKEN}}"
   }
 }`}
             </pre>

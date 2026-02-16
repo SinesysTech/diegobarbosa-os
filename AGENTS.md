@@ -871,7 +871,7 @@ function MyComponent() {
 - `AI_DEFAULT_MODEL`
 - `AI_EMBEDDING_PROVIDER=openai` (or `cohere`)
 - `AI_EMBEDDING_CACHE_ENABLED=true`
-- `SINESYS_API_TOKEN` (for MCP)
+- `DBOS_API_TOKEN` (for MCP)
 - `OPENAI_API_KEY`
 
 #### Troubleshooting

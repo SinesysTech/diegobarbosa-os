@@ -49,7 +49,7 @@ function parseArgs(argv: string[]): Args {
 
   const baseUrl =
     get("baseUrl") ||
-    process.env.MCP_SINESYS_API_URL ||
+    process.env.MCP_DBOS_API_URL ||
     process.env.NEXT_PUBLIC_DASHBOARD_URL ||
     "http://localhost:3000";
 
@@ -59,7 +59,7 @@ function parseArgs(argv: string[]): Args {
   const cpf = get("cpf") || "15543028709";
 
   const apiKey =
-    get("apiKey") || process.env.MCP_SINESYS_API_KEY || process.env.SERVICE_API_KEY;
+    get("apiKey") || process.env.MCP_DBOS_API_KEY || process.env.SERVICE_API_KEY;
 
   const timeoutMsRaw = get("timeoutMs") || process.env.MCP_TEST_TIMEOUT_MS || "15000";
   const timeoutMs = Number(timeoutMsRaw);
