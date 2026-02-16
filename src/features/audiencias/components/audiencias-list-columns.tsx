@@ -37,6 +37,7 @@ import { AudienciasAlterarResponsavelDialog } from './audiencias-alterar-respons
  * Botão de Ata de Audiência
  * Aparece apenas para audiências realizadas que possuem ata disponível
  */
+
 function AtaAudienciaButton({ audiencia }: { audiencia: AudienciaComResponsavel }) {
   const isRealizada = audiencia.status === StatusAudiencia.Finalizada;
   const hasAta = audiencia.ataAudienciaId || audiencia.urlAtaAudiencia;
@@ -44,6 +45,11 @@ function AtaAudienciaButton({ audiencia }: { audiencia: AudienciaComResponsavel 
   if (!isRealizada || !hasAta) {
     return null;
   }
+
+  // Gera URL segura se tiver link
+  const secureUrl = audiencia.urlAtaAudiencia
+    ? `/api/storage/secure-url?url=${encodeURIComponent(audiencia.urlAtaAudiencia)}`
+    : null;
 
   return (
     <Popover>
@@ -71,10 +77,10 @@ function AtaAudienciaButton({ audiencia }: { audiencia: AudienciaComResponsavel 
           <p className="text-xs text-muted-foreground">
             A ata desta audiência está disponível para visualização.
           </p>
-          {audiencia.urlAtaAudiencia ? (
+          {secureUrl ? (
             <Button variant="outline" size="sm" className="w-full" asChild>
               <a
-                href={audiencia.urlAtaAudiencia}
+                href={secureUrl}
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -92,6 +98,7 @@ function AtaAudienciaButton({ audiencia }: { audiencia: AudienciaComResponsavel 
     </Popover>
   );
 }
+
 
 /**
  * Badge composto para Tribunal + Grau
@@ -148,11 +155,11 @@ function getUsuarioNome(u: Usuario): string {
 export function ResponsavelCell({
   audiencia,
   usuarios = [],
-  onSuccess,
+  onSuccessAction,
 }: {
   audiencia: AudienciaComResponsavel;
   usuarios?: Usuario[];
-  onSuccess?: () => void;
+  onSuccessAction?: () => void;
 }) {
   const [isDialogOpen, setIsDialogOpen] = React.useState(false);
   const responsavel = usuarios.find((u) => u.id === audiencia.responsavelId);
@@ -187,7 +194,7 @@ export function ResponsavelCell({
         audiencia={audiencia}
         usuarios={usuarios}
         onSuccess={() => {
-          onSuccess?.();
+          onSuccessAction?.();
         }}
       />
     </>
@@ -394,7 +401,7 @@ export function getAudienciasColumns(
             <ResponsavelCell
               audiencia={audiencia}
               usuarios={usuarios}
-              onSuccess={onSuccess}
+              onSuccessAction={onSuccess}
             />
           </div>
         );
