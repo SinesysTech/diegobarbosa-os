@@ -381,7 +381,7 @@ export function getAudienciasColumns(
       enableSorting: false,
     },
     {
-      id: 'responsavel',
+      id: 'responsavel_info',
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Responsável" />
       ),
