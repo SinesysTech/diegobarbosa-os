@@ -67,10 +67,10 @@ export function useChatPresence({
         .eq('auth_user_id', session.user.id);
 
       if (error) {
-        console.error('[ChatPresence] Erro ao atualizar status:', error);
+        console.error('[ChatPresence] Erro ao atualizar status:', error.message, error.code);
       }
     } catch (error) {
-      console.error('[ChatPresence] Erro ao atualizar status:', error);
+      console.error('[ChatPresence] Erro ao atualizar status:', error instanceof Error ? error.message : error);
     }
   }, [supabase]);
 
