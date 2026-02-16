@@ -2,16 +2,12 @@ import type { Metadata } from "next";
 
 import { authenticateRequest } from "@/lib/auth/session";
 import { PageShell } from "@/components/shared/page-shell";
-import { DataShell } from "@/components/shared/data-shell";
-import { DataTableToolbar } from "@/components/shared/data-shell/data-table-toolbar";
-
-import { columns } from "./components/columns";
-import { DataTable } from "./components/data-table";
-import * as tarefasService from "./service";
+import { TasksPageContent } from "@/features/tasks";
+import * as tarefasService from "@/features/tasks/service";
 
 export const metadata: Metadata = {
   title: "Tarefas",
-  description: "Gerenciamento de tarefas (template TanStack Table).",
+  description: "Gerenciamento de tarefas com visualização em tabela e quadro.",
 };
 
 export default async function TaskPage() {
@@ -27,9 +23,7 @@ export default async function TaskPage() {
 
   return (
     <PageShell>
-      <DataShell header={<DataTableToolbar title="Tarefas" />}>
-        <DataTable data={result.data} columns={columns} />
-      </DataShell>
+      <TasksPageContent tasks={result.data} />
     </PageShell>
   );
 }
