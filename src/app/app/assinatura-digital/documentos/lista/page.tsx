@@ -4,6 +4,8 @@ import { PageShell } from "@/components/shared/page-shell";
 import { actionListDocumentos } from "../../feature";
 import { DocumentosTableWrapper } from "./client-page";
 
+export const dynamic = "force-dynamic";
+
 export const metadata = {
   title: "Documentos de Assinatura Digital | Diego Barbosa Soluções Jurídicas",
   description: "Lista de documentos enviados para assinatura digital",
