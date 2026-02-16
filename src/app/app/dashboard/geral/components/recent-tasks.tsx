@@ -1,6 +1,6 @@
 import { authenticateRequest } from "@/lib/auth/session";
-import * as tarefasService from "@/app/app/tarefas/service";
-import type { Task } from "@/app/app/tarefas/domain";
+import * as tarefasService from "@/features/tasks/service";
+import type { Task } from "@/features/tasks";
 import { RecentTasksClient } from "./recent-tasks-client";
 
 export async function RecentTasks() {

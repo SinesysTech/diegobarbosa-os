@@ -49,3 +49,28 @@ export const actionRemoverTarefa = authenticatedAction(deleteTaskSchema, async (
   revalidatePath("/app/tarefas");
   return { success: true };
 });
+
+// Atalhos para marcar como done/todo (usado no dashboard)
+const idSchema = z.object({
+  id: z.string().min(1),
+});
+
+export const actionMarcarComoDone = authenticatedAction(idSchema, async ({ id }, { user }) => {
+  const result = await service.atualizarTarefa(user.id, { id, status: "done" });
+  if (!result.success) {
+    return { success: false, message: result.error.message };
+  }
+  revalidatePath("/app/tarefas");
+  revalidatePath("/app/dashboard");
+  return { success: true, data: result.data };
+});
+
+export const actionMarcarComoTodo = authenticatedAction(idSchema, async ({ id }, { user }) => {
+  const result = await service.atualizarTarefa(user.id, { id, status: "todo" });
+  if (!result.success) {
+    return { success: false, message: result.error.message };
+  }
+  revalidatePath("/app/tarefas");
+  revalidatePath("/app/dashboard");
+  return { success: true, data: result.data };
+});

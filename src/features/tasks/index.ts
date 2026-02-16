@@ -43,6 +43,8 @@ export {
   actionCriarTarefa,
   actionAtualizarTarefa,
   actionRemoverTarefa,
+  actionMarcarComoDone,
+  actionMarcarComoTodo,
 } from "./actions/tasks-actions";
 
 // Components
