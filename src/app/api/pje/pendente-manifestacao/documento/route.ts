@@ -105,13 +105,13 @@ interface DocumentoRequestBody {
  *                       example: "exp_789_doc_234517663_20251121.pdf"
  *                     arquivo_url:
  *                       type: string
- *                       example: "https://s3.us-east-005.backblazeb2.com/zattar-advogados/processos/0010702-80.2025.5.03.0111/pendente_manifestacao/exp_789_doc_234517663_20251121.pdf"
+ *                       example: "https://s3.us-east-005.backblazeb2.com/diegobarbosa-os/processos/0010702-80.2025.5.03.0111/pendente_manifestacao/exp_789_doc_234517663_20251121.pdf"
  *                     arquivo_key:
  *                       type: string
  *                       example: "processos/0010702-80.2025.5.03.0111/pendente_manifestacao/exp_789_doc_234517663_20251121.pdf"
  *                     arquivo_bucket:
  *                       type: string
- *                       example: "zattar-advogados"
+ *                       example: "diegobarbosa-os"
  *       400:
  *         description: Parâmetros inválidos ou documento não é PDF
  *         content:

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import RootLayoutClient from "./layout-client";
 
 export const metadata: Metadata = {
-  title: "Zattar Advogados",
+  title: "Diego Barbosa Soluções Jurídicas",
   description: "Gestão Jurídica Inteligente",
 };
 

@@ -193,8 +193,7 @@ export async function actionAtribuirResponsavel(
     }
 
     // Revalidate acervo pages
-    revalidatePath("/acervo");
-    revalidatePath("/processos");
+    revalidatePath("/app/processos");
 
     return {
       success: true,
@@ -453,8 +452,8 @@ export async function actionRecapturarTimeline(
     const result = await recapturarTimelineUnificada(acervoId);
 
     // Revalidate paths
-    revalidatePath(`/processos/${acervoId}/timeline`);
-    revalidatePath(`/processos/${acervoId}`);
+    revalidatePath(`/app/processos/${acervoId}/timeline`);
+    revalidatePath(`/app/processos/${acervoId}`);
 
     return { success: true, data: result };
   } catch (error) {

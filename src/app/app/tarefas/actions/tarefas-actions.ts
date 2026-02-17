@@ -14,13 +14,31 @@ import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
 import { authenticatedAction } from '@/lib/safe-action';
 import { authenticateRequest } from '@/lib/auth/session';
-import type { CreateTaskInput, ListTasksParams, UpdateTaskInput } from '../domain';
+import * as service from '../service';
+import type {
+  CreateTaskInput,
+  ListTasksParams,
+  UpdateTaskInput,
+  CreateSubTaskInput,
+  UpdateSubTaskInput,
+  DeleteSubTaskInput,
+  AddCommentInput,
+  DeleteCommentInput,
+  AddFileInput,
+  RemoveFileInput
+} from '../domain';
 import {
   createTaskSchema,
   listTasksSchema,
   updateTaskSchema,
+  createSubTaskSchema,
+  updateSubTaskSchema,
+  deleteSubTaskSchema,
+  addCommentSchema,
+  deleteCommentSchema,
+  addFileSchema,
+  removeFileSchema
 } from '../domain';
-import * as service from '../service';
 
 // =============================================================================
 // TIPOS
@@ -47,7 +65,6 @@ const idSchema = z.object({
  */
 export async function actionListarTarefas(params?: ListTasksParams): Promise<ActionResult> {
   try {
-    // Obter usuário autenticado
     const user = await authenticateRequest();
     if (!user) {
       return {
@@ -123,7 +140,7 @@ export const actionCriarTarefa = authenticatedAction(
     if (!result.success) {
       throw new Error(result.error.message);
     }
-    revalidatePath('/tarefas');
+    revalidatePath('/app/tarefas');
     return result.data;
   }
 );
@@ -138,7 +155,7 @@ export const actionAtualizarTarefa = authenticatedAction(
     if (!result.success) {
       throw new Error(result.error.message);
     }
-    revalidatePath('/tarefas');
+    revalidatePath('/app/tarefas');
     return result.data;
   }
 );
@@ -153,13 +170,13 @@ export const actionRemoverTarefa = authenticatedAction(
     if (!result.success) {
       throw new Error(result.error.message);
     }
-    revalidatePath('/tarefas');
+    revalidatePath('/app/tarefas');
     return { success: true };
   }
 );
 
 /**
- * Ajustes rápidos de status (opcional)
+ * Ajustes rápidos de status
  */
 export const actionMarcarComoDone = authenticatedAction(
   idSchema,
@@ -168,7 +185,7 @@ export const actionMarcarComoDone = authenticatedAction(
     if (!result.success) {
       throw new Error(result.error.message);
     }
-    revalidatePath("/tarefas");
+    revalidatePath("/app/tarefas");
     return result.data;
   }
 );
@@ -180,8 +197,214 @@ export const actionMarcarComoTodo = authenticatedAction(
     if (!result.success) {
       throw new Error(result.error.message);
     }
-    revalidatePath("/tarefas");
+    revalidatePath("/app/tarefas");
     return result.data;
   }
 );
 
+// =============================================================================
+// ACTIONS DE SUBTAREFAS, COMENTÁRIOS E ANEXOS
+// =============================================================================
+
+export const actionCriarSubtarefa = authenticatedAction(
+  createSubTaskSchema,
+  async (data, { user }) => {
+    const result = await service.criarSubtarefa(user.id, data as CreateSubTaskInput);
+    if (!result.success) {
+      throw new Error(result.error.message);
+    }
+    revalidatePath('/app/tarefas');
+    return result.data;
+  }
+);
+
+export const actionAtualizarSubtarefa = authenticatedAction(
+  updateSubTaskSchema,
+  async (data, { user }) => {
+    const result = await service.atualizarSubtarefa(user.id, data as UpdateSubTaskInput);
+    if (!result.success) {
+      throw new Error(result.error.message);
+    }
+    revalidatePath('/app/tarefas');
+    return result.data;
+  }
+);
+
+export const actionRemoverSubtarefa = authenticatedAction(
+  deleteSubTaskSchema,
+  async (data, { user }) => {
+    const result = await service.removerSubtarefa(user.id, data as DeleteSubTaskInput);
+    if (!result.success) {
+      throw new Error(result.error.message);
+    }
+    revalidatePath('/app/tarefas');
+    return result.data;
+  }
+);
+
+export const actionAdicionarComentario = authenticatedAction(
+  addCommentSchema,
+  async (data, { user }) => {
+    const result = await service.adicionarComentario(user.id, data as AddCommentInput);
+    if (!result.success) {
+      throw new Error(result.error.message);
+    }
+    revalidatePath('/app/tarefas');
+    return result.data;
+  }
+);
+
+export const actionRemoverComentario = authenticatedAction(
+  deleteCommentSchema,
+  async (data, { user }) => {
+    const result = await service.removerComentario(user.id, data as DeleteCommentInput);
+    if (!result.success) {
+      throw new Error(result.error.message);
+    }
+    revalidatePath('/app/tarefas');
+    return result.data;
+  }
+);
+
+export const actionAdicionarAnexo = authenticatedAction(
+  addFileSchema,
+  async (data, { user }) => {
+    const result = await service.adicionarAnexo(user.id, data as AddFileInput);
+    if (!result.success) {
+      throw new Error(result.error.message);
+    }
+    revalidatePath('/app/tarefas');
+    return result.data;
+  }
+);
+
+export const actionRemoverAnexo = authenticatedAction(
+  removeFileSchema,
+  async (data, { user }) => {
+    const result = await service.removerAnexo(user.id, data as RemoveFileInput);
+    if (!result.success) {
+      throw new Error(result.error.message);
+    }
+    revalidatePath('/app/tarefas');
+    return result.data;
+  }
+);
+
+// =============================================================================
+// ACTIONS DE QUADROS (KANBAN BOARDS)
+// =============================================================================
+
+/**
+ * Lista todos os quadros disponíveis (sistema + custom)
+ */
+export const actionListarQuadros = authenticatedAction(
+  z.object({}),
+  async (_, { user }) => {
+    const result = await service.listarQuadros(user.id);
+    if (!result.success) {
+      throw new Error(result.error.message);
+    }
+    return result.data;
+  }
+);
+
+/**
+ * Cria um quadro personalizado
+ */
+export const actionCriarQuadroCustom = authenticatedAction(
+  z.object({
+    titulo: z.string().min(1).max(100),
+    icone: z.string().optional(),
+  }),
+  async (data, { user }) => {
+    const result = await service.criarQuadroCustom(user.id, data);
+    if (!result.success) {
+      throw new Error(result.error.message);
+    }
+    revalidatePath('/app/tarefas');
+    return result.data;
+  }
+);
+
+/**
+ * Exclui um quadro personalizado
+ */
+export const actionExcluirQuadroCustom = authenticatedAction(
+  z.object({
+    quadroId: z.string().uuid(),
+  }),
+  async (data, { user }) => {
+    const result = await service.excluirQuadroCustom(user.id, data);
+    if (!result.success) {
+      throw new Error(result.error.message);
+    }
+    revalidatePath('/app/tarefas');
+    return { success: true };
+  }
+);
+
+/**
+ * Reordena tarefas no quadro (drag-and-drop)
+ * Suporta:
+ * - Mover entre colunas (muda status)
+ * - Reordenar dentro da coluna (muda position)
+ * - Mover entre quadros (muda quadroId)
+ */
+export const actionReordenarTarefas = authenticatedAction(
+  z.object({
+    tarefaId: z.string().min(1),
+    novaPosicao: z.number().int().min(0),
+    novoStatus: z.enum(["backlog", "todo", "in progress", "done", "canceled"]).optional(),
+    quadroId: z.string().uuid().optional().nullable(),
+  }),
+  async (data, { user }) => {
+    const result = await service.reordenarTarefas(user.id, data);
+    if (!result.success) {
+      throw new Error(result.error.message);
+    }
+    revalidatePath('/app/tarefas');
+    return result.data;
+  }
+);
+
+/**
+ * DnD bidirecional: atualiza status da entidade de origem
+ * quando um card é arrastado para outra coluna em quadro de sistema.
+ */
+export const actionAtualizarStatusQuadroSistema = authenticatedAction(
+  z.object({
+    source: z.enum(["expedientes", "audiencias", "pericias", "obrigacoes"]),
+    entityId: z.string().min(1),
+    targetColumnId: z.string().min(1),
+  }),
+  async (data, { user }) => {
+    const result = await service.atualizarStatusViaQuadroSistema(user.id, data);
+    if (!result.success) {
+      throw new Error(result.error.message);
+    }
+    revalidatePath('/app/tarefas');
+    return { success: true };
+  }
+);
+
+/**
+ * Move uma tarefa para outro quadro
+ */
+export const actionMoverTarefaParaQuadro = authenticatedAction(
+  z.object({
+    tarefaId: z.string().min(1),
+    quadroId: z.string().uuid().nullable(),
+  }),
+  async (data, { user }) => {
+    const result = await service.reordenarTarefas(user.id, {
+      tarefaId: data.tarefaId,
+      novaPosicao: 0, // Move to top of new board
+      quadroId: data.quadroId,
+    });
+    if (!result.success) {
+      throw new Error(result.error.message);
+    }
+    revalidatePath('/app/tarefas');
+    return result.data;
+  }
+);

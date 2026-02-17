@@ -6,7 +6,6 @@ import Search from "@/components/layout/header/search"
 import Notifications from "@/components/layout/header/notifications"
 import { AiSphere } from "@/components/layout/header/ai-sphere"
 import { AuthenticatorPopover } from "@/components/layout/header/authenticator-popover"
-import { ThemeCustomizerPanel } from "@/components/layout/header/theme-customizer/panel"
 import { HeaderUserMenu } from "@/components/layout/header/header-user-menu"
 import { Separator } from "@/components/ui/separator"
 import {
@@ -19,6 +18,7 @@ import "@copilotkit/react-ui/styles.css"
 import { CopilotSidebar, useChatContext } from "@copilotkit/react-ui"
 import { SYSTEM_PROMPT } from "@/lib/copilotkit/system-prompt"
 import { cn } from "@/lib/utils"
+import { UserProvider } from "@/providers/user-provider"
 
 const AUTH_ROUTES = [
   "/app/login",
@@ -52,7 +52,6 @@ function DashboardHeader() {
         <Search />
       </div>
       <div className="flex items-center gap-2">
-        <ThemeCustomizerPanel />
         <AuthenticatorPopover />
         <Notifications />
         <AiSphere onClick={() => setOpen(!open)} />
@@ -95,18 +94,20 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <CopilotKit runtimeUrl="/api/copilotkit">
-      <CopilotSidebar
-        defaultOpen={false}
-        instructions={SYSTEM_PROMPT}
-        labels={{
-          title: "Pedrinho",
-          initial: "Olá! Como posso ajudar você hoje?",
-        }}
-        Button={() => null}
-      >
-        <DashboardContent>{children}</DashboardContent>
-      </CopilotSidebar>
-    </CopilotKit>
+    <UserProvider>
+      <CopilotKit runtimeUrl="/api/copilotkit" useSingleEndpoint>
+        <CopilotSidebar
+          defaultOpen={false}
+          instructions={SYSTEM_PROMPT}
+          labels={{
+            title: "Pedrinho",
+            initial: "Olá! Como posso ajudar você hoje?",
+          }}
+          Button={() => null}
+        >
+          <DashboardContent>{children}</DashboardContent>
+        </CopilotSidebar>
+      </CopilotKit>
+    </UserProvider>
   )
 }

@@ -34,7 +34,7 @@ export const CHATWOOT_LABELS = {
   INATIVO: 'inativo',
 
   // Origem
-  SISTEMA_ZATTAR: 'zattar',
+  SISTEMA_SINESYS: 'sinesys',
 } as const;
 
 export type ChatwootLabelKey = keyof typeof CHATWOOT_LABELS;
@@ -167,7 +167,7 @@ export function getLabelsForTipoEntidade(
   tipoPessoa: 'pf' | 'pj',
   tipoTerceiro?: string
 ): string[] {
-  const labels: string[] = [CHATWOOT_LABELS.SISTEMA_ZATTAR];
+  const labels: string[] = [CHATWOOT_LABELS.SISTEMA_SINESYS];
 
   // Tipo de entidade
   switch (tipoEntidade) {

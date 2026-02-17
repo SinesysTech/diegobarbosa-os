@@ -29,10 +29,9 @@ export const CSP_REPORT_URI = process.env.CSP_REPORT_URI || "/api/csp-report";
 const TRUSTED_DOMAINS = {
   // Supabase - Backend/API
   supabase: ["https://*.supabase.co", "wss://*.supabase.co"],
-  // Backblaze B2 - Storage
+  // Supabase Storage
   storage: [
-    "https://*.backblazeb2.com",
-    "https://s3.us-east-005.backblazeb2.com",
+    "https://*.supabase.co",
   ],
   // Google Fonts
   fonts: ["https://fonts.googleapis.com", "https://fonts.gstatic.com"],
@@ -183,7 +182,6 @@ export function buildPermissionsPolicy(): string {
     magnetometer: "()",
     gyroscope: "()",
     accelerometer: "()",
-    "ambient-light-sensor": "()",
     autoplay: "(self)",
     "encrypted-media": "(self)",
     fullscreen: "(self)",

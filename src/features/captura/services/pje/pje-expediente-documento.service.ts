@@ -205,7 +205,7 @@ export async function fetchDocumentoConteudo(
  *     arquivo_nome: "exp_789_doc_234517663_20251121.pdf",
  *     arquivo_url: "https://....supabase.co/storage/v1/object/public/bucket/key.pdf",
  *     arquivo_key: "processos/0010702-80.2025.5.03.0111/pendente_manifestacao/exp_789_doc_234517663_20251121.pdf",
- *     arquivo_bucket: "zattar-advogados"
+ *     arquivo_bucket: "diegobarbosa-os"
  *   }
  * }
  *

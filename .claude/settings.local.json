@@ -29,8 +29,7 @@
   },
   "enableAllProjectMcpServers": true,
   "enabledMcpjsonServers": [
-    "supabase",
-    "copilotkit"
+    "supabase"
   ],
   "outputStyle": "Explanatory"
 }

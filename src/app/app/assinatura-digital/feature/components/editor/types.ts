@@ -19,10 +19,10 @@ export interface Signatario {
 }
 
 /**
- * Default colors for signers - follows Zattar brand guidelines
+ * Default colors for signers - follows brand guidelines
  */
 export const SIGNER_COLORS = [
-  '#7C3AED', // Zattar Purple (primary)
+  '#7C3AED', // Brand Purple (primary)
   '#3B82F6', // Blue
   '#10B981', // Green
   '#F59E0B', // Action Orange

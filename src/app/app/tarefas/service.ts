@@ -1,15 +1,44 @@
 /**
- * TAREFAS SERVICE (TEMPLATE TASKS)
+ * TAREFAS SERVICE (TEMPLATE TASKS + EVENTOS)
  *
- * Camada de regras de negócio para o módulo de tarefas no modelo do template.
- * Sem retrocompatibilidade com o modelo antigo.
+ * Camada de regras de negócio para o módulo de tarefas.
+ * Inclui agregação virtual de eventos (audiências, expedientes, perícias, obrigações).
  */
 
 import { appError, err, ok, Result } from "@/types";
 import { z } from "zod";
-import type { CreateTaskInput, ListTasksParams, Task, UpdateTaskInput } from "./domain";
-import { createTaskSchema, listTasksSchema, taskSchema, updateTaskSchema } from "./domain";
+import type {
+  CreateTaskInput,
+  ListTasksParams,
+  Task,
+  TarefaDisplayItem,
+  UpdateTaskInput,
+  CreateSubTaskInput,
+  UpdateSubTaskInput,
+  DeleteSubTaskInput,
+  AddCommentInput,
+  DeleteCommentInput,
+  AddFileInput,
+  RemoveFileInput
+} from "./domain";
+import {
+  createTaskSchema,
+  listTasksSchema,
+  taskSchema,
+  updateTaskSchema,
+  createSubTaskSchema,
+  updateSubTaskSchema,
+  deleteSubTaskSchema,
+  addCommentSchema,
+  deleteCommentSchema,
+  addFileSchema,
+  removeFileSchema
+} from "./domain";
 import * as repo from "./repository";
+import { listarTodosEventos } from "@/lib/event-aggregation/service";
+import { mapSourceStatusToTarefaStatus, calcularPrioridade } from "@/lib/event-aggregation/domain";
+import type { UnifiedEventItem } from "@/lib/event-aggregation/domain";
+import type { EventSource } from "@/lib/event-aggregation/domain";
 
 function validate<T>(schema: z.ZodSchema, input: unknown): Result<T> {
   const parsed = schema.safeParse(input);
@@ -29,6 +58,7 @@ export async function listarTarefas(usuarioId: number, params: ListTasksParams =
   // Hard-validate o contrato que o template espera.
   const parsed = z.array(taskSchema).safeParse(result.data);
   if (!parsed.success) {
+    // console.error(parsed.error); // Useful for debugging
     return err(appError("VALIDATION_ERROR", "Dados de tarefas inválidos"));
   }
 
@@ -50,8 +80,12 @@ export async function criarTarefa(usuarioId: number, input: CreateTaskInput): Pr
 export async function atualizarTarefa(usuarioId: number, input: UpdateTaskInput): Promise<Result<Task>> {
   const val = validate<UpdateTaskInput>(updateTaskSchema, input);
   if (!val.success) return err(val.error);
+
+  // TODO: Add source sync logic here if needed (port from todo/service.ts)
+
   return repo.updateTask(usuarioId, val.data);
 }
+
 
 export async function removerTarefa(usuarioId: number, id: string): Promise<Result<void>> {
   const idVal = z.string().min(1).safeParse(id);
@@ -59,3 +93,327 @@ export async function removerTarefa(usuarioId: number, id: string): Promise<Resu
   return repo.deleteTask(usuarioId, idVal.data);
 }
 
+// =============================================================================
+// SUB-ENTITIES ACTIONS (Ported from To-Do)
+// =============================================================================
+
+export async function criarSubtarefa(usuarioId: number, input: unknown): Promise<Result<Task>> {
+  const val = validate<CreateSubTaskInput>(createSubTaskSchema, input);
+  if (!val.success) return err(val.error);
+  return repo.createSubTask(usuarioId, val.data);
+}
+
+export async function atualizarSubtarefa(usuarioId: number, input: unknown): Promise<Result<Task>> {
+  const val = validate<UpdateSubTaskInput>(updateSubTaskSchema, input);
+  if (!val.success) return err(val.error);
+  return repo.updateSubTask(usuarioId, val.data);
+}
+
+export async function removerSubtarefa(usuarioId: number, input: unknown): Promise<Result<Task>> {
+  const val = validate<DeleteSubTaskInput>(deleteSubTaskSchema, input);
+  if (!val.success) return err(val.error);
+  return repo.deleteSubTask(usuarioId, val.data);
+}
+
+export async function adicionarComentario(usuarioId: number, input: unknown): Promise<Result<Task>> {
+  const val = validate<AddCommentInput>(addCommentSchema, input);
+  if (!val.success) return err(val.error);
+  return repo.addComment(usuarioId, val.data);
+}
+
+export async function removerComentario(usuarioId: number, input: unknown): Promise<Result<Task>> {
+  const val = validate<DeleteCommentInput>(deleteCommentSchema, input);
+  if (!val.success) return err(val.error);
+  return repo.deleteComment(usuarioId, val.data);
+}
+
+export async function adicionarAnexo(usuarioId: number, input: unknown): Promise<Result<Task>> {
+  const val = validate<AddFileInput>(addFileSchema, input);
+  if (!val.success) return err(val.error);
+
+  if (val.data.url.length > 2_500_000) {
+    return err(appError("VALIDATION_ERROR", "Anexo muito grande. Limite aproximado: 2.5MB (data-url)."));
+  }
+
+  return repo.addFile(usuarioId, val.data);
+}
+
+export async function removerAnexo(usuarioId: number, input: unknown): Promise<Result<Task>> {
+  const val = validate<RemoveFileInput>(removeFileSchema, input);
+  if (!val.success) return err(val.error);
+  return repo.removeFile(usuarioId, val.data);
+}
+
+// =============================================================================
+// AGREGAÇÃO VIRTUAL: Tarefas manuais + Eventos do sistema
+// =============================================================================
+
+const SOURCE_TO_LABEL: Record<EventSource, TarefaDisplayItem["label"]> = {
+  audiencias: "audiencia",
+  expedientes: "expediente",
+  pericias: "pericia",
+  obrigacoes: "obrigacao",
+};
+
+
+function eventoToTarefaDisplay(evento: UnifiedEventItem): TarefaDisplayItem {
+  return {
+    id: evento.id,
+    title: evento.titulo,
+    status: mapSourceStatusToTarefaStatus(evento.source, evento.statusOrigem),
+    label: SOURCE_TO_LABEL[evento.source],
+    priority: calcularPrioridade(evento.dataVencimento, evento.prazoVencido),
+    description: undefined,
+    dueDate: evento.dataVencimento,
+    reminderDate: null,
+    starred: false,
+    assignees: [],
+    assignedTo: [],
+    subTasks: [],
+    comments: [],
+    files: [],
+    position: 0,
+    source: evento.source,
+    sourceEntityId: String(evento.sourceEntityId),
+    url: evento.url,
+    isVirtual: true,
+    prazoVencido: evento.prazoVencido,
+    responsavelNome: evento.responsavelNome,
+    date: evento.dataVencimento,
+  };
+}
+
+
+
+/**
+ * Lista tarefas manuais + eventos virtuais do sistema.
+ * - Admin (isSuperAdmin) vê tudo
+ * - Outros usuários veem apenas eventos atribuídos a eles (default)
+ * - showAll=true permite ver tudo independente do role
+ */
+export async function listarTarefasComEventos(
+  usuarioId: number,
+  isSuperAdmin: boolean,
+  params: ListTasksParams = {},
+  showAll = false
+): Promise<Result<TarefaDisplayItem[]>> {
+  // 1. Buscar tarefas manuais
+  const manualResult = await listarTarefas(usuarioId, params);
+  const manualTasks: TarefaDisplayItem[] = manualResult.success
+    ? manualResult.data.map((t) => ({ ...t, isVirtual: false }))
+    : [];
+
+  // 2. Buscar eventos do sistema
+  let eventos: UnifiedEventItem[] = [];
+  try {
+    const responsavelFilter = isSuperAdmin || showAll ? undefined : usuarioId;
+    eventos = await listarTodosEventos({
+      responsavelId: responsavelFilter,
+    });
+  } catch {
+    // Em caso de erro, retorna apenas as tarefas manuais
+  }
+
+  // 3. Converter eventos para formato de tarefa display
+  let virtualTasks = eventos.map(eventoToTarefaDisplay);
+
+  // 4. Aplicar filtros de params aos eventos virtuais
+  if (params.status) {
+    virtualTasks = virtualTasks.filter((t) => t.status === params.status);
+  }
+  if (params.label) {
+    virtualTasks = virtualTasks.filter((t) => t.label === params.label);
+  }
+  if (params.priority) {
+    virtualTasks = virtualTasks.filter((t) => t.priority === params.priority);
+  }
+  if (params.search) {
+    const search = params.search.toLowerCase();
+    virtualTasks = virtualTasks.filter((t) => t.title.toLowerCase().includes(search));
+  }
+
+  // 5. Merge: tarefas manuais primeiro, depois eventos
+  return ok([...manualTasks, ...virtualTasks]);
+}
+
+
+// =============================================================================
+// QUADROS (KANBAN BOARDS)
+// =============================================================================
+
+import type { Quadro, CriarQuadroCustomInput, ExcluirQuadroCustomInput, ReordenarTarefasInput, SystemBoardDndInput, SystemBoardSource } from "./domain";
+import { QUADROS_SISTEMA, criarQuadroCustomSchema, excluirQuadroCustomSchema, reordenarTarefasSchema, SYSTEM_BOARD_DEFINITIONS, systemBoardDndSchema } from "./domain";
+import { atualizarStatusEntidadeOrigem } from "@/lib/event-aggregation/service";
+
+/**
+ * Lista todos os quadros disponíveis para o usuário:
+ * - Quadros sistema (constantes)
+ * - Quadros custom do usuário
+ */
+export async function listarQuadros(usuarioId: number): Promise<Result<Quadro[]>> {
+  // Quadros sistema (sempre disponíveis)
+  const sistemQuadros: Quadro[] = QUADROS_SISTEMA.map((q) => ({
+    ...q,
+    usuarioId,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  }));
+
+  // Quadros custom do DB
+  const customResult = await repo.listQuadrosCustom(usuarioId);
+  if (!customResult.success) return err(customResult.error);
+
+  return ok([...sistemQuadros, ...customResult.data]);
+}
+
+/**
+ * Cria um quadro personalizado
+ */
+export async function criarQuadroCustom(usuarioId: number, input: unknown): Promise<Result<Quadro>> {
+  const val = validate<CriarQuadroCustomInput>(criarQuadroCustomSchema, input);
+  if (!val.success) return err(val.error);
+
+  return repo.createQuadroCustom(usuarioId, val.data);
+}
+
+/**
+ * Exclui um quadro personalizado
+ */
+export async function excluirQuadroCustom(usuarioId: number, input: unknown): Promise<Result<void>> {
+  const val = validate<ExcluirQuadroCustomInput>(excluirQuadroCustomSchema, input);
+  if (!val.success) return err(val.error);
+
+  // Não permitir excluir quadros sistema
+  if (val.data.quadroId.startsWith("sys-")) {
+    return err(appError("VALIDATION_ERROR", "Não é possível excluir quadros do sistema"));
+  }
+
+  return repo.deleteQuadroCustom(usuarioId, val.data.quadroId);
+}
+
+/**
+ * Obtém tarefas de um quadro específico
+ * - quadroId = null: Quadro Sistema (todas as tarefas + eventos virtuais)
+ * - quadroId = uuid: Quadro custom (apenas tarefas associadas)
+ */
+export async function obterTarefasDoQuadro(
+  usuarioId: number,
+  isSuperAdmin: boolean,
+  quadroId: string | null,
+  showAll = false
+): Promise<Result<TarefaDisplayItem[]>> {
+  if (!quadroId) {
+    // Quadro Sistema = todas as tarefas + eventos virtuais
+    return listarTarefasComEventos(usuarioId, isSuperAdmin, {}, showAll);
+  }
+
+  // Quadro custom = apenas tarefas associadas
+  const result = await repo.listTarefasByQuadro(usuarioId, quadroId);
+  if (!result.success) return err(result.error);
+
+  return ok(result.data.map((t) => ({ ...t, isVirtual: false })));
+}
+
+/**
+ * Reordena tarefas no quadro (drag-and-drop)
+ */
+export async function reordenarTarefas(usuarioId: number, input: unknown): Promise<Result<Task>> {
+  const val = validate<ReordenarTarefasInput>(reordenarTarefasSchema, input);
+  if (!val.success) return err(val.error);
+
+  // Atualizar posição e status (se mudou de coluna)
+  const updateInput: UpdateTaskInput = {
+    id: val.data.tarefaId,
+  };
+
+  if (val.data.novoStatus) {
+    updateInput.status = val.data.novoStatus;
+  }
+
+  // Atualizar tarefa
+  const updateResult = await repo.updateTask(usuarioId, updateInput);
+  if (!updateResult.success) return err(updateResult.error);
+
+  // Atualizar posição
+  const positionResult = await repo.updateTaskPosition(val.data.tarefaId, val.data.novaPosicao);
+  if (!positionResult.success) return err(positionResult.error);
+
+  // Se mudou de quadro, atualizar quadroId
+  if (val.data.quadroId !== undefined) {
+    const quadroResult = await repo.updateTaskQuadro(val.data.tarefaId, val.data.quadroId);
+    if (!quadroResult.success) return err(quadroResult.error);
+  }
+
+  return repo.getTaskById(usuarioId, val.data.tarefaId) as Promise<Result<Task>>;
+}
+
+// =============================================================================
+// QUADROS DE SISTEMA - EVENTOS POR SOURCE
+// =============================================================================
+
+export interface SystemBoardEventItem extends TarefaDisplayItem {
+  statusOrigem: string;
+}
+
+/**
+ * Busca eventos de uma única fonte para quadro de sistema.
+ * Preserva statusOrigem para distribuição nas colunas específicas.
+ */
+export async function listarEventosPorSource(
+  usuarioId: number,
+  isSuperAdmin: boolean,
+  source: SystemBoardSource
+): Promise<Result<SystemBoardEventItem[]>> {
+  try {
+    const responsavelFilter = isSuperAdmin ? undefined : usuarioId;
+    const eventos = await listarTodosEventos({
+      responsavelId: responsavelFilter,
+      sources: [source],
+    });
+
+    const items: SystemBoardEventItem[] = eventos.map((evento) => ({
+      ...eventoToTarefaDisplay(evento),
+      statusOrigem: evento.statusOrigem,
+    }));
+
+    return ok(items);
+  } catch (_error) {
+    return err(
+      appError("INTERNAL_ERROR", `Erro ao carregar eventos de ${source}`)
+    );
+  }
+}
+
+/**
+ * DnD bidirecional: atualiza status da entidade de origem
+ * quando um card é arrastado para outra coluna em quadro de sistema.
+ */
+export async function atualizarStatusViaQuadroSistema(
+  userId: number,
+  input: SystemBoardDndInput
+): Promise<Result<void>> {
+  const val = validate<SystemBoardDndInput>(systemBoardDndSchema, input);
+  if (!val.success) return err(val.error);
+
+  const board = SYSTEM_BOARD_DEFINITIONS.find((b) => b.source === val.data.source);
+  if (!board) {
+    return err(appError("VALIDATION_ERROR", "Quadro não encontrado"));
+  }
+  if (!board.dndEnabled) {
+    return err(appError("VALIDATION_ERROR", "Este quadro não suporta alterações de status"));
+  }
+
+  const targetColumn = board.columns.find((c) => c.id === val.data.targetColumnId);
+  if (!targetColumn || targetColumn.targetStatus === null) {
+    return err(appError("VALIDATION_ERROR", "Não é possível mover para esta coluna"));
+  }
+
+  return atualizarStatusEntidadeOrigem(
+    {
+      source: val.data.source,
+      entityId: val.data.entityId,
+      novoStatus: targetColumn.targetStatus,
+    },
+    userId
+  );
+}

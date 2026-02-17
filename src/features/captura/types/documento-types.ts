@@ -142,7 +142,7 @@ export interface FetchDocumentoParams {
  * - arquivo_nome: string - Nome do arquivo (ex: "exp_789_doc_234517663_20251121.pdf")
  * - arquivo_url: string - URL pública do arquivo no Backblaze B2
  * - arquivo_key: string - Chave (path) do arquivo no bucket S3 (ex: "processos/0010702-80.2025.5.03.0111/expedientes/exp_789_doc_234517663_20251121.pdf")
- * - arquivo_bucket: string - Nome do bucket no Backblaze B2 (ex: "zattar-advogados")
+ * - arquivo_bucket: string - Nome do bucket no Backblaze B2 (ex: "diegobarbosa-os")
  *
  * USO:
  * Retornado pelo serviço Backblaze após upload bem-sucedido.
@@ -151,9 +151,9 @@ export interface FetchDocumentoParams {
  * EXEMPLO:
  * {
  *   arquivo_nome: "exp_789_doc_234517663_20251121.pdf",
- *   arquivo_url: "https://s3.us-east-005.backblazeb2.com/zattar-advogados/processos/0010702-80.2025.5.03.0111/expedientes/exp_789_doc_234517663_20251121.pdf",
+ *   arquivo_url: "https://s3.us-east-005.backblazeb2.com/diegobarbosa-os/processos/0010702-80.2025.5.03.0111/expedientes/exp_789_doc_234517663_20251121.pdf",
  *   arquivo_key: "processos/0010702-80.2025.5.03.0111/expedientes/exp_789_doc_234517663_20251121.pdf",
- *   arquivo_bucket: "zattar-advogados"
+ *   arquivo_bucket: "diegobarbosa-os"
  * }
  */
 export interface ArquivoInfo {
@@ -187,9 +187,9 @@ export interface ArquivoInfo {
  *   expedienteId: 999,
  *   arquivoInfo: {
  *     arquivo_nome: "exp_789_doc_234517663_20251121.pdf",
- *     arquivo_url: "https://s3.us-east-005.backblazeb2.com/zattar-advogados/processos/.../exp_789_doc_234517663_20251121.pdf",
+ *     arquivo_url: "https://s3.us-east-005.backblazeb2.com/diegobarbosa-os/processos/.../exp_789_doc_234517663_20251121.pdf",
  *     arquivo_key: "processos/0010702-80.2025.5.03.0111/expedientes/exp_789_doc_234517663_20251121.pdf",
- *     arquivo_bucket: "zattar-advogados"
+ *     arquivo_bucket: "diegobarbosa-os"
  *   }
  * }
  *

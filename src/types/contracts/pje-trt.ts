@@ -172,10 +172,10 @@ export interface FiltroDocumentosTimeline {
 }
 
 /**
- * Informações do Backblaze B2 adicionadas ao documento
+ * Informações de armazenamento do documento no Supabase Storage
  */
-export interface BackblazeB2Info {
-    /** URL pública do arquivo no Backblaze B2 */
+export interface StorageInfo {
+    /** URL pública do arquivo no Supabase Storage */
     url: string;
     /** Chave (path) do arquivo no bucket */
     key: string;
@@ -188,8 +188,13 @@ export interface BackblazeB2Info {
 }
 
 /**
+ * @deprecated Use StorageInfo no lugar
+ */
+export type BackblazeB2Info = StorageInfo;
+
+/**
  * Informações do Google Drive adicionadas ao documento
- * @deprecated Use BackblazeB2Info no lugar. Google Drive será removido.
+ * @deprecated Use StorageInfo no lugar. Google Drive será removido.
  */
 export interface GoogleDriveInfo {
     /** Link de visualização do Google Drive */
@@ -206,9 +211,11 @@ export interface GoogleDriveInfo {
  * Item da timeline enriquecido com informações de armazenamento
  */
 export interface TimelineItemEnriquecido extends TimelineItem {
-    /** Informações do Backblaze B2 (se documento foi enviado) */
-    backblaze?: BackblazeB2Info;
-    /** Informações do Google Drive (deprecated, use backblaze) */
+    /** Informações do Supabase Storage (se documento foi enviado) */
+    storage?: StorageInfo;
+    /** @deprecated Alias para storage. Use storage no lugar. */
+    backblaze?: StorageInfo;
+    /** Informações do Google Drive (deprecated, use storage) */
     googleDrive?: GoogleDriveInfo;
 }
 

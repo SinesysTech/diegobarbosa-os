@@ -9,7 +9,7 @@ import { cn } from "@/lib/utils";
  * Estilos base para botões de navegação em dialogs multi-step
  *
  * Design:
- * - Botões circulares com fundo primary (roxo Zattar)
+ * - Botões circulares com fundo primary (roxo brand)
  * - Ícone branco (primary-foreground)
  * - No hover: fundo levemente escurecido, ícone permanece branco com traço mais grosso
  */

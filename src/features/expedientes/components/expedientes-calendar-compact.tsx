@@ -48,25 +48,6 @@ interface ExpedientesCalendarCompactProps {
 // Dias da semana em português (abreviados)
 const WEEK_DAYS = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
 
-/**
- * Retorna a classe CSS de background para o indicador de status do expediente.
- * - Pendente (não baixado, não vencido): bg-primary (azul)
- * - Vencido (prazoVencido === true AND baixadoEm is null): bg-destructive (vermelho)
- * - Baixado (baixadoEm is not null): bg-success (verde)
- */
-function getStatusIndicatorClass(expediente: Expediente): string {
-  // Baixado tem prioridade máxima
-  if (expediente.baixadoEm !== null) {
-    return 'bg-success';
-  }
-  // Vencido (não baixado)
-  if (expediente.prazoVencido === true) {
-    return 'bg-destructive';
-  }
-  // Pendente (padrão)
-  return 'bg-primary';
-}
-
 // =============================================================================
 // COMPONENTE PRINCIPAL
 // =============================================================================
@@ -137,9 +118,9 @@ export function ExpedientesCalendarCompact({
           <Tooltip>
             <TooltipTrigger asChild>
               <Button
+                type="button"
+                className="flex items-center justify-center h-8 w-8 shrink-0 rounded-md bg-card border hover:bg-accent transition-colors p-0"
                 variant="ghost"
-                size="icon"
-                className="h-8 w-8"
                 onClick={handlePreviousMonth}
               >
                 <ChevronLeft className="h-4 w-4" />
@@ -158,9 +139,9 @@ export function ExpedientesCalendarCompact({
           <Tooltip>
             <TooltipTrigger asChild>
               <Button
+                type="button"
+                className="flex items-center justify-center h-8 w-8 shrink-0 rounded-md bg-card border hover:bg-accent transition-colors p-0"
                 variant="ghost"
-                size="icon"
-                className="h-8 w-8"
                 onClick={handleNextMonth}
               >
                 <ChevronRight className="h-4 w-4" />
@@ -176,7 +157,7 @@ export function ExpedientesCalendarCompact({
           <Button
             variant="outline"
             size="sm"
-            className="h-7 px-2 text-xs"
+            className="h-7 px-2 text-xs bg-card border shadow-sm hover:bg-accent hover:text-accent-foreground"
             onClick={handleGoToToday}
           >
             Hoje

@@ -72,7 +72,7 @@ export async function GET(
     }
 
     // Listar arquivos do Supabase Storage
-    const bucket = process.env.SUPABASE_STORAGE_BUCKET || 'zattar-advogados';
+    const bucket = process.env.SUPABASE_STORAGE_BUCKET || 'diegobarbosa-os';
     const prefix = cliente.documentos;
 
     const { data: objects, error: listError } = await supabase

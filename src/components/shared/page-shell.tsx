@@ -12,7 +12,7 @@ import { cn } from '@/lib/utils';
  * IMPORTANTE: NÃO use a prop 'description' - não utilizamos subtítulos nas páginas.
  * O título e botões de ação devem estar no DataTableToolbar dentro do DataShell.
  *
- * Segue o Design System Zattar:
+ * Segue o Design System Diego Barbosa:
  * - Tipografia: font-heading para títulos
  * - Espaçamento: gap-6 entre seções, gap-4 entre elementos
  * - Cores: text-foreground para títulos

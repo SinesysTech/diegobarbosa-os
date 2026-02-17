@@ -132,7 +132,7 @@ export default function DeployPage() {
             <ol className="text-sm text-muted-foreground space-y-1 list-decimal list-inside">
               <li>Vá em <strong>Images</strong></li>
               <li>Clique em <strong>Build a new image</strong></li>
-              <li>Image: <code className="bg-muted px-1 rounded">zattar_advogados:latest</code></li>
+              <li>Image: <code className="bg-muted px-1 rounded">diegobarbosa_os:latest</code></li>
               <li>Build method: Repository</li>
               <li>Repository URL: URL do seu repositório</li>
               <li>Clique em <strong>Build the image</strong></li>
@@ -142,11 +142,11 @@ export default function DeployPage() {
             <h4 className="font-semibold mb-2">Opção B: Build Local</h4>
             <pre className="text-sm bg-muted p-3 rounded-md overflow-x-auto">
 {`# Build da imagem
-docker build -t zattar_advogados:latest .
+docker build -t diegobarbosa_os:latest .
 
 # Se usar múltiplos nós, push para registry:
-docker tag zattar_advogados:latest seu-registry.com/zattar_advogados:latest
-docker push seu-registry.com/zattar_advogados:latest`}
+docker tag diegobarbosa_os:latest seu-registry.com/diegobarbosa_os:latest
+docker push seu-registry.com/diegobarbosa_os:latest`}
             </pre>
           </div>
         </CardContent>
@@ -184,8 +184,8 @@ docker push seu-registry.com/zattar_advogados:latest`}
         <CardContent className="space-y-4">
           <pre className="text-sm bg-muted p-4 rounded-md overflow-x-auto">
 {`services:
-  zattar_advogados:
-    image: zattar_advogados:latest
+  diegobarbosa_os:
+    image: diegobarbosa_os:latest
     deploy:
       mode: replicated
       replicas: 1

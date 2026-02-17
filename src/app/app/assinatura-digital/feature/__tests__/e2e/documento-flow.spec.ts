@@ -18,7 +18,7 @@ test.describe("Assinatura Digital - Fluxo de Documentos", () => {
           user: {
             id: 1,
             nome: "Usuário Teste",
-            email: "teste@zattar.adv.br",
+            email: "teste@diegobarbosa.adv.br",
             cargo: "Advogado",
           },
           session: {

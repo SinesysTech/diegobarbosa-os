@@ -22,7 +22,7 @@ import type {
   DocumentoDetalhes,
   FiltroDocumentosTimeline,
   TimelineItemEnriquecido,
-  BackblazeB2Info,
+  StorageInfo,
 } from '@/types/contracts/pje-trt';
 
 /**
@@ -231,28 +231,29 @@ export async function capturarTimeline(
             grau: grau === 'primeiro_grau' ? 1 : 2,
           });
 
-          // Upload para Backblaze B2
-          const backblazeResult = await uploadDocumentoTimeline({
+          // Upload para Supabase Storage
+          const storageResult = await uploadDocumentoTimeline({
             pdfBuffer: pdf,
             numeroProcesso,
             documentoId,
           });
 
-          // Enriquecer item da timeline com informações do Backblaze B2
-          const backblazeInfo: BackblazeB2Info = {
-            url: backblazeResult.url,
-            key: backblazeResult.key,
-            bucket: backblazeResult.bucket,
-            fileName: backblazeResult.fileName,
-            uploadedAt: backblazeResult.uploadedAt,
+          // Enriquecer item da timeline com informações do Supabase Storage
+          const storageInfo: StorageInfo = {
+            url: storageResult.url,
+            key: storageResult.key,
+            bucket: storageResult.bucket,
+            fileName: storageResult.fileName,
+            uploadedAt: storageResult.uploadedAt,
           };
 
-          // Encontrar o item na timeline enriquecida e adicionar backblaze
+          // Encontrar o item na timeline enriquecida e adicionar storage
           const indexNaTimeline = timelineEnriquecida.findIndex(item => item.id === itemTimeline.id);
           if (indexNaTimeline !== -1) {
             timelineEnriquecida[indexNaTimeline] = {
               ...timelineEnriquecida[indexNaTimeline],
-              backblaze: backblazeInfo,
+              storage: storageInfo,
+              backblaze: storageInfo, // backward compatibility
             };
           }
 
@@ -263,10 +264,10 @@ export async function capturarTimeline(
 
           totalBaixadosSucesso++;
 
-          console.log(`✅ [capturarTimeline] Documento ${documentoId} baixado e enviado para Backblaze B2`, {
+          console.log(`✅ [capturarTimeline] Documento ${documentoId} baixado e enviado para storage`, {
             titulo: detalhes.titulo,
             tamanho: pdf.length,
-            url: backblazeResult.url,
+            url: storageResult.url,
           });
         } catch (error) {
           const mensagemErro = error instanceof Error ? error.message : String(error);

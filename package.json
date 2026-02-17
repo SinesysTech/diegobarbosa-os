@@ -7,6 +7,7 @@
     "npm": ">=10.0.0"
   },
   "scripts": {
+    "prepare": "husky",
     "postinstall": "node scripts/setup/setup-pdfjs.js",
     "dev": "next dev --turbo",
     "dev:webpack": "next dev",
@@ -103,6 +104,10 @@
     "cronicle:provision": "tsx scripts/cronicle/provision-zattar-crons.ts",
     "ai:reindex": "tsx scripts/ai/reindex-all.ts",
     "db:check-bloat": "tsx scripts/db/check-bloat.ts",
+    "integrations:migrate": "node scripts/migrate-integrations-simple.js",
+    "integrations:test": "node scripts/test-integration-config-simple.js",
+    "integrations:check": "npx tsx scripts/check-integracoes-table.ts",
+    "integrations:apply-migration": "tsx scripts/apply-integracoes-migration.ts",
     "cloudron:build": "docker build -t io.sinesys.app:latest .",
     "cloudron:build:no-cache": "docker build --no-cache -t io.sinesys.app:latest .",
     "cloudron:install": "cloudron install --image io.sinesys.app:latest",
@@ -114,8 +119,6 @@
     "@ai-sdk/openai": "3.0.27",
     "@ai-sdk/react": "3.0.85",
     "@ariakit/react": "^0.4.19",
-    "@aws-sdk/client-s3": "3.988.0",
-    "@aws-sdk/s3-request-presigner": "3.988.0",
     "@copilotkit/react-core": "1.10.6",
     "@copilotkit/react-textarea": "1.10.6",
     "@copilotkit/react-ui": "1.10.6",
@@ -309,7 +312,9 @@
       "ajv": "^6.12.4"
     },
     "prismjs": "^1.30.0",
-    "tar": "^7.5.6"
+    "tar": "^7.5.6",
+    "langsmith": "^0.5.2",
+    "lodash-es": "^4.17.21"
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.11.0",

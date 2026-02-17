@@ -2,12 +2,6 @@
 
 /**
  * TwoFAuthConfigContent - Componente principal da tab de configurações do 2FAuth
- *
- * Exibe:
- * - Status da conexão com o servidor 2FAuth
- * - Lista de contas 2FA cadastradas
- * - Ações de gerenciamento (ver OTP, editar, excluir)
- * - Grupos disponíveis
  */
 
 import { useEffect, useState, useCallback } from "react";
@@ -42,7 +36,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { cn } from "@/lib/utils";
 
-import type { TwoFAuthAccount, TwoFAuthGroup, OTPResult } from "@/lib/integrations/twofauth/types";
+import type { TwoFAuthAccount, TwoFAuthGroup } from "@/lib/integrations/twofauth/types";
 import useTwoFAuthAccounts from "../hooks/use-twofauth-accounts";
 
 // =============================================================================
@@ -66,16 +60,12 @@ interface ConnectionStatus {
 // =============================================================================
 
 export function TwoFAuthConfigContent() {
-  // Hook 2FAuth
   const {
     accounts,
     isLoading: accountsLoading,
-    error: accountsError,
-    isPermissionError,
     fetchAccounts,
     deleteAccount,
     selectedAccount,
-    selectAccount,
     currentOTP,
     otpLoading,
     timeRemaining,
@@ -83,10 +73,8 @@ export function TwoFAuthConfigContent() {
     fetchOTP,
   } = useTwoFAuthAccounts();
 
-  // Derived state
   const selectedAccountId = selectedAccount?.id;
 
-  // Estado local para Status e Grupos (não cobertos pelo hook)
   const [status, setStatus] = useState<ConnectionStatus | null>(null);
   const [groups, setGroups] = useState<TwoFAuthGroup[]>([]);
   const [statusLoading, setStatusLoading] = useState(true);
@@ -94,10 +82,8 @@ export function TwoFAuthConfigContent() {
 
   const isLoading = statusLoading || accountsLoading;
 
-  // Estado de exclusão
   const [accountToDelete, setAccountToDelete] = useState<TwoFAuthAccount | null>(null);
 
-  // Buscar status da conexão
   const fetchStatus = useCallback(async () => {
     try {
       const response = await fetch("/api/twofauth/status");
@@ -110,10 +96,6 @@ export function TwoFAuthConfigContent() {
     }
   }, []);
 
-  // Buscar contas (gerenciado pelo hook)
-  // const fetchAccounts = ... (removido)
-
-  // Buscar grupos
   const fetchGroups = useCallback(async () => {
     try {
       const response = await fetch("/api/twofauth/groups");
@@ -126,7 +108,6 @@ export function TwoFAuthConfigContent() {
     }
   }, []);
 
-  // Carregar dados iniciais
   const loadData = useCallback(async () => {
     setStatusLoading(true);
     await Promise.all([fetchStatus(), fetchAccounts(), fetchGroups()]);
@@ -134,10 +115,10 @@ export function TwoFAuthConfigContent() {
   }, [fetchStatus, fetchAccounts, fetchGroups]);
 
   useEffect(() => {
-    loadData();
+    const timer = setTimeout(() => loadData(), 0);
+    return () => clearTimeout(timer);
   }, [loadData]);
 
-  // Handlers
   const handleCopyOTP = async () => {
     const success = await copyOTPToClipboard();
     if (success) {
@@ -153,7 +134,6 @@ export function TwoFAuthConfigContent() {
     }
   };
 
-  // Renderizar ícone da conta
   const renderAccountIcon = (account: TwoFAuthAccount) => {
     const hasValidIcon =
       account.icon &&
@@ -182,17 +162,12 @@ export function TwoFAuthConfigContent() {
     );
   };
 
-  // Formatar OTP
   const formatOTP = (code: string) => {
     if (code.length === 6) {
       return `${code.slice(0, 3)} ${code.slice(3)}`;
     }
     return code;
   };
-
-  // =============================================================================
-  // RENDERIZAÇÃO
-  // =============================================================================
 
   if (isLoading) {
     return (
@@ -204,7 +179,6 @@ export function TwoFAuthConfigContent() {
 
   return (
     <div className="space-y-6">
-      {/* Card de Status da Conexão */}
       <Card>
         <CardHeader className="pb-3">
           <div className="flex items-center justify-between">
@@ -255,7 +229,6 @@ export function TwoFAuthConfigContent() {
         </CardContent>
       </Card>
 
-      {/* Card de Contas */}
       <Card>
         <CardHeader className="pb-3">
           <div className="flex items-center justify-between">
@@ -299,7 +272,6 @@ export function TwoFAuthConfigContent() {
                       </div>
                     </div>
 
-                    {/* OTP Display */}
                     {selectedAccountId === account.id && currentOTP && (
                       <div className="flex items-center gap-2">
                         <div className="text-right">
@@ -327,7 +299,6 @@ export function TwoFAuthConfigContent() {
                       </div>
                     )}
 
-                    {/* Actions */}
                     <div className="flex items-center gap-1">
                       {selectedAccountId !== account.id && (
                         <Button
@@ -360,7 +331,6 @@ export function TwoFAuthConfigContent() {
         </CardContent>
       </Card>
 
-      {/* Card de Grupos */}
       {groups.length > 0 && (
         <Card>
           <CardHeader className="pb-3">
@@ -386,7 +356,6 @@ export function TwoFAuthConfigContent() {
         </Card>
       )}
 
-      {/* Dialog de Confirmação de Exclusão */}
       <AlertDialog open={!!accountToDelete} onOpenChange={() => setAccountToDelete(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>

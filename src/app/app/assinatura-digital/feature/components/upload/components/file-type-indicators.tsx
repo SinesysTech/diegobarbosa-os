@@ -5,7 +5,7 @@ import { cn } from '@/lib/utils';
 
 /**
  * Configuração de cada tipo de arquivo suportado
- * Utiliza tokens do design system Zattar para consistência de marca
+ * Utiliza tokens do design system para consistência de marca
  */
 const FILE_TYPES = [
   {
@@ -111,7 +111,7 @@ export function FileTypeIndicators({
 
 /**
  * Retorna o ícone apropriado para um tipo de arquivo
- * Utiliza tokens do design system Zattar
+ * Utiliza tokens do design system
  */
 export function getFileTypeIcon(mimeType: string) {
   if (mimeType === 'application/pdf') {
@@ -131,7 +131,7 @@ export function getFileTypeIcon(mimeType: string) {
 
 /**
  * Retorna a cor de fundo para um tipo de arquivo
- * Utiliza tokens do design system Zattar com suporte a dark mode
+ * Utiliza tokens do design system com suporte a dark mode
  */
 export function getFileTypeBgColor(mimeType: string) {
   if (mimeType === 'application/pdf') {

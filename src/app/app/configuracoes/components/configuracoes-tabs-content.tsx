@@ -4,38 +4,39 @@
  * ConfiguracoesTabsContent - Componente principal com tabs para navegação entre configurações
  *
  * Implementa navegação por tabs seguindo o padrão do projeto:
- * - Tabs: Métricas | Segurança | Autenticador
+ * - Tabs: Métricas | Segurança | Autenticador | Integrações
  * - URL com query param: /app/configuracoes?tab=metricas
  * - Experiência de página única
  */
 
 import * as React from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { Database, Shield, KeyRound } from 'lucide-react';
+import { Database, Shield, Blocks, Bot, Palette } from 'lucide-react';
 
-import { AnimatedIconTabs } from '@/components/ui/animated-icon-tabs';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+
 import { MetricasDBContent } from '@/app/app/admin/metricas-db/components/metricas-db-content';
 import { BlockedIpsContent } from '@/app/app/admin/security/blocked-ips/components/blocked-ips-content';
-import { TwoFAuthConfigContent } from '@/features/twofauth';
+import { DifyAppsList } from '@/features/dify';
+import { TwoFAuthIntegrationCard } from '@/features/integracoes';
+import { AparenciaContent } from './aparencia-content';
 import type { MetricasDB } from '@/features/admin';
+import type { Integracao } from '@/features/integracoes';
 
 // =============================================================================
 // TIPOS
 // =============================================================================
 
-type ConfiguracoesTab = 'metricas' | 'seguranca' | 'autenticador';
+type ConfiguracoesTab = 'metricas' | 'seguranca' | 'integracoes' | 'aparencia';
 
 // =============================================================================
 // CONFIGURAÇÃO DAS TABS
 // =============================================================================
 
-const TABS_UI = [
-  { value: 'metricas' as const, label: 'Métricas', icon: <Database /> },
-  { value: 'seguranca' as const, label: 'Segurança', icon: <Shield /> },
-  { value: 'autenticador' as const, label: 'Autenticador', icon: <KeyRound /> },
-];
-
-const VALID_TABS = new Set<ConfiguracoesTab>(['metricas', 'seguranca', 'autenticador']);
+const VALID_TABS = new Set<ConfiguracoesTab>(['metricas', 'seguranca', 'integracoes', 'aparencia']);
 
 // =============================================================================
 // PROPS
@@ -46,6 +47,8 @@ interface ConfiguracoesTabsContentProps {
   initialTab?: ConfiguracoesTab;
   /** Dados de métricas do banco de dados */
   metricas?: MetricasDB;
+  /** Integração 2FAuth */
+  integracao2FAuth?: Integracao | null;
 }
 
 // =============================================================================
@@ -55,6 +58,7 @@ interface ConfiguracoesTabsContentProps {
 export function ConfiguracoesTabsContent({
   initialTab = 'metricas',
   metricas,
+  integracao2FAuth,
 }: ConfiguracoesTabsContentProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -73,32 +77,96 @@ export function ConfiguracoesTabsContent({
     [router]
   );
 
-  // =============================================================================
-  // RENDERIZAÇÃO DO CONTEÚDO
-  // =============================================================================
-
-  const renderContent = () => {
-    switch (activeTab) {
-      case 'metricas':
-        return metricas ? <MetricasDBContent metricas={metricas} /> : null;
-      case 'seguranca':
-        return <BlockedIpsContent />;
-      case 'autenticador':
-        return <TwoFAuthConfigContent />;
-      default:
-        return metricas ? <MetricasDBContent metricas={metricas} /> : null;
-    }
-  };
-
   return (
-    <div className="flex flex-col min-h-0">
-      <AnimatedIconTabs
-        tabs={TABS_UI}
-        value={activeTab}
-        onValueChange={handleTabChange}
-        className="w-fit"
-      />
-      <div className="mt-4 flex-1 min-h-0">{renderContent()}</div>
+    <div className="flex flex-col min-h-0 space-y-6">
+      <h1 className="text-2xl font-semibold tracking-tight">Configurações</h1>
+
+      <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
+        <TabsList className="grid w-full grid-cols-4 lg:w-[800px]">
+          <TabsTrigger value="metricas">
+            <Database className="mr-2 h-4 w-4" />
+            Métricas
+          </TabsTrigger>
+          <TabsTrigger value="seguranca">
+            <Shield className="mr-2 h-4 w-4" />
+            Segurança
+          </TabsTrigger>
+          <TabsTrigger value="integracoes">
+            <Blocks className="mr-2 h-4 w-4" />
+            Integrações
+          </TabsTrigger>
+          <TabsTrigger value="aparencia">
+            <Palette className="mr-2 h-4 w-4" />
+            Aparência
+          </TabsTrigger>
+        </TabsList>
+        <div className="mt-6">
+          <TabsContent value="metricas" className="space-y-4">
+            {metricas ? <MetricasDBContent metricas={metricas} /> : <div className="p-4 text-center text-muted-foreground">Carregando métricas...</div>}
+          </TabsContent>
+          <TabsContent value="seguranca" className="space-y-4">
+            <BlockedIpsContent />
+          </TabsContent>
+          <TabsContent value="integracoes" className="space-y-4">
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+              {/* Card 2FAuth */}
+              <TwoFAuthIntegrationCard integracao={integracao2FAuth} />
+
+              {/* Card Dify */}
+              <Card>
+                <CardHeader className="pb-3">
+                  <Bot className="h-10 w-10 mb-2 text-primary" />
+                  <CardTitle>Dify AI</CardTitle>
+                  <CardDescription>Conecte seus agentes e workflows do Dify.</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm text-muted-foreground">
+                    Gerencie múltiplos aplicativos Dify, incluindo chatbots e workflows de automação.
+                  </p>
+                </CardContent>
+                <CardFooter>
+                  <Dialog>
+                    <DialogTrigger asChild>
+                      <Button variant="outline" className="w-full">Gerenciar Apps</Button>
+                    </DialogTrigger>
+                    <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
+                      <DialogHeader>
+                        <DialogTitle>Aplicativos Dify</DialogTitle>
+                        <DialogDescription>
+                          Configure seus aplicativos Dify para uso no Sinesys.
+                        </DialogDescription>
+                      </DialogHeader>
+                      <div className="py-2">
+                        <DifyAppsList />
+                      </div>
+                    </DialogContent>
+                  </Dialog>
+                </CardFooter>
+              </Card>
+
+              {/* Exemplo de Card Futuro (Placeholder) */}
+              <Card className="opacity-60 grayscale cursor-not-allowed">
+                <CardHeader className="pb-3">
+                  <Blocks className="h-10 w-10 mb-2" />
+                  <CardTitle>Zapier</CardTitle>
+                  <CardDescription>Em breve.</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm text-muted-foreground">
+                    Integração com milhares de apps via Zapier.
+                  </p>
+                </CardContent>
+                <CardFooter>
+                  <Button variant="outline" disabled className="w-full">Em Breve</Button>
+                </CardFooter>
+              </Card>
+            </div>
+          </TabsContent>
+          <TabsContent value="aparencia" className="space-y-4">
+            <AparenciaContent />
+          </TabsContent>
+        </div>
+      </Tabs>
     </div>
   );
 }

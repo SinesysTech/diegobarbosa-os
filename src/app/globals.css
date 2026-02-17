@@ -68,8 +68,8 @@
   --color-chart-4: var(--chart-4);
   --color-chart-5: var(--chart-5);
 
-  /* --- 4. Zattar Custom Tokens --- */
-  --color-brand: var(--brand); /* O Roxo Zattar Puro */
+  /* --- 4. Custom Tokens --- */
+  --color-brand: var(--brand); /* O Roxo Brand Puro */
   --color-highlight: var(--highlight); /* O Laranja de Ação */
 
   /* --- 5. Semantic Status Colors --- */
@@ -308,7 +308,7 @@
     @apply bg-background text-foreground font-sans antialiased;
   }
 
-  /* Tipografia Zattar */
+  /* Tipografia Diego Barbosa */
   h1,
   h2,
   h3,

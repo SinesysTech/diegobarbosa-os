@@ -462,7 +462,7 @@ describe('Auth - Session', () => {
             user: {
               id: '550e8400-e29b-41d4-a716-446655440000',
               aud: 'authenticated',
-              email: 'admin@zattar.com.br',
+              email: 'admin@diegobarbosa.adv.br',
               email_confirmed_at: '2024-01-15T10:00:00.000Z',
               phone: '',
               created_at: '2024-01-01T00:00:00.000Z',
@@ -475,8 +475,8 @@ describe('Auth - Session', () => {
         const realPublicUserResponse = {
           data: {
             id: 1,
-            nome_completo: 'Administrador Zattar',
-            email_corporativo: 'admin@zattar.com.br',
+            nome_completo: 'Administrador Diego Barbosa',
+            email_corporativo: 'admin@diegobarbosa.adv.br',
           },
           error: null,
         };
@@ -496,8 +496,8 @@ describe('Auth - Session', () => {
         // Assert
         expect(result).toEqual({
           id: 1,
-          nomeCompleto: 'Administrador Zattar',
-          emailCorporativo: 'admin@zattar.com.br',
+          nomeCompleto: 'Administrador Diego Barbosa',
+          emailCorporativo: 'admin@diegobarbosa.adv.br',
         });
       });
 

@@ -33,7 +33,7 @@ export async function GET(
     // Por simplicidade, vamos tentar gerar o presigned SE conseguirmos extrair a key.
     
     // Tentar extrair key para gerar URL assinada e segura
-    const bucket = process.env.SUPABASE_STORAGE_BUCKET || 'zattar-advogados';
+    const bucket = process.env.SUPABASE_STORAGE_BUCKET || 'diegobarbosa-os';
     
     // Simplificação: se tem "storage/v1/object/public", tentamos pegar a key
     if (pdfUrl.includes('/storage/v1/object/public/')) {

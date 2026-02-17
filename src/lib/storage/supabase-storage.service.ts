@@ -17,7 +17,7 @@ export interface SupabaseUploadParams {
     key: string;
     /** MIME type do arquivo (ex: application/pdf) */
     contentType: string;
-    /** Nome do bucket (opcional, padrão: valor de SUPABASE_STORAGE_BUCKET ou 'zattar-advogados') */
+    /** Nome do bucket (opcional, padrão: valor de SUPABASE_STORAGE_BUCKET ou 'diegobarbosa-os') */
     bucket?: string;
     /** Opções de cache e upsert */
     upsert?: boolean;

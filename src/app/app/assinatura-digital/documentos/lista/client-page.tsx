@@ -8,7 +8,7 @@ import {
   CheckCircle2,
   Clock,
   FileText,
-  FileUp,
+  Plus,
   XCircle,
   Loader2,
   ExternalLink,
@@ -29,7 +29,7 @@ import {
   DataPagination,
 } from "@/components/shared/data-shell";
 import { DialogFormShell } from "@/components/shared/dialog-shell/dialog-form-shell";
-import { FilterPopover, type FilterOption } from "@/features/partes/components/shared";
+import { FilterPopover, type FilterOption } from "@/features/partes";
 import { useDebounce } from "@/hooks/use-debounce";
 
 import {
@@ -143,7 +143,7 @@ export function DocumentosTableWrapper({
     try {
       const resultado = await actionListDocumentos({
         page: 1,
-        pageSize: 200,
+        pageSize: 100, // Máximo permitido pelo schema
       });
 
       if (resultado.success && resultado.data && "documentos" in resultado.data) {
@@ -277,7 +277,14 @@ export function DocumentosTableWrapper({
           ...docData.documento,
           assinantes: docData.assinantes,
           ancoras: docData.ancoras,
-        });
+          // Campos opcionais de DocumentoListItem que podem não vir da API
+          hash_original_sha256: null,
+          hash_final_sha256: null,
+          created_by: null,
+          contrato_id: null,
+          _assinantes_count: docData.assinantes.length,
+          _assinantes_concluidos: docData.assinantes.filter(a => a.status === 'concluido').length,
+        } as DocumentoCompleto);
       } else {
         toast.error("Erro ao carregar detalhes do documento");
         setIsDialogOpen(false);
@@ -358,7 +365,7 @@ export function DocumentosTableWrapper({
             router.push("/app/assinatura-digital/documentos/novo")
           }
         >
-          <FileUp className="h-4 w-4" />
+          <Plus className="h-4 w-4" />
           Novo Documento
         </Button>
       </div>

@@ -131,16 +131,16 @@ describe('URLs - Unit Tests', () => {
 
   describe('Casos Especiais', () => {
     it('deve lidar com URLs de produção', async () => {
-      process.env.NEXT_PUBLIC_DASHBOARD_URL = 'https://app.zattar.com.br';
-      process.env.NEXT_PUBLIC_MEU_PROCESSO_URL = 'https://cliente.zattar.com.br';
-      process.env.NEXT_PUBLIC_WEBSITE_URL = 'https://www.zattar.com.br';
+      process.env.NEXT_PUBLIC_DASHBOARD_URL = 'https://app.diegobarbosa.adv.br';
+      process.env.NEXT_PUBLIC_MEU_PROCESSO_URL = 'https://cliente.diegobarbosa.adv.br';
+      process.env.NEXT_PUBLIC_WEBSITE_URL = 'https://www.diegobarbosa.adv.br';
       jest.resetModules();
 
       const { getDashboardUrl: getDash, getMeuProcessoUrl: getMeu, getWebsiteUrl: getWeb } = await import('@/lib/urls');
 
-      expect(getDash('/processos')).toBe('https://app.zattar.com.br/processos');
-      expect(getMeu('/login')).toBe('https://cliente.zattar.com.br/login');
-      expect(getWeb('/contato')).toBe('https://www.zattar.com.br/contato');
+      expect(getDash('/processos')).toBe('https://app.diegobarbosa.adv.br/processos');
+      expect(getMeu('/login')).toBe('https://cliente.diegobarbosa.adv.br/login');
+      expect(getWeb('/contato')).toBe('https://www.diegobarbosa.adv.br/contato');
     });
 
     it('deve lidar com paths com caracteres especiais', () => {
