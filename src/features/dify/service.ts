@@ -273,6 +273,31 @@ export class DifyService {
     }
   }
 
+  async obterMetaApp(): Promise<Result<Record<string, unknown>, Error>> {
+    try {
+      const result = await this.client.getAppMeta();
+      return ok(result);
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : String(error);
+      return err(new Error(`Erro ao obter meta do app Dify: ${message}`));
+    }
+  }
+
+  async obterMetadataCompleta(): Promise<Result<{ info: Record<string, unknown>; parameters: Record<string, unknown>; meta: Record<string, unknown> }, Error>> {
+    try {
+      const [info, parameters, meta] = await Promise.all([
+        this.client.getAppInfo(),
+        this.client.getAppParameters(),
+        this.client.getAppMeta(),
+      ]);
+
+      return ok({ info, parameters, meta });
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : String(error);
+      return err(new Error(`Erro ao obter metadata completa do app Dify: ${message}`));
+    }
+  }
+
   async completar(params: { inputs: Record<string, unknown> }, user: string = 'system'): Promise<Result<{ answer: string; messageId: string; usage: DifyChatResponse['metadata']['usage'] }, Error>> {
     try {
       const result = await this.client.completionMessages({

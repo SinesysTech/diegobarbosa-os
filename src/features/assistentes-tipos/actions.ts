@@ -1,0 +1,110 @@
+'use server';
+
+import { authenticatedAction } from '@/lib/safe-action';
+import { z } from 'zod';
+import * as service from './service';
+import * as geracaoAutomaticaService from './geracao-automatica-service';
+import {
+  criarAssistenteTipoSchema,
+  atualizarAssistenteTipoSchema,
+  listarAssistentesTiposSchema,
+} from './domain';
+
+/**
+ * ASSISTENTES-TIPOS ACTIONS
+ *
+ * Server actions para configuração de assistentes por tipo de expediente
+ * e geração automática de peças.
+ */
+
+// ============================================================================
+// ACTIONS - CONFIGURAÇÃO
+// ============================================================================
+
+/**
+ * Listar relações assistente-tipo
+ */
+export const listarAssistentesTiposAction = authenticatedAction(
+  listarAssistentesTiposSchema.partial(),
+  async (parsedInput) => {
+    return service.listar(parsedInput);
+  }
+);
+
+/**
+ * Buscar assistente configurado para um tipo
+ */
+export const buscarAssistenteParaTipoAction = authenticatedAction(
+  z.object({ tipo_expediente_id: z.number().int().positive() }),
+  async (parsedInput) => {
+    return service.buscarAssistenteParaTipo(parsedInput.tipo_expediente_id);
+  }
+);
+
+/**
+ * Criar nova relação assistente-tipo
+ */
+export const criarAssistenteTipoAction = authenticatedAction(
+  criarAssistenteTipoSchema,
+  async (parsedInput, { user }) => {
+    return service.criar(parsedInput, user.id);
+  }
+);
+
+/**
+ * Atualizar relação existente
+ */
+export const atualizarAssistenteTipoAction = authenticatedAction(
+  z.object({
+    id: z.number().int().positive(),
+    dados: atualizarAssistenteTipoSchema,
+  }),
+  async (parsedInput) => {
+    return service.atualizar(parsedInput.id, parsedInput.dados);
+  }
+);
+
+/**
+ * Deletar relação
+ */
+export const deletarAssistenteTipoAction = authenticatedAction(
+  z.object({ id: z.number().int().positive() }),
+  async (parsedInput) => {
+    await service.deletar(parsedInput.id);
+    return { success: true };
+  }
+);
+
+/**
+ * Ativar relação específica
+ */
+export const ativarAssistenteTipoAction = authenticatedAction(
+  z.object({ id: z.number().int().positive() }),
+  async (parsedInput) => {
+    await service.ativar(parsedInput.id);
+    return { success: true };
+  }
+);
+
+// ============================================================================
+// ACTIONS - GERAÇÃO AUTOMÁTICA
+// ============================================================================
+
+/**
+ * Gerar peça automática para um expediente
+ */
+export const gerarPecaAutomaticaAction = authenticatedAction(
+  z.object({ expediente_id: z.number().int().positive() }),
+  async (parsedInput, { user }) => {
+    const resultado = await geracaoAutomaticaService.gerarPecaAutomatica(
+      parsedInput.expediente_id,
+      user.id
+    );
+
+    if (!resultado.sucesso) {
+      throw new Error(resultado.mensagem);
+    }
+
+    return resultado;
+  }
+);
