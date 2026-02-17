@@ -9,7 +9,7 @@ import { z } from "zod";
 export const taskStatusSchema = z.enum(["backlog", "todo", "in progress", "done", "canceled"]);
 export type TaskStatus = z.infer<typeof taskStatusSchema>;
 
-export const taskLabelSchema = z.enum(["bug", "feature", "documentation"]);
+export const taskLabelSchema = z.enum(["bug", "feature", "documentation", "audiencia", "expediente", "obrigacao", "pericia"]);
 export type TaskLabel = z.infer<typeof taskLabelSchema>;
 
 export const taskPrioritySchema = z.enum(["low", "medium", "high"]);
@@ -66,6 +66,10 @@ export const LABEL_LABELS: Record<TaskLabel, string> = {
   bug: "Bug",
   feature: "Funcionalidade",
   documentation: "Documentação",
+  audiencia: "Audiência",
+  expediente: "Expediente",
+  obrigacao: "Obrigação",
+  pericia: "Perícia",
 };
 
 export const PRIORITY_LABELS: Record<TaskPriority, string> = {

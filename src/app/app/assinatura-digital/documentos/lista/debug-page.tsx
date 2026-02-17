@@ -53,14 +53,14 @@ export function DebugPage() {
         </div>
       )}
       
-      {result && typeof result === 'object' && (
+      {result !== null && typeof result === 'object' && (
         <div className="space-y-4">
           <div className="p-4 bg-blue-100 rounded">
             <h2 className="font-bold">Success:</h2>
             <p>{(result as Record<string, unknown>).success ? "✅ true" : "❌ false"}</p>
           </div>
 
-          {(result as Record<string, unknown>).data && (
+          {!!(result as Record<string, unknown>).data && (
             <div className="p-4 bg-green-100 rounded">
               <h2 className="font-bold">Data:</h2>
               <pre className="mt-2 text-xs overflow-auto max-h-96">
