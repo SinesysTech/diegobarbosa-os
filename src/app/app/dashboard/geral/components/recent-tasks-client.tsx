@@ -26,8 +26,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-import type { Task, TaskLabel, TaskPriority, TaskStatus } from "@/features/tasks";
-import { actionCriarTarefa, actionMarcarComoDone, actionMarcarComoTodo } from "@/features/tasks";
+import type { Task, TaskLabel, TaskPriority, TaskStatus } from "@/features/tasks/domain"; // Import types directly from domain to avoid barrel file side effects
+import { actionCriarTarefa, actionMarcarComoDone, actionMarcarComoTodo } from "@/features/tasks/actions/tasks-actions"; // Import actions directly
 
 const STATUS_LABEL: Record<TaskStatus, string> = {
   backlog: "Backlog",
