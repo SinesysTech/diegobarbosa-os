@@ -107,6 +107,7 @@ public/pdfjs
 
 # Docker e infraestrutura
 Dockerfile*
+!Dockerfile
 docker-compose*.yml
 docker/
 .dockerignore
