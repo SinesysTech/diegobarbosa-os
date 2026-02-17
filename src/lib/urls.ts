@@ -1,5 +1,5 @@
 /**
- * URLs dos Apps do Sinesys
+ * URLs dos Apps Diego Barbosa OS
  *
  * Este módulo é usado para gerar URLs absolutas (ex.: e-mails/links externos)
  * e por isso retorna URLs completas por padrão.
@@ -7,9 +7,7 @@
 
 const DEFAULT_ORIGIN = "http://localhost:3000";
 
-function normalizeBaseUrl(url: string): string {
-  return url.replace(/\/$/, "");
-}
+
 
 function appendPath(base: string, path?: string): string {
   if (path === undefined) return base;

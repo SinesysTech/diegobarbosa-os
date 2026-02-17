@@ -6,7 +6,7 @@
  * Retorna apenas os campos públicos (websiteToken e widgetBaseUrl).
  */
 
-import { getChatwootConfigFromDatabase as _getChatwootConfigFromDatabase } from "./config";
+import { getChatwootConfig as _getChatwootConfig } from "./config";
 
 export interface WidgetConfig {
   websiteToken: string;

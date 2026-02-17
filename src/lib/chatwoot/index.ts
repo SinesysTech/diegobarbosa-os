@@ -4,6 +4,9 @@
  * Módulo de integração com a API do Chatwoot para gerenciamento
  * de contatos e sincronização com o módulo de partes.
  *
+ * Configuração lida exclusivamente da tabela integracoes no banco de dados.
+ * Configure via: /app/configuracoes?tab=integracoes
+ *
  * @example
  * ```typescript
  * import { listContacts, createContact, getChatwootClient } from '@/lib/chatwoot';
@@ -28,19 +31,13 @@
 export {
   ChatwootClient,
   getChatwootClient,
-  getChatwootClientAsync,
-  getChatwootConfig,
-  getChatwootConfigFromEnv,
-  isChatwootConfigured,
-  isChatwootConfiguredAsync,
   resetChatwootClient,
 } from './client';
 
 // Configuration (Database-driven via integracoes table)
 export {
-  getChatwootConfigFromDatabase,
-  isChatwootConfiguredInDatabase,
-  getChatwootConfigWithFallback,
+  getChatwootConfig,
+  isChatwootConfigured,
 } from './config';
 
 // Contacts

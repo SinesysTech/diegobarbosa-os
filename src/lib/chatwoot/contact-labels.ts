@@ -52,7 +52,7 @@ export async function listContactLabels(
   contactId: number,
   client?: ChatwootClient
 ): Promise<ChatwootResult<string[]>> {
-  const chatwoot = client ?? getChatwootClient();
+  const chatwoot = client ?? await getChatwootClient();
   const accountId = chatwoot.getAccountId();
 
   const result = await chatwoot.get<ContactLabelsResponse>(
@@ -75,7 +75,7 @@ export async function updateContactLabels(
   labels: string[],
   client?: ChatwootClient
 ): Promise<ChatwootResult<string[]>> {
-  const chatwoot = client ?? getChatwootClient();
+  const chatwoot = client ?? await getChatwootClient();
   const accountId = chatwoot.getAccountId();
 
   const body: UpdateContactLabelsRequest = { labels };

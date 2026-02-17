@@ -1,6 +1,9 @@
 /**
  * Cliente HTTP base para a API do Chatwoot
  * Implementa autenticação, retry e error handling
+ *
+ * Configuração lida exclusivamente da tabela integracoes no banco de dados.
+ * Configure via: /app/configuracoes?tab=integracoes
  */
 
 import {
@@ -9,7 +12,7 @@ import {
   ChatwootApiError,
   ChatwootResult,
 } from "./types";
-import { getChatwootConfigWithFallback } from "./config";
+import { getChatwootConfig } from "./config";
 
 // =============================================================================
 // Configuração
@@ -18,45 +21,6 @@ import { getChatwootConfigWithFallback } from "./config";
 const DEFAULT_TIMEOUT = 30000; // 30 segundos
 const MAX_RETRIES = 3;
 const RETRY_DELAY_BASE = 1000; // 1 segundo
-
-/**
- * Obtém configuração do Chatwoot das variáveis de ambiente (fallback síncrono)
- */
-export function getChatwootConfigFromEnv(): ChatwootConfig | null {
-  const apiUrl = process.env.CHATWOOT_API_URL;
-  const apiKey = process.env.CHATWOOT_API_KEY;
-  const accountId = process.env.CHATWOOT_ACCOUNT_ID;
-  const defaultInboxId = process.env.CHATWOOT_DEFAULT_INBOX_ID;
-
-  if (!apiUrl || !apiKey || !accountId) {
-    return null;
-  }
-
-  return {
-    apiUrl: apiUrl.replace(/\/$/, ""),
-    apiKey,
-    accountId: parseInt(accountId, 10),
-    defaultInboxId: defaultInboxId ? parseInt(defaultInboxId, 10) : undefined,
-  };
-}
-
-/** @deprecated Use getChatwootConfigFromEnv() ou getChatwootConfigWithFallback() */
-export const getChatwootConfig = getChatwootConfigFromEnv;
-
-/**
- * Verifica se o Chatwoot está configurado (síncrono, env vars apenas)
- */
-export function isChatwootConfigured(): boolean {
-  return getChatwootConfigFromEnv() !== null;
-}
-
-/**
- * Verifica se o Chatwoot está configurado (async, banco de dados + env)
- */
-export async function isChatwootConfiguredAsync(): Promise<boolean> {
-  const config = await getChatwootConfigWithFallback();
-  return config !== null;
-}
 
 // =============================================================================
 // Cliente HTTP
@@ -70,30 +34,18 @@ interface RequestOptions {
   timeout?: number;
 }
 
-/**
- * Aguarda um tempo especificado (para retry)
- */
 function sleep(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-/**
- * Calcula delay exponencial para retry
- */
 function getRetryDelay(attempt: number): number {
   return RETRY_DELAY_BASE * Math.pow(2, attempt);
 }
 
-/**
- * Verifica se o erro é recuperável (deve fazer retry)
- */
 function isRetryableError(status: number): boolean {
   return status === 429 || (status >= 500 && status < 600);
 }
 
-/**
- * Constrói URL com query params
- */
 function buildUrl(
   baseUrl: string,
   path: string,
@@ -112,9 +64,6 @@ function buildUrl(
   return url.toString();
 }
 
-/**
- * Executa requisição HTTP para a API do Chatwoot
- */
 async function executeRequest<T>(
   config: ChatwootConfig,
   options: RequestOptions,
@@ -145,9 +94,7 @@ async function executeRequest<T>(
 
     clearTimeout(timeoutId);
 
-    // Se sucesso, retorna dados
     if (response.ok) {
-      // DELETE pode retornar 204 sem body
       if (response.status === 204) {
         return { success: true, data: {} as T };
       }
@@ -156,7 +103,6 @@ async function executeRequest<T>(
       return { success: true, data };
     }
 
-    // Se erro recuperável e ainda tem tentativas, faz retry
     if (isRetryableError(response.status) && attempt < MAX_RETRIES) {
       const delay = getRetryDelay(attempt);
       console.warn(
@@ -168,7 +114,6 @@ async function executeRequest<T>(
       return executeRequest<T>(config, options, attempt + 1);
     }
 
-    // Erro não recuperável ou máximo de retries atingido
     let apiError: ChatwootApiError | undefined;
     try {
       apiError = await response.json();
@@ -177,8 +122,8 @@ async function executeRequest<T>(
     }
 
     const errorMessage =
-      apiError?.message || // Alguns endpoints retornam { message: "..." }
-      apiError?.error || // Alguns endpoints retornam { error: "..." }
+      apiError?.message ||
+      apiError?.error ||
       apiError?.description ||
       apiError?.errors?.[0]?.message ||
       `HTTP ${response.status}: ${response.statusText}`;
@@ -190,7 +135,6 @@ async function executeRequest<T>(
   } catch (err) {
     clearTimeout(timeoutId);
 
-    // Erro de timeout
     if (err instanceof Error && err.name === "AbortError") {
       return {
         success: false,
@@ -198,7 +142,6 @@ async function executeRequest<T>(
       };
     }
 
-    // Erro de rede - pode fazer retry
     if (attempt < MAX_RETRIES) {
       const delay = getRetryDelay(attempt);
       console.warn(
@@ -210,7 +153,6 @@ async function executeRequest<T>(
       return executeRequest<T>(config, options, attempt + 1);
     }
 
-    // Erro genérico
     const message = err instanceof Error ? err.message : "Erro desconhecido";
     return {
       success: false,
@@ -229,55 +171,35 @@ async function executeRequest<T>(
 export class ChatwootClient {
   private config: ChatwootConfig;
 
-  constructor(config?: ChatwootConfig) {
-    const resolvedConfig = config ?? getChatwootConfigFromEnv();
-
-    if (!resolvedConfig) {
-      throw new Error(
-        "Chatwoot não configurado. Configure via Integrações ou variáveis de ambiente."
-      );
-    }
-
-    this.config = resolvedConfig;
+  constructor(config: ChatwootConfig) {
+    this.config = config;
   }
 
   /**
-   * Cria instância do client com config do banco de dados (com fallback para env)
+   * Cria instância do client com config do banco de dados
    */
   static async create(): Promise<ChatwootClient> {
-    const config = await getChatwootConfigWithFallback();
+    const config = await getChatwootConfig();
     if (!config) {
       throw new Error(
-        "Chatwoot não configurado. Configure via Integrações ou variáveis de ambiente."
+        "Chatwoot não configurado. Configure via /app/configuracoes?tab=integracoes"
       );
     }
     return new ChatwootClient(config);
   }
 
-  /**
-   * Obtém a configuração atual
-   */
   getConfig(): ChatwootConfig {
     return this.config;
   }
 
-  /**
-   * Obtém o account_id configurado
-   */
   getAccountId(): number {
     return this.config.accountId;
   }
 
-  /**
-   * Obtém o inbox_id padrão
-   */
   getDefaultInboxId(): number | undefined {
     return this.config.defaultInboxId;
   }
 
-  /**
-   * Executa GET request
-   */
   async get<T>(
     path: string,
     params?: Record<string, string | number | undefined>
@@ -285,9 +207,6 @@ export class ChatwootClient {
     return executeRequest<T>(this.config, { method: "GET", path, params });
   }
 
-  /**
-   * Executa POST request
-   */
   async post<T>(
     path: string,
     body?: unknown,
@@ -301,9 +220,6 @@ export class ChatwootClient {
     });
   }
 
-  /**
-   * Executa PUT request
-   */
   async put<T>(
     path: string,
     body?: unknown,
@@ -317,9 +233,6 @@ export class ChatwootClient {
     });
   }
 
-  /**
-   * Executa DELETE request
-   */
   async delete<T>(
     path: string,
     params?: Record<string, string | number | undefined>
@@ -335,20 +248,9 @@ export class ChatwootClient {
 let clientInstance: ChatwootClient | null = null;
 
 /**
- * Obtém instância singleton do cliente Chatwoot (síncrono, env vars apenas)
- * @deprecated Use getChatwootClientAsync() para suporte a config do banco
+ * Obtém instância singleton do cliente Chatwoot (do banco de dados)
  */
-export function getChatwootClient(): ChatwootClient {
-  if (!clientInstance) {
-    clientInstance = new ChatwootClient();
-  }
-  return clientInstance;
-}
-
-/**
- * Obtém instância singleton do cliente Chatwoot (async, banco de dados + env)
- */
-export async function getChatwootClientAsync(): Promise<ChatwootClient> {
+export async function getChatwootClient(): Promise<ChatwootClient> {
   if (!clientInstance) {
     clientInstance = await ChatwootClient.create();
   }
