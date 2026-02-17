@@ -112,9 +112,9 @@ export async function listar(
   }
 
   interface AssistenteTipoJoin {
-    assistente?: { nome: string; dify_app_id: string | null };
-    tipo_expediente?: { tipo_expediente: string };
-    criador?: { nome_completo: string };
+    assistente?: { nome?: string; dify_app_id?: string | null };
+    tipo_expediente?: { tipo_expediente?: string };
+    criador?: { nome_completo?: string };
     [key: string]: unknown;
   }
 

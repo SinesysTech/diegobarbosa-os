@@ -76,7 +76,7 @@ export function SuccessStep({
   const fileName = documento.titulo || "Documento Assinado";
 
   return (
-    <div className="max-w-[480px] mx-auto space-y-8 animate-in fade-in zoom-in duration-500">
+    <div className="max-w- mx-auto space-y-8 animate-in fade-in zoom-in duration-500">
       {/* Seção de Sucesso */}
       <div className="text-center space-y-4">
         {/* Ícone Animado */}
@@ -201,7 +201,7 @@ export function SuccessStep({
       </footer>
 
       {/* CSS para animação loading */}
-      <style jsx nonce={nonce}>{`
+      <style nonce={nonce} dangerouslySetInnerHTML={{__html: `
         @keyframes loading {
           from {
             width: 0%;
@@ -210,7 +210,7 @@ export function SuccessStep({
             width: 100%;
           }
         }
-      `}</style>
+      `}} />
     </div>
   );
 }

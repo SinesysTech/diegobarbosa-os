@@ -1,6 +1,7 @@
 # ============================================================================
-# .dockerignore - Otimiza contexto de build do Docker / Cloudron
+# .dockerignore - Otimiza contexto de build do Docker
 # ============================================================================
+# Reduz contexto de ~1GB para <50MB, acelerando builds e reduzindo uso de RAM
 
 # Dependencias (instaladas no container)
 **/node_modules
@@ -12,102 +13,111 @@ pnpm-debug.log*
 .pnp.*
 .yarn
 
-# Next.js build output
-.next
-out
+# Next.js build output (sempre reconstruído no container)
+.next/
+out/
 
-# Git
+# Documentação (desnecessária em runtime)
+*.md
+docs/
+openspec/
+design-system/
+
+# Git e controle de versão
 .git
 .gitignore
-.gitattributes
-
-# Documentacao e markdown
-*.md
-NOTICE
-LICENSE
-CHANGELOG*
-
-# Docs e specs
-docs
-openspec
+.husky/
+.gitleaks.toml
 
 # Testes
-e2e
-tests
-test-results
-playwright-report
-coverage
-dist-test
-jest.config*
-playwright.config*
-**/__tests__
-**/__mocks__
-**/*.test.ts
-**/*.test.tsx
-**/*.spec.ts
-**/*.spec.tsx
+e2e/
+tests/
+test-results/
+playwright-report/
+coverage/
+*.test.ts
+*.test.tsx
+*.spec.ts
+*.spec.tsx
+__tests__/
+__mocks__/
+*.integration.test.ts
+jest.config.js
+playwright.config.ts
+codecov.yml
+tsconfig.test.json
 
 # Sandbox
 src/app/sandbox
 src/app/(dev)
 
-# Scripts de desenvolvimento
-scripts/*
-!scripts/dev-tools
-scripts/dev-tools/*
-!scripts/dev-tools/architecture
-dev_data
+# Scripts de desenvolvimento (todos desnecessários em runtime)
+scripts/
+dev_data/
 
-# AI / IDE / Editor configs
-.claude
-.gemini
-.agent
-.opencode
-.shared
-.cursor
-.kiro
-.vscode
-.idea
+# IDEs e ferramentas de desenvolvimento (AI agents, editores, etc)
+.vscode/
+.idea/
+.cursor/
+.cursorignore
+.claude/
+.codex/
+.agent/
+.gemini/
+.kiro/
+.opencode/
+.shared/
+*.swp
+*.swo
+*~
+.DS_Store
+.hintrc
+
+# Configurações de desenvolvimento
 .editorconfig
 .eslintcache
+.npmrc
+.nvmrc
 tsconfig.tsbuildinfo
 
-# Analise e debug
-analyze
+# Logs
+logs/
+*.log
+pnpm-debug.log*
+
+# Temporários
+tmp/
+temp/
+*.tmp
+
+# Análise e debug
+analyze/
 *.heapprofile
 *.cpuprofile
 
-# Env (configuradas no Cloudron)
-.env
-.env.*
+# Variáveis de ambiente (serão configuradas via deploy)
+.env*
 !.env.example
+!.env.build.example
 
-# Husky (git hooks, nao necessarios no build)
-.husky
-
-# Serwist (service worker gerado no build)
+# Service worker (gerado no build)
 public/sw*
 public/swe-worker*
 public/pdfjs
 
-# Docker / CI
+# Docker e infraestrutura
+Dockerfile*
 docker-compose*.yml
+docker/
 .dockerignore
 .github
 .gitlab-ci.yml
 
-# OS / temp
-.DS_Store
-*.swp
-*.swo
-*~
-tmp
-temp
-*.tmp
-logs
-*.log
-*.pem
-.npmrc
+# Banco de dados e migrations (não usados em runtime)
+supabase/
 
-# Library (component library separada)
-library
+# Outros arquivos desnecessários
+*.pem
+.mcp.json
+eslint.config.mjs
+proxy.ts

@@ -289,17 +289,16 @@ function preparQueryChat(dados: Record<string, string>): string {
 /**
  * Extrai texto do resultado de workflow
  */
-function extrairTextoDeWorkflow(workflowData: unknown): string {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const data = workflowData as Record<string, any>;
+function extrairTextoDeWorkflow(workflowData: { data?: { outputs?: { text?: string; output?: string; [key: string]: unknown } | string } }): string {
+  const data = workflowData;
 
   // Tentar extrair de diferentes possíveis estruturas
-  if (data?.data?.outputs?.text) {
-    return data.data.outputs.text;
+  if (typeof data?.data?.outputs === 'object' && data?.data?.outputs?.text) {
+    return data.data.outputs.text as string;
   }
 
-  if (data?.data?.outputs?.output) {
-    return data.data.outputs.output;
+  if (typeof data?.data?.outputs === 'object' && data?.data?.outputs?.output) {
+    return data.data.outputs.output as string;
   }
 
   if (typeof data?.data?.outputs === 'string') {

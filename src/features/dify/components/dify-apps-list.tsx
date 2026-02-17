@@ -245,7 +245,11 @@ export function DifyAppsList() {
                                 <TableRow key={app.id}>
                                     <TableCell className="font-medium">{app.name}</TableCell>
                                     <TableCell>
-                                        <SemanticBadge category="status" value="TYPE" variantOverride={APP_TYPE_VARIANTS[app.app_type] ?? 'secondary'}>
+                                        <SemanticBadge
+                                            category="status"
+                                            value={app.app_type}
+                                            variantOverride={APP_TYPE_VARIANTS[app.app_type] ?? 'secondary'}
+                                        >
                                             {APP_TYPE_LABELS[app.app_type] ?? app.app_type}
                                         </SemanticBadge>
                                     </TableCell>
@@ -253,7 +257,11 @@ export function DifyAppsList() {
                                         {app.api_url}
                                     </TableCell>
                                     <TableCell>
-                                        <SemanticBadge category="status" value={app.is_active ? 'ATIVO' : 'INATIVO'}>
+                                        <SemanticBadge
+                                            category="status"
+                                            value={app.is_active ? 'active' : 'inactive'}
+                                            variantOverride={app.is_active ? 'default' : 'outline'}
+                                        >
                                             {app.is_active ? 'Ativo' : 'Inativo'}
                                         </SemanticBadge>
                                     </TableCell>
