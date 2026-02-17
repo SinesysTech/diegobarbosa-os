@@ -102,9 +102,9 @@ comment on column public.terceiros.polo is 'Polo processual: ativo, passivo, out
 -- Índices
 create index if not exists idx_terceiros_tipo_parte on public.terceiros(tipo_parte);
 
--- Constraints de unicidade por CPF/CNPJ
-alter table public.terceiros add constraint terceiros_cpf_unique unique (cpf) where (cpf is not null);
-alter table public.terceiros add constraint terceiros_cnpj_unique unique (cnpj) where (cnpj is not null);
+-- Constraints de unicidade parcial por CPF/CNPJ (partial unique index)
+create unique index if not exists terceiros_cpf_unique on public.terceiros (cpf) where (cpf is not null);
+create unique index if not exists terceiros_cnpj_unique on public.terceiros (cnpj) where (cnpj is not null);
 
 -- RLS
 alter table public.terceiros enable row level security;

@@ -412,3 +412,37 @@ create type public.status_orcamento as enum (
   'encerrado'
 );
 comment on type public.status_orcamento is 'Status do orçamento: rascunho (em elaboração), aprovado (validado), em_execucao (período corrente), encerrado (período finalizado)';
+
+-- ----------------------------------------------------------------------------
+-- Enums Faltantes (identificados no dump do banco remoto)
+-- ----------------------------------------------------------------------------
+
+-- Origem do expediente
+create type public.origem_expediente as enum (
+  'captura',
+  'manual',
+  'comunica_cnj'
+);
+comment on type public.origem_expediente is 'Origem do expediente: captura (PJE), manual (criado pelo usuario), comunica_cnj (Comunica CNJ)';
+
+-- Meio de comunicacao do expediente
+create type public.meio_comunicacao as enum (
+  'E',
+  'D'
+);
+comment on type public.meio_comunicacao is 'Meio de comunicacao: E=Eletronico, D=Diario';
+
+-- Tipo de peca juridica
+create type public.tipo_peca_juridica as enum (
+  'peticao_inicial',
+  'contestacao',
+  'recurso_ordinario',
+  'agravo',
+  'embargos_declaracao',
+  'manifestacao',
+  'parecer',
+  'contrato_honorarios',
+  'procuracao',
+  'outro'
+);
+comment on type public.tipo_peca_juridica is 'Tipo de peca juridica para modelos/templates';

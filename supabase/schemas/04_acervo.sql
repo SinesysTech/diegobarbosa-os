@@ -24,6 +24,10 @@ create table public.acervo (
   data_arquivamento timestamptz,
   data_proxima_audiencia timestamptz,
   tem_associacao boolean not null default false,
+  responsavel_id bigint,
+  dados_anteriores jsonb default null,
+  classe_judicial_id bigint,
+  timeline_jsonb jsonb default null,
   created_at timestamptz default now() not null,
   updated_at timestamptz default now() not null,
   -- Garantir unicidade do processo: mesmo processo pode ter IDs diferentes em graus diferentes
@@ -52,6 +56,9 @@ comment on column public.acervo.juizo_digital is 'Indica se o processo é de ju�
 comment on column public.acervo.data_arquivamento is 'Data de arquivamento do processo (pode estar presente mesmo em acervo geral)';
 comment on column public.acervo.data_proxima_audiencia is 'Data da próxima audiência agendada';
 comment on column public.acervo.tem_associacao is 'Indica se o processo possui processos associados';
+comment on column public.acervo.responsavel_id is 'ID do usuario responsavel pelo processo (FK adicionada apos criacao da tabela usuarios)';
+comment on column public.acervo.dados_anteriores is 'Snapshot dos dados anteriores antes da ultima atualizacao (usado pela captura para auditoria)';
+comment on column public.acervo.classe_judicial_id is 'ID da classe judicial (FK adicionada apos criacao da tabela classe_judicial)';
 
 -- Índices para melhor performance
 create index idx_acervo_advogado_id on public.acervo using btree (advogado_id);
@@ -64,6 +71,7 @@ create index idx_acervo_data_autuacao on public.acervo using btree (data_autuaca
 create index idx_acervo_data_arquivamento on public.acervo using btree (data_arquivamento);
 create index idx_acervo_advogado_trt_grau on public.acervo using btree (advogado_id, trt, grau);
 create index idx_acervo_numero_processo_trt_grau on public.acervo using btree (numero_processo, trt, grau);
+create index idx_acervo_responsavel_id on public.acervo using btree (responsavel_id);
 
 -- Trigger para atualizar updated_at automaticamente
 create trigger update_acervo_updated_at

@@ -1,0 +1,2 @@
+-- Seed data para desenvolvimento local
+-- Adicione dados de teste aqui conforme necessario
