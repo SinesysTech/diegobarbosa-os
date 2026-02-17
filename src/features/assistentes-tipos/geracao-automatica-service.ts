@@ -2,6 +2,7 @@ import { createServiceClient } from '@/lib/supabase/service-client';
 import { DifyService } from '../dify/service';
 import * as documentosService from '../documentos/service';
 import * as expedientesRepository from '../expedientes/repository';
+import type { Expediente } from '../expedientes/domain';
 import * as assistentesTiposRepository from './repository';
 import type { Value } from 'platejs';
 
@@ -121,12 +122,12 @@ export async function gerarPecaAutomatica(
 
     // 7. Chamar API Dify
     const difyService = new DifyService(difyApp.api_key, difyApp.api_url);
-    
+
     // Determinar se é chat ou workflow baseado no metadata
     const isWorkflow = metadata.info?.name?.toLowerCase().includes('workflow');
-    
+
     let textoGerado: string;
-    
+
     if (isWorkflow) {
       const workflowResult = await difyService.executarWorkflow(
         {
@@ -159,7 +160,7 @@ export async function gerarPecaAutomatica(
 
     // 8. Criar documento com o resultado
     const tituloDocumento = `${metadata.info?.name || 'Peça'} - ${expediente.numeroProcesso || 'Processo'}`;
-    
+
     const conteudoPlate: Value = converterTextoParaPlate(textoGerado);
 
     const documento = await documentosService.criarDocumento(
@@ -206,7 +207,7 @@ export async function gerarPecaAutomatica(
  */
 function extrairCamposFormulario(metadata: MetadataDify): CampoFormulario[] {
   const campos: CampoFormulario[] = [];
-  
+
   if (!metadata.parameters?.user_input_form) {
     return campos;
   }
@@ -215,7 +216,7 @@ function extrairCamposFormulario(metadata: MetadataDify): CampoFormulario[] {
     // Cada item é um objeto com uma chave que é o tipo do campo
     const fieldType = Object.keys(fieldWrapper)[0];
     const field = fieldWrapper[fieldType];
-    
+
     if (field && field.variable) {
       campos.push({
         type: field.type || fieldType,
@@ -233,7 +234,7 @@ function extrairCamposFormulario(metadata: MetadataDify): CampoFormulario[] {
  * Prepara dados do expediente/processo para enviar ao Dify
  */
 async function prepararDadosExpediente(
-  expediente: any,
+  expediente: Expediente,
   campos: CampoFormulario[]
 ): Promise<Record<string, string>> {
   const dados: Record<string, string> = {};
@@ -252,21 +253,21 @@ async function prepararDadosExpediente(
     'orgao_julgador': expediente.siglaOrgaoJulgador || '',
     'relato_entrevista': expediente.descricaoArquivos || expediente.observacoes || '',
     'observacoes': expediente.observacoes || '',
-    'prazo': expediente.dataPrazoLegal || '',
+    'prazo': expediente.dataPrazoLegalParte || '',
   };
 
   // Preencher apenas os campos que o formulário solicita
   for (const campo of campos) {
     const variableLower = campo.variable.toLowerCase();
-    
+
     if (mapeamentos[variableLower]) {
       dados[campo.variable] = mapeamentos[variableLower];
     } else {
       // Tentar matching parcial
-      const matchKey = Object.keys(mapeamentos).find(key => 
+      const matchKey = Object.keys(mapeamentos).find(key =>
         variableLower.includes(key) || key.includes(variableLower)
       );
-      
+
       if (matchKey) {
         dados[campo.variable] = mapeamentos[matchKey];
       } else {
@@ -288,22 +289,25 @@ function preparQueryChat(dados: Record<string, string>): string {
 /**
  * Extrai texto do resultado de workflow
  */
-function extrairTextoDeWorkflow(workflowData: any): string {
+function extrairTextoDeWorkflow(workflowData: unknown): string {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const data = workflowData as Record<string, any>;
+
   // Tentar extrair de diferentes possíveis estruturas
-  if (workflowData.data?.outputs?.text) {
-    return workflowData.data.outputs.text;
+  if (data?.data?.outputs?.text) {
+    return data.data.outputs.text;
   }
-  
-  if (workflowData.data?.outputs?.output) {
-    return workflowData.data.outputs.output;
+
+  if (data?.data?.outputs?.output) {
+    return data.data.outputs.output;
   }
-  
-  if (typeof workflowData.data?.outputs === 'string') {
-    return workflowData.data.outputs;
+
+  if (typeof data?.data?.outputs === 'string') {
+    return data.data.outputs;
   }
 
   // Fallback: converter para string
-  return JSON.stringify(workflowData.data?.outputs || workflowData, null, 2);
+  return JSON.stringify(data?.data?.outputs || workflowData, null, 2);
 }
 
 /**
@@ -312,7 +316,7 @@ function extrairTextoDeWorkflow(workflowData: any): string {
 function converterTextoParaPlate(texto: string): Value {
   // Dividir por parágrafos (linhas vazias ou \n\n)
   const paragrafos = texto.split(/\n\n+/);
-  
+
   return paragrafos.map(paragrafo => ({
     type: 'p',
     children: [{ text: paragrafo.trim() }],

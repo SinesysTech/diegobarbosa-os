@@ -33,7 +33,7 @@ async function testTableExists() {
   const start = Date.now();
   try {
     const supabase = createServiceClient();
-    const { data, error } = await supabase
+    const { data: _data, error } = await supabase
       .from('assistentes_tipos_expedientes')
       .select('id')
       .limit(1);
@@ -55,9 +55,9 @@ async function testTableStructure() {
   const start = Date.now();
   try {
     const supabase = createServiceClient();
-    
+
     // Testar se conseguimos inserir/deletar uma relação de teste
-    const { data: assistente, error: assistenteError } = await supabase
+    const { data: _assistente, error: assistenteError } = await supabase
       .from('assistentes')
       .select('id')
       .limit(1)
@@ -68,7 +68,7 @@ async function testTableStructure() {
       return false;
     }
 
-    const { data: tipo, error: tipoError } = await supabase
+    const { data: _tipo, error: tipoError } = await supabase
       .from('tipos_expedientes')
       .select('id')
       .limit(1)
@@ -80,7 +80,7 @@ async function testTableStructure() {
     }
 
     // Verificar se os campos esperados existem
-    const { data, error } = await supabase
+    const { data: _data, error } = await supabase
       .from('assistentes_tipos_expedientes')
       .select('id, assistente_id, tipo_expediente_id, ativo, criado_por, created_at, updated_at')
       .limit(1);
@@ -102,7 +102,7 @@ async function testIndexes() {
   const start = Date.now();
   try {
     const supabase = createServiceClient();
-    
+
     // Verificar se consultas com índices funcionam
     const { data, error } = await supabase
       .from('assistentes_tipos_expedientes')
@@ -127,7 +127,7 @@ async function testAssistentesMetadata() {
   const start = Date.now();
   try {
     const supabase = createServiceClient();
-    
+
     const { data, error } = await supabase
       .from('assistentes')
       .select('id, nome, metadata')
@@ -285,7 +285,7 @@ async function testExpedientesIntegration() {
     // Verificar se o arquivo de actions dos expedientes existe e tem o hook
     const fs = await import('fs/promises');
     const path = await import('path');
-    
+
     const expedientesActionsPath = path.join(process.cwd(), 'src/features/expedientes/actions.ts');
     const content = await fs.readFile(expedientesActionsPath, 'utf-8');
 
@@ -335,7 +335,7 @@ async function runAllTests() {
   const passRate = ((passed / total) * 100).toFixed(1);
 
   log('📈', `RESUMO: ${passed}/${total} testes passaram (${passRate}%)`);
-  
+
   if (failed > 0) {
     log('⚠️', 'Testes que falharam:');
     results
@@ -344,7 +344,7 @@ async function runAllTests() {
   }
 
   console.log();
-  
+
   if (passed === total) {
     log('🎉', 'Todos os testes passaram! A integração está funcionando corretamente.');
     process.exit(0);

@@ -27,7 +27,7 @@ import {
 } from "@/components/ui/select";
 
 import type { Task, TaskLabel, TaskPriority, TaskStatus } from "@/features/tasks";
-import { actionCriarTarefa, actionMarcarComoDone, actionMarcarComoTodo } from "@/features/tasks/actions/tasks-actions";
+import { actionCriarTarefa, actionMarcarComoDone, actionMarcarComoTodo } from "@/features/tasks";
 
 const STATUS_LABEL: Record<TaskStatus, string> = {
   backlog: "Backlog",
