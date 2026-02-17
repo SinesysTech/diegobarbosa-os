@@ -17,6 +17,7 @@ interface WorkflowRunnerProps {
     title?: string;
     description?: string;
     user?: string;
+    appId?: string;
 }
 
 export function WorkflowRunner({
@@ -28,10 +29,12 @@ export function WorkflowRunner({
     title = 'Executar Workflow',
     description = 'Preencha os dados e execute o processo.',
     user,
+    appId,
 }: WorkflowRunnerProps) {
     const { state, execute, stop } = useDifyWorkflow({
         onFinish,
-        user
+        user,
+        appId
     });
 
     const [inputs, setInputs] = useState<Record<string, unknown>>({});

@@ -3,7 +3,7 @@
 import * as React from "react";
 import { useRouter } from "next/navigation";
 import { GripVertical } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
+import { SemanticBadge } from "@/components/ui/semantic-badge";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { getSemanticBadgeVariant } from "@/lib/design-system";
@@ -17,7 +17,7 @@ interface TasksKanbanViewProps {
 
 export function TasksKanbanView({ tasks }: TasksKanbanViewProps) {
   const router = useRouter();
-  const [isPending, startTransition] = React.useTransition();
+  const [, startTransition] = React.useTransition();
   const [draggedTask, setDraggedTask] = React.useState<Task | null>(null);
 
   const tasksByStatus = React.useMemo(() => {
@@ -100,11 +100,13 @@ export function TasksKanbanView({ tasks }: TasksKanbanViewProps) {
                   </CardHeader>
                   <CardContent className="p-3 pt-0">
                     <div className="flex flex-wrap gap-2">
-                      <Badge variant={getSemanticBadgeVariant("status", task.label)}>
+                      <SemanticBadge category="status" value={task.label} variantOverride={getSemanticBadgeVariant("status", task.label)}>
                         {LABEL_LABELS[task.label]}
-                      </Badge>
-                      <Badge
-                        variant={
+                      </SemanticBadge>
+                      <SemanticBadge
+                        category="status"
+                        value={task.priority}
+                        variantOverride={
                           task.priority === "high"
                             ? "destructive"
                             : task.priority === "medium"
@@ -113,7 +115,7 @@ export function TasksKanbanView({ tasks }: TasksKanbanViewProps) {
                         }
                       >
                         {PRIORITY_LABELS[task.priority]}
-                      </Badge>
+                      </SemanticBadge>
                     </div>
                   </CardContent>
                 </Card>

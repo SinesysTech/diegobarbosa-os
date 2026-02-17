@@ -13,7 +13,6 @@ import {
   DifyFile,
   DifyConversationVariablesResponse,
   DifyWorkflowLogsResponse,
-  DifySpeechToTextResponse,
   DifyFileUploadWorkflowResponse,
   DifyAnnotation,
   DifyAnnotationsResponse,

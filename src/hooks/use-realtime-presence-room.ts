@@ -48,7 +48,7 @@ export const useRealtimePresenceRoom = (roomName: string) => {
     return () => {
       room.unsubscribe()
     }
-  }, [roomName, currentUserName, currentUserImage])
+  }, [roomName, currentUserName, currentUserImage, supabase])
 
   return { users }
 }

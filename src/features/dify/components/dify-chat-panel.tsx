@@ -19,6 +19,7 @@ interface DifyChatPanelProps {
     className?: string;
     assistantName?: string;
     assistantAvatar?: string;
+    appId?: string;
 }
 
 export function DifyChatPanel({
@@ -29,12 +30,14 @@ export function DifyChatPanel({
     className,
     assistantName = 'Assistente Dify',
     assistantAvatar,
+    appId,
 }: DifyChatPanelProps) {
     const { messages, input, setInput, sendMessage, isLoading, stop } = useDifyChat({
         conversationId,
         initialMessages,
         user,
         onFinish,
+        appId,
     });
 
     const _scrollRef = useRef<HTMLDivElement>(null);

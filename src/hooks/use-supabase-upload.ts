@@ -1,5 +1,5 @@
 import { createClient } from '@/lib/supabase/client'
-import { useCallback, useMemo, useRef, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { type FileError, type FileRejection, useDropzone } from 'react-dropzone'
 
 function getSupabase() {
@@ -119,14 +119,14 @@ const useSupabaseUpload = (options: UseSupabaseUploadOptions) => {
         const validFiles = acceptedFiles
           .filter((file) => !previous.find((x) => x.name === file.name))
           .map((file) => {
-            ;(file as FileWithPreview).preview = URL.createObjectURL(file)
-            ;(file as FileWithPreview).errors = []
+            ; (file as FileWithPreview).preview = URL.createObjectURL(file)
+              ; (file as FileWithPreview).errors = []
             return file as FileWithPreview
           })
 
         const invalidFiles = fileRejections.map(({ file, errors: rejectionErrors }) => {
-          ;(file as FileWithPreview).preview = URL.createObjectURL(file)
-          ;(file as FileWithPreview).errors = rejectionErrors
+          ; (file as FileWithPreview).preview = URL.createObjectURL(file)
+            ; (file as FileWithPreview).errors = rejectionErrors
           return file as FileWithPreview
         })
 
@@ -154,9 +154,9 @@ const useSupabaseUpload = (options: UseSupabaseUploadOptions) => {
     const filesToUpload =
       filesWithErrors.length > 0
         ? [
-            ...files.filter((f) => filesWithErrors.includes(f.name)),
-            ...files.filter((f) => !successes.includes(f.name)),
-          ]
+          ...files.filter((f) => filesWithErrors.includes(f.name)),
+          ...files.filter((f) => !successes.includes(f.name)),
+        ]
         : files
 
     const responses = await Promise.all(

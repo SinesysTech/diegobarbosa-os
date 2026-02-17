@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { useRouter } from "next/navigation";
-import { LayoutGrid, Plus, Search, Table as TableIcon, X } from "lucide-react";
+import { LayoutGrid, Plus, Table as TableIcon } from "lucide-react";
 import { ColumnDef } from "@tanstack/react-table";
 
 import { Button } from "@/components/ui/button";
@@ -15,7 +15,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Badge } from "@/components/ui/badge";
+import { SemanticBadge } from "@/components/ui/semantic-badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { DialogFormShell } from "@/components/shared";
 import { DataShell } from "@/components/shared/data-shell";
@@ -121,7 +121,7 @@ export function TasksPageContent({ tasks }: TasksPageContentProps) {
 
         return (
           <div className="flex gap-2">
-            {label && <Badge variant="outline">{label.label}</Badge>}
+            {label && <SemanticBadge category="status" value={label.value} variantOverride="outline">{label.label}</SemanticBadge>}
             <span className="max-w-[500px] truncate font-medium">{row.getValue("title")}</span>
           </div>
         );
@@ -249,7 +249,7 @@ export function TasksPageContent({ tasks }: TasksPageContentProps) {
               <Label>Status</Label>
               <Select
                 value={form.status}
-                onValueChange={(value) => setForm((s) => ({ ...s, status: value as TaskStatus }))}
+                onValueChange={(value: string) => setForm((s) => ({ ...s, status: value as TaskStatus }))}
               >
                 <SelectTrigger className="mt-2 w-full bg-card">
                   <SelectValue placeholder="Selecione" />
@@ -268,7 +268,7 @@ export function TasksPageContent({ tasks }: TasksPageContentProps) {
               <Label>Prioridade</Label>
               <Select
                 value={form.priority}
-                onValueChange={(value) =>
+                onValueChange={(value: string) =>
                   setForm((s) => ({ ...s, priority: value as TaskPriority }))
                 }
               >
@@ -289,7 +289,7 @@ export function TasksPageContent({ tasks }: TasksPageContentProps) {
               <Label>Etiqueta</Label>
               <Select
                 value={form.label}
-                onValueChange={(value) => setForm((s) => ({ ...s, label: value as TaskLabel }))}
+                onValueChange={(value: string) => setForm((s) => ({ ...s, label: value as TaskLabel }))}
               >
                 <SelectTrigger className="mt-2 w-full bg-card">
                   <SelectValue placeholder="Selecione" />
