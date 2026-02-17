@@ -21,6 +21,7 @@ export type Database = {
           classe_judicial_id: number | null
           codigo_status_processo: string
           created_at: string
+          dados_anteriores: Json | null
           data_arquivamento: string | null
           data_autuacao: string
           data_proxima_audiencia: string | null
@@ -50,6 +51,7 @@ export type Database = {
           classe_judicial_id?: number | null
           codigo_status_processo: string
           created_at?: string
+          dados_anteriores?: Json | null
           data_arquivamento?: string | null
           data_autuacao: string
           data_proxima_audiencia?: string | null
@@ -79,6 +81,7 @@ export type Database = {
           classe_judicial_id?: number | null
           codigo_status_processo?: string
           created_at?: string
+          dados_anteriores?: Json | null
           data_arquivamento?: string | null
           data_autuacao?: string
           data_proxima_audiencia?: string | null
@@ -194,8 +197,7 @@ export type Database = {
           created_at: string
           id: number
           nome_completo: string
-          oab: string
-          uf_oab: string
+          oabs: Json
           updated_at: string
         }
         Insert: {
@@ -203,8 +205,7 @@ export type Database = {
           created_at?: string
           id?: never
           nome_completo: string
-          oab: string
-          uf_oab: string
+          oabs?: Json
           updated_at?: string
         }
         Update: {
@@ -212,8 +213,7 @@ export type Database = {
           created_at?: string
           id?: never
           nome_completo?: string
-          oab?: string
-          uf_oab?: string
+          oabs?: Json
           updated_at?: string
         }
         Relationships: []
@@ -2514,6 +2514,87 @@ export type Database = {
           },
         ]
       }
+      dify_conversas: {
+        Row: {
+          app_key: string
+          conversation_id: string
+          created_at: string | null
+          id: string
+          nome: string | null
+          updated_at: string | null
+          usuario_id: string
+        }
+        Insert: {
+          app_key: string
+          conversation_id: string
+          created_at?: string | null
+          id?: string
+          nome?: string | null
+          updated_at?: string | null
+          usuario_id: string
+        }
+        Update: {
+          app_key?: string
+          conversation_id?: string
+          created_at?: string | null
+          id?: string
+          nome?: string | null
+          updated_at?: string | null
+          usuario_id?: string
+        }
+        Relationships: []
+      }
+      dify_execucoes: {
+        Row: {
+          created_at: string | null
+          elapsed_time: number | null
+          error: string | null
+          finished_at: string | null
+          id: string
+          inputs: Json | null
+          outputs: Json | null
+          status: string
+          task_id: string | null
+          total_steps: number | null
+          total_tokens: number | null
+          usuario_id: string | null
+          workflow_id: string | null
+          workflow_run_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          elapsed_time?: number | null
+          error?: string | null
+          finished_at?: string | null
+          id?: string
+          inputs?: Json | null
+          outputs?: Json | null
+          status?: string
+          task_id?: string | null
+          total_steps?: number | null
+          total_tokens?: number | null
+          usuario_id?: string | null
+          workflow_id?: string | null
+          workflow_run_id: string
+        }
+        Update: {
+          created_at?: string | null
+          elapsed_time?: number | null
+          error?: string | null
+          finished_at?: string | null
+          id?: string
+          inputs?: Json | null
+          outputs?: Json | null
+          status?: string
+          task_id?: string | null
+          total_steps?: number | null
+          total_tokens?: number | null
+          usuario_id?: string | null
+          workflow_id?: string | null
+          workflow_run_id?: string
+        }
+        Relationships: []
+      }
       documentos: {
         Row: {
           conteudo: Json
@@ -3350,8 +3431,53 @@ export type Database = {
           },
         ]
       }
+      kanban_boards: {
+        Row: {
+          created_at: string
+          icone: string | null
+          id: string
+          ordem: number
+          source: string | null
+          tipo: string
+          titulo: string
+          updated_at: string
+          usuario_id: number
+        }
+        Insert: {
+          created_at?: string
+          icone?: string | null
+          id?: string
+          ordem?: number
+          source?: string | null
+          tipo: string
+          titulo: string
+          updated_at?: string
+          usuario_id: number
+        }
+        Update: {
+          created_at?: string
+          icone?: string | null
+          id?: string
+          ordem?: number
+          source?: string | null
+          tipo?: string
+          titulo?: string
+          updated_at?: string
+          usuario_id?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "kanban_boards_usuario_id_fkey"
+            columns: ["usuario_id"]
+            isOneToOne: false
+            referencedRelation: "usuarios"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       kanban_columns: {
         Row: {
+          board_id: string | null
           created_at: string
           id: string
           position: number
@@ -3360,6 +3486,7 @@ export type Database = {
           usuario_id: number
         }
         Insert: {
+          board_id?: string | null
           created_at?: string
           id?: string
           position?: number
@@ -3368,6 +3495,7 @@ export type Database = {
           usuario_id: number
         }
         Update: {
+          board_id?: string | null
           created_at?: string
           id?: string
           position?: number
@@ -3376,6 +3504,13 @@ export type Database = {
           usuario_id?: number
         }
         Relationships: [
+          {
+            foreignKeyName: "kanban_columns_board_id_fkey"
+            columns: ["board_id"]
+            isOneToOne: false
+            referencedRelation: "kanban_boards"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "kanban_columns_usuario_id_fkey"
             columns: ["usuario_id"]
@@ -4081,6 +4216,24 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      n8n_chat_histories: {
+        Row: {
+          id: number
+          message: Json
+          session_id: string
+        }
+        Insert: {
+          id?: number
+          message: Json
+          session_id: string
+        }
+        Update: {
+          id?: number
+          message?: Json
+          session_id?: string
+        }
+        Relationships: []
       }
       nota_etiqueta_vinculos: {
         Row: {
@@ -5806,6 +5959,7 @@ export type Database = {
           cpf: string | null
           cpf_responsavel: string | null
           created_at: string | null
+          dados_anteriores: Json | null
           data_abertura: string | null
           data_fim_atividade: string | null
           data_nascimento: string | null
@@ -5874,6 +6028,7 @@ export type Database = {
           cpf?: string | null
           cpf_responsavel?: string | null
           created_at?: string | null
+          dados_anteriores?: Json | null
           data_abertura?: string | null
           data_fim_atividade?: string | null
           data_nascimento?: string | null
@@ -5942,6 +6097,7 @@ export type Database = {
           cpf?: string | null
           cpf_responsavel?: string | null
           created_at?: string | null
+          dados_anteriores?: Json | null
           data_abertura?: string | null
           data_fim_atividade?: string | null
           data_nascimento?: string | null
@@ -6498,6 +6654,7 @@ export type Database = {
           nome_completo: string
           nome_exibicao: string
           oab: string | null
+          online_status: string
           ramal: string | null
           rg: string | null
           telefone: string | null
@@ -6522,6 +6679,7 @@ export type Database = {
           nome_completo: string
           nome_exibicao: string
           oab?: string | null
+          online_status?: string
           ramal?: string | null
           rg?: string | null
           telefone?: string | null
@@ -6546,6 +6704,7 @@ export type Database = {
           nome_completo?: string
           nome_exibicao?: string
           oab?: string | null
+          online_status?: string
           ramal?: string | null
           rg?: string | null
           telefone?: string | null
@@ -6572,18 +6731,23 @@ export type Database = {
           created_at: string | null
           data_arquivamento: string | null
           data_autuacao: string | null
+          data_autuacao_origem: string | null
           data_proxima_audiencia: string | null
           descricao_orgao_julgador: string | null
           grau_atual: Database["public"]["Enums"]["grau_tribunal"] | null
+          grau_origem: Database["public"]["Enums"]["grau_tribunal"] | null
           graus_ativos: Database["public"]["Enums"]["grau_tribunal"][] | null
           id: number | null
           id_pje: number | null
           instances: Json | null
           juizo_digital: boolean | null
           nome_parte_autora: string | null
+          nome_parte_autora_origem: string | null
           nome_parte_re: string | null
+          nome_parte_re_origem: string | null
           numero: number | null
           numero_processo: string | null
+          orgao_julgador_origem: string | null
           origem: string | null
           prioridade_processual: number | null
           qtde_parte_autora: number | null
@@ -6592,6 +6756,7 @@ export type Database = {
           segredo_justica: boolean | null
           tem_associacao: boolean | null
           trt: Database["public"]["Enums"]["codigo_tribunal"] | null
+          trt_origem: Database["public"]["Enums"]["codigo_tribunal"] | null
           updated_at: string | null
         }
         Relationships: [
@@ -6801,16 +6966,6 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
-      }
-      mv_dados_primeiro_grau: {
-        Row: {
-          nome_parte_autora_origem: string | null
-          nome_parte_re_origem: string | null
-          numero_processo: string | null
-          orgao_julgador_origem: string | null
-          trt_origem: Database["public"]["Enums"]["codigo_tribunal"] | null
-        }
-        Relationships: []
       }
       processos_cliente_por_cpf: {
         Row: {
@@ -7346,6 +7501,7 @@ export type Database = {
           classe_judicial_id: number | null
           codigo_status_processo: string
           created_at: string
+          dados_anteriores: Json | null
           data_arquivamento: string | null
           data_autuacao: string
           data_proxima_audiencia: string | null
@@ -7380,8 +7536,6 @@ export type Database = {
         Args: { use_concurrent?: boolean }
         Returns: undefined
       }
-      refresh_mv_dados_primeiro_grau: { Args: never; Returns: undefined }
-      refresh_orcamento_vs_realizado: { Args: never; Returns: undefined }
       refresh_processos_cliente_por_cpf: { Args: never; Returns: undefined }
       refresh_v_dre: { Args: never; Returns: undefined }
       registrar_baixa_expediente: {
