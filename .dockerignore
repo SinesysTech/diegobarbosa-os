@@ -51,8 +51,9 @@ tsconfig.test.json
 src/app/sandbox
 src/app/(dev)
 
-# Scripts de desenvolvimento (todos desnecessários em runtime)
-scripts/
+# Scripts de desenvolvimento (desnecessários em runtime, exceto os usados no build)
+scripts/*
+!scripts/dev-tools/
 dev_data/
 
 # IDEs e ferramentas de desenvolvimento (AI agents, editores, etc)
