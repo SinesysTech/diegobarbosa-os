@@ -76,7 +76,6 @@ log_info "Iniciando build Docker..."
 docker build --platform linux/amd64 \
     --build-arg NEXT_PUBLIC_SUPABASE_URL="${NEXT_PUBLIC_SUPABASE_URL}" \
     --build-arg NEXT_PUBLIC_SUPABASE_PUBLISHABLE_OR_ANON_KEY="${NEXT_PUBLIC_SUPABASE_PUBLISHABLE_OR_ANON_KEY}" \
-    --build-arg NEXT_PUBLIC_DYTE_ORG_ID="${NEXT_PUBLIC_DYTE_ORG_ID:-}" \
     -t "${IMAGE_NAME}" \
     .
 

@@ -67,7 +67,9 @@ export default function CredenciaisPage() {
       const url = `/api/captura/credenciais${params.toString() ? `?${params.toString()}` : ''}`;
       const response = await fetch(url);
       if (!response.ok) {
-        throw new Error('Erro ao buscar credenciais');
+        const errorBody = await response.json().catch(() => null);
+        console.error('[Credenciais] API error:', response.status, errorBody);
+        throw new Error(errorBody?.details || 'Erro ao buscar credenciais');
       }
       const data = await response.json();
       if (!data.success) {

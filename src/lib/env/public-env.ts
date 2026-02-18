@@ -13,7 +13,6 @@
 export interface PublicEnv {
   NEXT_PUBLIC_SUPABASE_URL: string;
   NEXT_PUBLIC_SUPABASE_PUBLISHABLE_OR_ANON_KEY: string;
-  NEXT_PUBLIC_DYTE_ORG_ID?: string;
 }
 
 /** Valores inválidos que podem vir do build Docker (placeholders) */
@@ -72,7 +71,6 @@ export function getPublicEnv<K extends keyof PublicEnv>(key: K): string | undefi
 const PUBLIC_ENV_KEYS: (keyof PublicEnv)[] = [
   'NEXT_PUBLIC_SUPABASE_URL',
   'NEXT_PUBLIC_SUPABASE_PUBLISHABLE_OR_ANON_KEY',
-  'NEXT_PUBLIC_DYTE_ORG_ID',
 ];
 
 /**

@@ -129,7 +129,7 @@ export async function GET(request: NextRequest) {
     if (error) {
       console.error('Erro ao buscar credenciais:', error);
       return NextResponse.json(
-        { error: 'Erro ao buscar credenciais' },
+        { error: 'Erro ao buscar credenciais', details: error.message, code: error.code },
         { status: 500 }
       );
     }
@@ -176,8 +176,9 @@ export async function GET(request: NextRequest) {
     });
   } catch (error) {
     console.error('Error in credenciais GET:', error);
+    const message = error instanceof Error ? error.message : String(error);
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { error: 'Internal server error', details: message },
       { status: 500 }
     );
   }

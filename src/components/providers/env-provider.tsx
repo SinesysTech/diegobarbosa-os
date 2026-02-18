@@ -6,7 +6,6 @@ import { getPublicEnv } from "@/lib/env-runtime";
 type EnvContextType = {
   NEXT_PUBLIC_SUPABASE_URL?: string;
   NEXT_PUBLIC_SUPABASE_PUBLISHABLE_OR_ANON_KEY?: string;
-  NEXT_PUBLIC_DYTE_ORG_ID?: string;
 };
 
 const EnvContext = createContext<EnvContextType>({});
