@@ -5,22 +5,6 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
-/**
- * Estilos base para botões de navegação em dialogs multi-step
- *
- * Design:
- * - Botões circulares com fundo primary (roxo brand)
- * - Ícone branco (primary-foreground)
- * - No hover: fundo levemente escurecido, ícone permanece branco com traço mais grosso
- */
-const navButtonStyles = cn(
-  "rounded-full",
-  "bg-primary text-primary-foreground",
-  "hover:bg-primary/90 hover:text-primary-foreground",
-  "[&_svg]:transition-all [&_svg]:duration-200",
-  "[&_svg]:hover:stroke-[2.5]"
-);
-
 interface DialogNavButtonProps extends React.ComponentPropsWithoutRef<typeof Button> {
   /**
    * Se true, o botão será ocultado (usado quando está no primeiro step)
@@ -29,42 +13,45 @@ interface DialogNavButtonProps extends React.ComponentPropsWithoutRef<typeof But
 }
 
 /**
- * Botão de navegação "Anterior" para dialogs multi-step
+ * Botão de navegação "Voltar" para dialogs multi-step
+ *
+ * Renderiza um botão outline com texto "Voltar" e ícone de chevron.
+ * Deve ser usado como `leftFooter` no DialogFormShell para substituir
+ * o botão "Cancelar" padrão nos steps 2+.
  *
  * @example
  * ```tsx
  * <DialogNavPrevious
  *   onClick={handlePrevious}
- *   disabled={isFirstStep || isPending}
- *   hidden={isFirstStep}
+ *   disabled={isPending}
  * />
  * ```
  */
 export function DialogNavPrevious({
   className,
   hidden,
+  children,
   ...props
 }: DialogNavButtonProps) {
   return (
     <Button
       type="button"
-      variant="ghost"
-      size="icon"
-      aria-label="Voltar"
-      className={cn(
-        navButtonStyles,
-        hidden && "hidden",
-        className
-      )}
+      variant="outline"
+      aria-label="Voltar para etapa anterior"
+      className={cn(hidden && "hidden", className)}
       {...props}
     >
       <ChevronLeft className="h-4 w-4" />
+      {children ?? "Voltar"}
     </Button>
   );
 }
 
 /**
  * Botão de navegação "Próximo" para dialogs multi-step
+ *
+ * Renderiza um botão primary com texto "Próximo" e ícone de chevron.
+ * Usado como ação principal de avanço no footer do dialog.
  *
  * @example
  * ```tsx
@@ -76,17 +63,17 @@ export function DialogNavPrevious({
  */
 export function DialogNavNext({
   className,
+  children,
   ...props
 }: DialogNavButtonProps) {
   return (
     <Button
       type="button"
-      variant="ghost"
-      size="icon"
-      aria-label="Continuar"
-      className={cn(navButtonStyles, className)}
+      aria-label="Avançar para próxima etapa"
+      className={cn(className)}
       {...props}
     >
+      {children ?? "Próximo"}
       <ChevronRight className="h-4 w-4" />
     </Button>
   );

@@ -832,45 +832,45 @@ export function RepresentanteFormDialog({
     <DialogFormShell
       open={open}
       onOpenChange={onOpenChange}
-      title={isEditMode ? 'Editar Representante' : stepInfo.title}
+      title={isEditMode ? 'Editar Representante' : 'Novo Representante'}
       multiStep={{
         current: currentStep,
         total: TOTAL_STEPS,
         stepTitle: stepInfo.title,
       }}
+      leftFooter={
+        !isFirstStep ? (
+          <DialogNavPrevious
+            onClick={handlePrevious}
+            disabled={isPending}
+          />
+        ) : undefined
+      }
       footer={
-        <div className="flex justify-end w-full gap-2">
-            <DialogNavPrevious
-              onClick={handlePrevious}
-              disabled={isFirstStep || isPending}
-              hidden={isFirstStep}
-            />
-
-            {isLastStep ? (
-              <Button
-                type="button"
-                onClick={handleSubmit}
-                disabled={isPending}
-              >
-                {isPending ? (
-                  <>
-                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                    {isEditMode ? 'Salvando...' : 'Criando...'}
-                  </>
-                ) : (
-                  <>
-                    <Check className="h-4 w-4 mr-2" />
-                    {isEditMode ? 'Salvar Alterações' : 'Criar Representante'}
-                  </>
-                )}
-              </Button>
+        isLastStep ? (
+          <Button
+            type="button"
+            onClick={handleSubmit}
+            disabled={isPending}
+          >
+            {isPending ? (
+              <>
+                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                {isEditMode ? 'Salvando...' : 'Criando...'}
+              </>
             ) : (
-              <DialogNavNext
-                onClick={handleNext}
-                disabled={isPending}
-              />
+              <>
+                <Check className="h-4 w-4 mr-2" />
+                {isEditMode ? 'Salvar Alterações' : 'Criar Representante'}
+              </>
             )}
-          </div>
+          </Button>
+        ) : (
+          <DialogNavNext
+            onClick={handleNext}
+            disabled={isPending}
+          />
+        )
       }
     >
         <form ref={formRef} action={formAction}>
