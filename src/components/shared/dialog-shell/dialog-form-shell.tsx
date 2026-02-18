@@ -103,6 +103,7 @@ export function DialogFormShell({
           maxWidthClass,
           "bg-card",
           "p-0 gap-0",
+          "transition-[max-width] duration-300 ease-in-out",
           className
         )}
       >
