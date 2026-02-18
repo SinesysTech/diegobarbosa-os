@@ -387,7 +387,10 @@ export function useNotificacoesRealtime(options?: {
           } else if (status === REALTIME_SUBSCRIBE_STATES.TIMED_OUT) {
             scheduleRetry(isMounted);
           } else if (status === REALTIME_SUBSCRIBE_STATES.CLOSED) {
-            scheduleRetry(isMounted);
+            // CLOSED é disparado quando NÓS removemos o canal (cleanup).
+            // Não devemos tentar reconectar aqui — isso criava um loop infinito:
+            // cleanup → removeChannel → CLOSED → scheduleRetry → cleanup → ...
+            // Retries já são tratados em CHANNEL_ERROR e TIMED_OUT.
           }
         });
       } catch (error) {
