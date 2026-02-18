@@ -69,11 +69,6 @@ export PORT=8000
 export HOSTNAME="0.0.0.0"
 export NEXT_TELEMETRY_DISABLED=1
 
-# Configurar URL base se nao estiver definida
-if [[ -n "${CLOUDRON_APP_ORIGIN:-}" ]]; then
-    export NEXT_PUBLIC_APP_URL="${CLOUDRON_APP_ORIGIN}"
-fi
-
 # Ajustar memoria do Node.js baseado no limite do container
 export NODE_OPTIONS="--max-old-space-size=768"
 

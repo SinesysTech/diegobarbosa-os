@@ -4,6 +4,8 @@
  * Camada de regras de negócio para o módulo de tarefas.
  */
 
+import "server-only";
+
 import { appError, err, ok, Result } from "@/types";
 import { z } from "zod";
 import type { CreateTaskInput, ListTasksParams, Task, UpdateTaskInput } from "./domain";

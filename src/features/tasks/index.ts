@@ -28,14 +28,7 @@ export {
   KANBAN_COLUMNS,
 } from "./domain";
 
-// Service
-export {
-  listarTarefas,
-  buscarTarefa,
-  criarTarefa,
-  atualizarTarefa,
-  removerTarefa,
-} from "./service";
+
 
 // Actions
 export {
