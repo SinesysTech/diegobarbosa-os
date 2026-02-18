@@ -2,7 +2,7 @@
  * Operações de Contacts da API do Chatwoot
  */
 
-import { ChatwootClient, getChatwootClient } from './client';
+import { type ChatwootClient, getChatwootClient } from './client';
 import {
   ChatwootContact,
   ChatwootResult,

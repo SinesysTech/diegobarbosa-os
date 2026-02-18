@@ -2,7 +2,7 @@
  * Operações de Messages da API do Chatwoot
  */
 
-import { ChatwootClient, getChatwootClient } from './client';
+import { type ChatwootClient, getChatwootClient } from './client';
 import {
   ChatwootMessage,
   ChatwootResult,

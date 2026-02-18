@@ -12,7 +12,7 @@ import {
   ChatwootApiError,
   ChatwootResult,
 } from "./types";
-import { getChatwootConfig } from "./config";
+import { getChatwootConfigFromDatabase } from "./config";
 
 // =============================================================================
 // Configuração
@@ -21,6 +21,15 @@ import { getChatwootConfig } from "./config";
 const DEFAULT_TIMEOUT = 30000; // 30 segundos
 const MAX_RETRIES = 3;
 const RETRY_DELAY_BASE = 1000; // 1 segundo
+
+/**
+ * Verifica se o Chatwoot está configurado (banco de dados)
+ */
+export async function isChatwootConfigured(): Promise<boolean> {
+  const config = await getChatwootConfigFromDatabase();
+  return config !== null;
+}
+
 
 // =============================================================================
 // Cliente HTTP
@@ -179,10 +188,10 @@ export class ChatwootClient {
    * Cria instância do client com config do banco de dados
    */
   static async create(): Promise<ChatwootClient> {
-    const config = await getChatwootConfig();
+    const config = await getChatwootConfigFromDatabase();
     if (!config) {
       throw new Error(
-        "Chatwoot não configurado. Configure via /app/configuracoes?tab=integracoes"
+        "Chatwoot não configurado. Configure em Configurações > Integrações."
       );
     }
     return new ChatwootClient(config);
@@ -248,7 +257,7 @@ export class ChatwootClient {
 let clientInstance: ChatwootClient | null = null;
 
 /**
- * Obtém instância singleton do cliente Chatwoot (do banco de dados)
+ * Obtém instância singleton do cliente Chatwoot (banco de dados)
  */
 export async function getChatwootClient(): Promise<ChatwootClient> {
   if (!clientInstance) {

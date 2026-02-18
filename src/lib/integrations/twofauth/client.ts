@@ -17,7 +17,7 @@ interface ResolvedConfig {
 
 /**
  * Resolve a configuração do cliente 2FAuth
- * Prioridade: config fornecido > banco de dados > variáveis de ambiente
+ * Prioridade: config fornecido > banco de dados
  */
 export async function resolveConfigAsync(
   config?: Omit<TwoFAuthConfig, "accountId">
@@ -25,7 +25,7 @@ export async function resolveConfigAsync(
   let apiUrl = config?.apiUrl;
   let token = config?.token;
 
-  // Se não fornecido, buscar do banco ou env
+  // Se não fornecido, buscar do banco
   if (!apiUrl || !token) {
     const dbConfig = await load2FAuthConfig();
     apiUrl = apiUrl || dbConfig?.apiUrl;
@@ -35,7 +35,7 @@ export async function resolveConfigAsync(
   if (!apiUrl || !token) {
     throw new TwoFAuthError(
       500,
-      "2FAuth não configurado. Configure via /app/configuracoes?tab=integracoes"
+      "2FAuth não configurado. Configure em Configurações > Integrações."
     );
   }
 

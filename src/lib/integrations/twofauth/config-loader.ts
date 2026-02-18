@@ -1,6 +1,6 @@
 /**
  * Config Loader - 2FAuth
- * Carrega configuração do banco de dados (tabela integracoes)
+ * Carrega configuração do banco de dados
  */
 
 import { createClient } from "@/lib/supabase/server";

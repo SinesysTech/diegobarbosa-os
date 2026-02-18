@@ -31,13 +31,14 @@
 export {
   ChatwootClient,
   getChatwootClient,
+  isChatwootConfigured,
   resetChatwootClient,
 } from './client';
 
 // Configuration (Database-driven via integracoes table)
 export {
-  getChatwootConfig,
-  isChatwootConfigured,
+  getChatwootConfigFromDatabase,
+  isChatwootConfiguredInDatabase,
 } from './config';
 
 // Contacts

@@ -2,7 +2,7 @@
  * Operações de Contact Labels da API do Chatwoot
  */
 
-import { ChatwootClient, getChatwootClient } from './client';
+import { type ChatwootClient, getChatwootClient } from './client';
 import {
   ChatwootResult,
   ContactLabelsResponse,

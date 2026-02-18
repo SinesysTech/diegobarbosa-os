@@ -69,3 +69,23 @@ export async function isChatwootConfigured(): Promise<boolean> {
   const config = await getChatwootConfig();
   return config !== null;
 }
+
+
+/**
+ * Alias: Obtém configuração do Chatwoot do banco de dados
+ */
+export const getChatwootConfigFromDatabase = getChatwootConfig;
+
+/**
+ * Alias: Verifica se o Chatwoot está configurado no banco de dados
+ */
+export const isChatwootConfiguredInDatabase = isChatwootConfigured;
+
+/**
+ * Obtém configuração do Chatwoot do banco de dados
+ *
+ * @returns Promise com configuração ou null
+ */
+export async function getChatwootConfigWithFallback(): Promise<ChatwootConfig | null> {
+  return getChatwootConfigFromDatabase();
+}

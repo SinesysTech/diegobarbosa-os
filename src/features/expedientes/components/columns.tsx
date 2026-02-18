@@ -87,12 +87,12 @@ function TribunalGrauBadge({ trt, grau }: { trt: string; grau: GrauTribunal }) {
 
 export function TipoDescricaoCell({
   expediente,
-  onSuccess,
+  onSuccessAction,
   tiposExpedientes = [],
   isLoadingTipos
 }: {
   expediente: Expediente;
-  onSuccess: () => void;
+  onSuccessAction: () => void;
   tiposExpedientes?: TipoExpediente[];
   isLoadingTipos?: boolean;
 }) {
@@ -129,7 +129,7 @@ export function TipoDescricaoCell({
         throw new Error(result.message || 'Erro ao atualizar tipo');
       }
       setIsTipoPopoverOpen(false);
-      onSuccess();
+      onSuccessAction();
     } catch (error) {
       console.error('Erro ao atualizar tipo:', error);
     } finally {
@@ -150,7 +150,7 @@ export function TipoDescricaoCell({
         throw new Error(result.message || 'Erro ao atualizar descrição');
       }
       setIsDescricaoDialogOpen(false);
-      onSuccess();
+      onSuccessAction();
     } catch (error) {
       console.error('Erro ao atualizar descrição:', error);
     } finally {
@@ -204,7 +204,7 @@ export function TipoDescricaoCell({
                   <SelectTrigger className="w-full h-8 text-sm">
                     <SelectValue placeholder="Selecione o tipo" />
                   </SelectTrigger>
-                  <SelectContent className="max-h-[200px]">
+                  <SelectContent className="max-h-50">
                     <SelectItem value="null">Sem tipo</SelectItem>
                     {tiposExpedientes.length > 0 ? (
                       tiposExpedientes.map((tipo) => (
@@ -346,7 +346,7 @@ function getInitials(name: string): string {
   return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
 }
 
-export function ResponsavelCell({ expediente, usuarios = [], onSuccess }: { expediente: Expediente; usuarios?: Usuario[]; onSuccess?: () => void }) {
+export function ResponsavelCell({ expediente, usuarios = [], onSuccessAction }: { expediente: Expediente; usuarios?: Usuario[]; onSuccessAction?: () => void }) {
   const [isDialogOpen, setIsDialogOpen] = React.useState(false);
   const responsavel = usuarios.find(u => u.id === expediente.responsavelId);
   const nomeExibicao = responsavel?.nomeExibicao || '-';
@@ -367,7 +367,7 @@ export function ResponsavelCell({ expediente, usuarios = [], onSuccess }: { expe
                 {getInitials(responsavel.nomeExibicao)}
               </AvatarFallback>
             </Avatar>
-            <span className="truncate max-w-[120px]">{responsavel.nomeExibicao}</span>
+            <span className="truncate max-w-30">{responsavel.nomeExibicao}</span>
           </>
         ) : (
           <span className="text-muted-foreground">Sem responsável</span>
@@ -380,21 +380,21 @@ export function ResponsavelCell({ expediente, usuarios = [], onSuccess }: { expe
         expediente={expediente}
         usuarios={usuarios}
         onSuccess={() => {
-          onSuccess?.();
+          onSuccessAction?.();
         }}
       />
     </>
   );
 }
 
-export function ObservacoesCell({ expediente, onSuccess }: { expediente: Expediente; onSuccess: () => void }) {
+export function ObservacoesCell({ expediente, onSuccessAction }: { expediente: Expediente; onSuccessAction: () => void }) {
   const handleSave = async (newText: string) => {
     try {
       const formData = new FormData();
       formData.append('observacoes', newText);
       const result = await actionAtualizarExpediente(expediente.id, null, formData);
       if (result.success) {
-        onSuccess();
+        onSuccessAction();
       } else {
         throw new Error(result.message || 'Erro ao atualizar observações');
       }
@@ -420,12 +420,12 @@ export function ObservacoesCell({ expediente, onSuccess }: { expediente: Expedie
 
 export function ExpedienteActions({
   expediente,
-  onSuccess,
+  onSuccessAction,
   usuarios,
   tiposExpedientes,
 }: {
   expediente: Expediente;
-  onSuccess: () => void;
+  onSuccessAction: () => void;
   usuarios: Usuario[];
   tiposExpedientes: TipoExpediente[];
 }) {
@@ -507,14 +507,14 @@ export function ExpedienteActions({
         open={showBaixar}
         onOpenChange={setShowBaixar}
         expediente={expediente}
-        onSuccess={onSuccess}
+        onSuccess={onSuccessAction}
       />
 
       <ExpedientesReverterBaixaDialog
         open={showReverter}
         onOpenChange={setShowReverter}
         expediente={expediente}
-        onSuccess={onSuccess}
+        onSuccess={onSuccessAction}
       />
     </>
   );
@@ -527,7 +527,7 @@ export function ExpedienteActions({
 export interface ExpedientesTableMeta {
   usuarios: Usuario[];
   tiposExpedientes: TipoExpediente[];
-  onSuccess: () => void;
+  onSuccessAction: () => void;
 }
 
 export const columns: ColumnDef<Expediente>[] = [
@@ -565,7 +565,7 @@ export const columns: ColumnDef<Expediente>[] = [
         <div className="flex items-center py-2">
           <TipoDescricaoCell
             expediente={row.original}
-            onSuccess={meta?.onSuccess || (() => { })}
+            onSuccessAction={meta?.onSuccessAction || (() => { })}
             tiposExpedientes={meta?.tiposExpedientes || []}
           />
         </div>
@@ -634,7 +634,7 @@ export const columns: ColumnDef<Expediente>[] = [
       const meta = table.options.meta as ExpedientesTableMeta;
       return (
         <div className="flex items-center py-2">
-          <ObservacoesCell expediente={row.original} onSuccess={meta?.onSuccess} />
+          <ObservacoesCell expediente={row.original} onSuccessAction={meta?.onSuccessAction} />
         </div>
       );
     },
@@ -655,7 +655,7 @@ export const columns: ColumnDef<Expediente>[] = [
       const meta = table.options.meta as ExpedientesTableMeta;
       return (
         <div className="flex items-center py-2">
-          <ResponsavelCell expediente={row.original} usuarios={meta?.usuarios} onSuccess={meta?.onSuccess} />
+          <ResponsavelCell expediente={row.original} usuarios={meta?.usuarios} onSuccessAction={meta?.onSuccessAction} />
         </div>
       );
     },
@@ -678,7 +678,7 @@ export const columns: ColumnDef<Expediente>[] = [
         <div className="flex items-center py-2">
           <ExpedienteActions
             expediente={row.original}
-            onSuccess={meta?.onSuccess}
+            onSuccessAction={meta?.onSuccessAction}
             usuarios={meta?.usuarios}
             tiposExpedientes={meta?.tiposExpedientes}
           />

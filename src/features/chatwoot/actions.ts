@@ -7,10 +7,10 @@
  */
 
 import { Result, ok, err, appError } from '@/types';
-import { getChatwootConfig } from '@/lib/chatwoot/config';
+import { getChatwootConfigFromDatabase } from '@/lib/chatwoot/config';
 
 async function isChatwootConfigured(): Promise<boolean> {
-  const config = await getChatwootConfig();
+  const config = await getChatwootConfigFromDatabase();
   return config !== null;
 }
 
@@ -909,7 +909,7 @@ export async function sincronizarConversaManual(
       sincronizarConversaChatwoot,
     } = await import('./service');
 
-    const chatwootConfig = await getChatwootConfig();
+    const chatwootConfig = await getChatwootConfigFromDatabase();
     if (!chatwootConfig) {
       return err(appError('EXTERNAL_SERVICE_ERROR', 'Chatwoot não configurado'));
     }
@@ -985,7 +985,7 @@ export async function atualizarStatusConversaAPI(
       );
     }
 
-    const chatwootConfig = await getChatwootConfig();
+    const chatwootConfig = await getChatwootConfigFromDatabase();
     if (!chatwootConfig) {
       return err(appError('EXTERNAL_SERVICE_ERROR', 'Chatwoot não configurado'));
     }
