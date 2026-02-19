@@ -204,7 +204,7 @@ async function processarCliente(
         baseDelay: CAPTURA_CONFIG.RETRY_BASE_DELAY_MS,
       },
     );
-    return result.cliente?.id ?? null;
+    return result.success ? result.data.cliente.id : null;
   } else {
     const params: CriarClientePJParams = {
       ...dadosCompletos,
@@ -219,7 +219,7 @@ async function processarCliente(
         baseDelay: CAPTURA_CONFIG.RETRY_BASE_DELAY_MS,
       },
     );
-    return result.cliente?.id ?? null;
+    return result.success ? result.data.cliente.id : null;
   }
 }
 
@@ -274,7 +274,7 @@ async function processarParteContrariaComDocumento(
         baseDelay: CAPTURA_CONFIG.RETRY_BASE_DELAY_MS,
       },
     );
-    return result.parteContraria?.id ?? null;
+    return result.success ? result.data.parteContraria.id : null;
   } else {
     const params: CriarParteContrariaPJParams = {
       ...dadosComuns,
@@ -289,7 +289,7 @@ async function processarParteContrariaComDocumento(
         baseDelay: CAPTURA_CONFIG.RETRY_BASE_DELAY_MS,
       },
     );
-    return result.parteContraria?.id ?? null;
+    return result.success ? result.data.parteContraria.id : null;
   }
 }
 
