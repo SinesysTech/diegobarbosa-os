@@ -24,21 +24,19 @@ function getMinimalValidArgs(toolName: string): Record<string, any> {
   const specificArgs: Record<string, Record<string, any>> = {
     // PROCESSOS
     listar_processos: { limite: 5 },
-    buscar_processos_por_cpf: { cpf: '12345678901', limite: 5 },
-    buscar_processos_por_cnpj: { cnpj: '12345678000190', limite: 5 },
+    buscar_processos_por_documento: { documento: '12345678901', limite: 5 },
     buscar_processo_por_numero: { numero_processo: '0001234-56.2023.5.15.0001' },
 
     // PARTES
     listar_clientes: { limite: 5 },
-    buscar_cliente_por_cpf: { cpf: '12345678901' },
-    buscar_cliente_por_cnpj: { cnpj: '12345678000190' },
+    buscar_cliente_por_documento: { documento: '12345678901' },
     listar_partes_contrarias: { limite: 5 },
     listar_terceiros: { limite: 5 },
     listar_representantes: { limite: 5 },
 
     // CONTRATOS
     listar_contratos: { limite: 5 },
-    buscar_contrato_por_cliente: { cliente_id: 1, limite: 5 },
+    buscar_contratos_por_documento: { documento: '00000000000', limite: 5 },
 
     // FINANCEIRO
     listar_plano_contas: {},

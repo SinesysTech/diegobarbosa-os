@@ -252,22 +252,22 @@ async function testModuloProcessos(): Promise<void> {
     numeroProcesso: '0001234-56.2023.5.15.0001'
   }, true, 'buscar_processo_por_numero');
 
-  // 3. buscar_processos_por_cpf
-  await testTool('buscar_processos_por_cpf', {
-    cpf: '12345678901',
+  // 3. buscar_processos_por_documento (CPF)
+  await testTool('buscar_processos_por_documento', {
+    documento: '12345678901',
     limite: 10
-  }, true, 'buscar_processos_por_cpf');
+  }, true, 'buscar_processos_por_documento - CPF');
 
-  // Validação de CPF inválido
-  await testTool('buscar_processos_por_cpf', {
-    cpf: '123' // CPF inválido
-  }, false, 'buscar_processos_por_cpf - validação de CPF');
+  // Validação de documento inválido
+  await testTool('buscar_processos_por_documento', {
+    documento: '123' // documento inválido
+  }, false, 'buscar_processos_por_documento - validação de documento');
 
-  // 4. buscar_processos_por_cnpj
-  await testTool('buscar_processos_por_cnpj', {
-    cnpj: '12345678000190',
+  // 4. buscar_processos_por_documento (CNPJ)
+  await testTool('buscar_processos_por_documento', {
+    documento: '12345678000190',
     limite: 10
-  }, true, 'buscar_processos_por_cnpj');
+  }, true, 'buscar_processos_por_documento - CNPJ');
 }
 
 // ========================================
@@ -286,15 +286,15 @@ async function testModuloPartes(): Promise<void> {
     tipo: 'fisica'
   }, true, 'listar_clientes - pessoa física');
 
-  // 2. buscar_cliente_por_cpf
-  await testTool('buscar_cliente_por_cpf', {
-    cpf: '12345678901'
-  }, true, 'buscar_cliente_por_cpf');
+  // 2. buscar_cliente_por_documento (CPF)
+  await testTool('buscar_cliente_por_documento', {
+    documento: '12345678901'
+  }, true, 'buscar_cliente_por_documento - CPF');
 
-  // 3. buscar_cliente_por_cnpj
-  await testTool('buscar_cliente_por_cnpj', {
-    cnpj: '12345678000190'
-  }, true, 'buscar_cliente_por_cnpj');
+  // 3. buscar_cliente_por_documento (CNPJ)
+  await testTool('buscar_cliente_por_documento', {
+    documento: '12345678000190'
+  }, true, 'buscar_cliente_por_documento - CNPJ');
 
   // 4. listar_partes_contrarias
   await testTool('listar_partes_contrarias', {
@@ -331,11 +331,11 @@ async function testModuloContratos(): Promise<void> {
   // 2-3. Operações CUD - tools destrutivas, cobertas em testes de integração
   // (Não testadas aqui para evitar mutações no banco de dados)
   
-  // 4. buscar_contrato_por_cliente
-  await testTool('buscar_contrato_por_cliente', {
-    clienteId: 1,
+  // 4. buscar_contratos_por_documento
+  await testTool('buscar_contratos_por_documento', {
+    documento: '00000000000',
     limite: 10
-  }, true, 'buscar_contrato_por_cliente');
+  }, true, 'buscar_contratos_por_documento');
 }
 
 // ========================================
@@ -741,13 +741,9 @@ async function testAutenticacaoESeguranca(): Promise<void> {
     limite: -1 // Valor negativo inválido
   }, false, 'Validação: limite negativo deve falhar');
 
-  await testTool('buscar_processos_por_cpf', {
-    cpf: '123' // CPF curto demais
-  }, false, 'Validação: CPF inválido deve falhar');
-
-  await testTool('buscar_processos_por_cnpj', {
-    cnpj: '123' // CNPJ curto demais
-  }, false, 'Validação: CNPJ inválido deve falhar');
+  await testTool('buscar_processos_por_documento', {
+    documento: '123' // Documento curto demais
+  }, false, 'Validação: documento inválido deve falhar');
 
   await testTool('listar_processos', {
     limite: 1000 // Excede máximo permitido
@@ -801,8 +797,8 @@ async function testPerformanceELimites(): Promise<void> {
   }, true, 'Performance: múltiplos filtros');
 
   // Teste 3: Consultas vazias devem retornar gracefully
-  await testTool('buscar_processos_por_cpf', {
-    cpf: '00000000000' // CPF inexistente
+  await testTool('buscar_processos_por_documento', {
+    documento: '00000000000' // CPF inexistente
   }, true, 'Performance: resultado vazio deve ser válido');
 
   // Teste 4: Rate limiting (stress test)

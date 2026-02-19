@@ -9,7 +9,7 @@ import { Loader2, Save, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Separator } from "@/components/ui/separator";
+
 import { toast } from "sonner";
 import { actionAtualizarConfigChatwoot } from "../actions/integracoes-actions";
 import type { ChatwootConfig, Integracao } from "../domain";
@@ -145,8 +145,8 @@ export function ChatwootConfigForm({ integracao, onSuccess }: ChatwootConfigForm
       )}
 
       {/* API Configuration */}
-      <div className="space-y-4">
-        <h4 className="text-sm font-medium">Configuração da API</h4>
+      <fieldset className="grid gap-4 rounded-lg border p-4">
+        <legend className="-ml-1 px-1 text-sm font-medium">Configuração da API</legend>
 
         <div className="space-y-2">
           <Label htmlFor="chatwoot_api_url">URL da API</Label>
@@ -200,13 +200,13 @@ export function ChatwootConfigForm({ integracao, onSuccess }: ChatwootConfigForm
             {errors.default_inbox_id && <p className="text-sm text-destructive">{errors.default_inbox_id}</p>}
           </div>
         </div>
-      </div>
+      </fieldset>
 
-      <Separator />
+
 
       {/* Widget Configuration */}
-      <div className="space-y-4">
-        <h4 className="text-sm font-medium">Configuração do Widget (Chat no site)</h4>
+      <fieldset className="grid gap-4 rounded-lg border p-4">
+        <legend className="-ml-1 px-1 text-sm font-medium">Configuração do Widget (Chat no site)</legend>
 
         <div className="space-y-2">
           <Label htmlFor="chatwoot_widget_base_url">URL Base do Widget</Label>
@@ -236,7 +236,7 @@ export function ChatwootConfigForm({ integracao, onSuccess }: ChatwootConfigForm
             Token do canal Website no Chatwoot (Inboxes &gt; Website &gt; Configuration)
           </p>
         </div>
-      </div>
+      </fieldset>
 
       <div className="flex gap-2">
         <Button

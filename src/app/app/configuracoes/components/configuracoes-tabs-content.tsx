@@ -11,7 +11,7 @@
 
 import * as React from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { Database, Shield, Blocks, Bot, Palette, Sparkles } from 'lucide-react';
+import { Database, Shield, Blocks, Bot, Palette, Sparkles, RefreshCw, ArrowUpCircle, Tags } from 'lucide-react';
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
@@ -23,6 +23,7 @@ import { BlockedIpsContent } from '@/app/app/admin/security/blocked-ips/componen
 import { TwoFAuthIntegrationCard, ChatwootIntegrationCard, DyteIntegrationCard, EditorIAIntegrationCard } from '@/features/integracoes';
 import { PromptsIAContent } from '@/features/system-prompts';
 import { AparenciaContent } from './aparencia-content';
+import { SegmentosContent } from './segmentos-content';
 import type { MetricasDB } from '@/features/admin';
 import type { Integracao } from '@/features/integracoes';
 import type { SystemPrompt } from '@/features/system-prompts';
@@ -31,13 +32,13 @@ import type { SystemPrompt } from '@/features/system-prompts';
 // TIPOS
 // =============================================================================
 
-type ConfiguracoesTab = 'metricas' | 'seguranca' | 'integracoes' | 'aparencia' | 'prompts-ia';
+type ConfiguracoesTab = 'metricas' | 'seguranca' | 'integracoes' | 'aparencia' | 'prompts-ia' | 'segmentos';
 
 // =============================================================================
 // CONFIGURAÇÃO DAS TABS
 // =============================================================================
 
-const VALID_TABS = new Set<ConfiguracoesTab>(['metricas', 'seguranca', 'integracoes', 'aparencia', 'prompts-ia']);
+const VALID_TABS = new Set<ConfiguracoesTab>(['metricas', 'seguranca', 'integracoes', 'aparencia', 'prompts-ia', 'segmentos']);
 
 // =============================================================================
 // PROPS
@@ -91,11 +92,28 @@ export function ConfiguracoesTabsContent({
   );
 
   return (
-    <div className="flex flex-col min-h-0 space-y-6">
-      <h1 className="text-2xl font-semibold tracking-tight">Configurações</h1>
+    <div className="flex flex-col min-h-0 gap-4">
+      {/* Header: título + ações contextuais */}
+      <div className="flex items-center justify-between">
+        <h1 className="text-2xl font-semibold tracking-tight">Configurações</h1>
+        {activeTab === 'metricas' && (
+          <div className="flex items-center gap-2">
+            <Button variant="outline" size="sm" asChild>
+              <Link href="/app/admin/metricas-db/avaliar-upgrade">
+                <ArrowUpCircle className="mr-2 h-4 w-4" />
+                Avaliar Upgrade
+              </Link>
+            </Button>
+            <Button variant="outline" size="sm" onClick={() => router.refresh()}>
+              <RefreshCw className="mr-2 h-4 w-4" />
+              Atualizar
+            </Button>
+          </div>
+        )}
+      </div>
 
       <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
-        <TabsList className="grid w-full grid-cols-5 lg:w-250">
+        <TabsList className="w-full justify-start h-auto p-1 bg-muted/80">
           <TabsTrigger value="metricas">
             <Database className="mr-2 h-4 w-4" />
             Métricas
@@ -116,72 +134,69 @@ export function ConfiguracoesTabsContent({
             <Sparkles className="mr-2 h-4 w-4" />
             Prompts IA
           </TabsTrigger>
+          <TabsTrigger value="segmentos">
+            <Tags className="mr-2 h-4 w-4" />
+            Segmentos
+          </TabsTrigger>
         </TabsList>
-        <div className="mt-6">
-          <TabsContent value="metricas" className="space-y-4">
-            {metricas ? <MetricasDBContent metricas={metricas} /> : <div className="p-4 text-center text-muted-foreground">Carregando métricas...</div>}
-          </TabsContent>
-          <TabsContent value="seguranca" className="space-y-4">
-            <BlockedIpsContent />
-          </TabsContent>
-          <TabsContent value="integracoes" className="space-y-4">
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-              {/* Card 2FAuth */}
-              <TwoFAuthIntegrationCard integracao={integracao2FAuth} />
 
-              {/* Card Chatwoot */}
-              <ChatwootIntegrationCard integracao={integracaoChatwoot} />
+        <TabsContent value="metricas" className="space-y-4">
+          {metricas ? <MetricasDBContent metricas={metricas} /> : <div className="p-4 text-center text-muted-foreground">Carregando métricas...</div>}
+        </TabsContent>
+        <TabsContent value="seguranca" className="space-y-4">
+          <BlockedIpsContent />
+        </TabsContent>
+        <TabsContent value="integracoes" className="space-y-4">
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            <TwoFAuthIntegrationCard integracao={integracao2FAuth} />
+            <ChatwootIntegrationCard integracao={integracaoChatwoot} />
+            <DyteIntegrationCard integracao={integracaoDyte} />
+            <EditorIAIntegrationCard integracao={integracaoEditorIA} />
 
-              {/* Card Dyte */}
-              <DyteIntegrationCard integracao={integracaoDyte} />
+            <Card>
+              <CardHeader className="pb-3">
+                <Bot className="h-10 w-10 mb-2 text-primary" />
+                <CardTitle>Dify AI</CardTitle>
+                <CardDescription>Conecte seus agentes e workflows do Dify.</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-muted-foreground">
+                  Gerencie múltiplos aplicativos Dify, incluindo chatbots e workflows de automação.
+                </p>
+              </CardContent>
+              <CardFooter>
+                <Button variant="outline" className="w-full" asChild>
+                  <Link href="/app/configuracoes/dify">Gerenciar Apps</Link>
+                </Button>
+              </CardFooter>
+            </Card>
 
-              {/* Card Editor de Texto IA */}
-              <EditorIAIntegrationCard integracao={integracaoEditorIA} />
-
-              {/* Card Dify */}
-              <Card>
-                <CardHeader className="pb-3">
-                  <Bot className="h-10 w-10 mb-2 text-primary" />
-                  <CardTitle>Dify AI</CardTitle>
-                  <CardDescription>Conecte seus agentes e workflows do Dify.</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-sm text-muted-foreground">
-                    Gerencie múltiplos aplicativos Dify, incluindo chatbots e workflows de automação.
-                  </p>
-                </CardContent>
-                <CardFooter>
-                  <Button variant="outline" className="w-full" asChild>
-                    <Link href="/app/configuracoes/dify">Gerenciar Apps</Link>
-                  </Button>
-                </CardFooter>
-              </Card>
-
-              {/* Exemplo de Card Futuro (Placeholder) */}
-              <Card className="opacity-60 grayscale cursor-not-allowed">
-                <CardHeader className="pb-3">
-                  <Blocks className="h-10 w-10 mb-2" />
-                  <CardTitle>Zapier</CardTitle>
-                  <CardDescription>Em breve.</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-sm text-muted-foreground">
-                    Integração com milhares de apps via Zapier.
-                  </p>
-                </CardContent>
-                <CardFooter>
-                  <Button variant="outline" disabled className="w-full">Em Breve</Button>
-                </CardFooter>
-              </Card>
-            </div>
-          </TabsContent>
-          <TabsContent value="aparencia" className="space-y-4">
-            <AparenciaContent />
-          </TabsContent>
-          <TabsContent value="prompts-ia" className="space-y-4">
-            <PromptsIAContent systemPrompts={systemPrompts} />
-          </TabsContent>
-        </div>
+            <Card className="opacity-60 grayscale cursor-not-allowed">
+              <CardHeader className="pb-3">
+                <Blocks className="h-10 w-10 mb-2" />
+                <CardTitle>Zapier</CardTitle>
+                <CardDescription>Em breve.</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-muted-foreground">
+                  Integração com milhares de apps via Zapier.
+                </p>
+              </CardContent>
+              <CardFooter>
+                <Button variant="outline" disabled className="w-full">Em Breve</Button>
+              </CardFooter>
+            </Card>
+          </div>
+        </TabsContent>
+        <TabsContent value="aparencia" className="space-y-4">
+          <AparenciaContent />
+        </TabsContent>
+        <TabsContent value="prompts-ia" className="space-y-4">
+          <PromptsIAContent systemPrompts={systemPrompts} />
+        </TabsContent>
+        <TabsContent value="segmentos" className="space-y-4">
+          <SegmentosContent />
+        </TabsContent>
       </Tabs>
     </div>
   );

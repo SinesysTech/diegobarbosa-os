@@ -198,14 +198,14 @@ md += `
 ### 1. Buscar Processos de um Cliente
 
 \`\`\`typescript
-// 1. Buscar cliente por CPF
-const cliente = await executeMcpTool('buscar_cliente_por_cpf', {
-  cpf: '12345678901'
+// 1. Buscar cliente por documento (CPF ou CNPJ)
+const cliente = await executeMcpTool('buscar_cliente_por_documento', {
+  documento: '12345678901'
 });
 
 // 2. Buscar processos do cliente
-const processos = await executeMcpTool('buscar_processos_por_cpf', {
-  cpf: '12345678901',
+const processos = await executeMcpTool('buscar_processos_por_documento', {
+  documento: '12345678901',
   limite: 50
 });
 \`\`\`

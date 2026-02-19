@@ -255,7 +255,7 @@ export function SegmentosDialog({ open, onOpenChange }: SegmentosDialogProps) {
   return (
     <>
       <Dialog open={open} onOpenChange={onOpenChange}>
-        <DialogContent showCloseIcon={false} className="max-w-3xl max-h-[90vh] flex flex-col bg-background">
+        <DialogContent showCloseIcon={false} className="max-w-3xl max-h-[90vh] flex flex-col">
           <DialogHeader>
             <DialogTitle>Gerenciar Segmentos</DialogTitle>
             <DialogDescription>

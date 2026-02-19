@@ -15,7 +15,7 @@ type Args = {
   baseUrl: string;
   endpointPath: string;
   toolName: string;
-  cpf: string;
+  documento: string;
   apiKey?: string;
   timeoutMs: number;
 };
@@ -55,8 +55,8 @@ function parseArgs(argv: string[]): Args {
 
   const endpointRaw = get("endpoint") || "/api/mcp/stream";
   const endpointPath = normalizeEndpointPath(endpointRaw);
-  const toolName = get("tool") || "buscar_processos_por_cpf";
-  const cpf = get("cpf") || "15543028709";
+  const toolName = get("tool") || "buscar_processos_por_documento";
+  const documento = get("documento") || get("cpf") || "15543028709";
 
   const apiKey =
     get("apiKey") || process.env.MCP_DBOS_API_KEY || process.env.SERVICE_API_KEY;
@@ -67,7 +67,7 @@ function parseArgs(argv: string[]): Args {
     throw new Error(`timeoutMs inválido: ${timeoutMsRaw}`);
   }
 
-  return { baseUrl, endpointPath, toolName, cpf, apiKey, timeoutMs };
+  return { baseUrl, endpointPath, toolName, documento, apiKey, timeoutMs };
 }
 
 async function jsonRpcCall(
@@ -180,7 +180,7 @@ async function main() {
     method: "tools/call",
     params: {
       name: args.toolName,
-      arguments: { cpf: args.cpf },
+      arguments: { documento: args.documento },
     },
   };
 

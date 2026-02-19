@@ -73,7 +73,7 @@ Esta política documenta os critérios de exclusão e lista explicitamente as ac
 
 **Exemplos:**
 - `actionBuscarDocumento` - Requer ID específico (use `listar_documentos` com filtros)
-- `actionBuscarContrato` - Requer ID específico (use `listar_contratos` ou `buscar_contrato_por_cliente`)
+- `actionBuscarContrato` - Requer ID específico (use `listar_contratos` ou `buscar_contratos_por_documento`)
 - `actionBuscarLancamento` - Requer ID específico (use `listar_lancamentos` com filtros)
 - `actionBuscarFolhaPorPeriodo` - Muito específica (use `listar_folhas_pagamento`)
 
@@ -186,7 +186,7 @@ Esta política documenta os critérios de exclusão e lista explicitamente as ac
   - `actionDeleteFile` - Delete
 
 ### 📦 Contratos (5 actions)
-- ✅ **Registradas:** `listar_contratos`, `criar_contrato`, `atualizar_contrato`, `buscar_contrato_por_cliente`
+- ✅ **Registradas:** `listar_contratos`, `criar_contrato`, `atualizar_contrato`, `buscar_contratos_por_documento`
 - ❌ **Excluídas:**
   - `actionBuscarContrato` - ID específico, use filtros em `listar_contratos`
   - `actionListarSegmentos` - Segmentos são parte dos contratos

@@ -65,18 +65,15 @@
         ]
       },
       {
-        "name": "buscar_processos_por_cpf",
-        "description": "Busca todos os processos vinculados a um cliente por CPF",
+        "name": "buscar_processos_por_documento",
+        "description": "Busca todos os processos vinculados a um cliente por CPF ou CNPJ",
         "feature": "processos",
         "requiresAuth": true,
         "schema": {
-          "cpf": {
+          "documento": {
             "type": "string",
             "required": true,
-            "description": "CPF do cliente (apenas números)",
-            "constraints": {
-              "min": 11
-            }
+            "description": "CPF (11 dígitos) ou CNPJ (14 dígitos) do cliente"
           },
           "limite": {
             "type": "number",
@@ -90,36 +87,8 @@
           }
         },
         "examples": [
-          "// Buscar processos de um cliente por CPF\nawait executeMcpTool('buscar_processos_por_cpf', {\n  cpf: '12345678901',\n  limite: 50\n});"
-        ]
-      },
-      {
-        "name": "buscar_processos_por_cnpj",
-        "description": "Busca todos os processos vinculados a um cliente por CNPJ",
-        "feature": "processos",
-        "requiresAuth": true,
-        "schema": {
-          "cnpj": {
-            "type": "string",
-            "required": true,
-            "description": "CNPJ do cliente (apenas números)",
-            "constraints": {
-              "min": 14
-            }
-          },
-          "limite": {
-            "type": "number",
-            "required": false,
-            "default": 50,
-            "description": "Número máximo de processos",
-            "constraints": {
-              "min": 1,
-              "max": 100
-            }
-          }
-        },
-        "examples": [
-          "// Buscar processos de uma empresa por CNPJ\nawait executeMcpTool('buscar_processos_por_cnpj', {\n  cnpj: '12345678000190',\n  limite: 50\n});"
+          "// Buscar processos de um cliente por CPF\nawait executeMcpTool('buscar_processos_por_documento', {\n  documento: '12345678901',\n  limite: 50\n});",
+          "// Buscar processos de uma empresa por CNPJ\nawait executeMcpTool('buscar_processos_por_documento', {\n  documento: '12345678000190',\n  limite: 50\n});"
         ]
       },
       {
@@ -180,41 +149,20 @@
         ]
       },
       {
-        "name": "buscar_cliente_por_cpf",
-        "description": "Busca cliente por CPF com endereço e processos relacionados",
+        "name": "buscar_cliente_por_documento",
+        "description": "Busca cliente por CPF ou CNPJ com endereço e processos relacionados",
         "feature": "partes",
         "requiresAuth": true,
         "schema": {
-          "cpf": {
+          "documento": {
             "type": "string",
             "required": true,
-            "description": "CPF do cliente (apenas números)",
-            "constraints": {
-              "min": 11
-            }
+            "description": "CPF (11 dígitos) ou CNPJ (14 dígitos) do cliente"
           }
         },
         "examples": [
-          "// Buscar cliente por CPF\nawait executeMcpTool('buscar_cliente_por_cpf', {\n  cpf: '12345678901'\n});"
-        ]
-      },
-      {
-        "name": "buscar_cliente_por_cnpj",
-        "description": "Busca cliente por CNPJ com endereço e processos relacionados",
-        "feature": "partes",
-        "requiresAuth": true,
-        "schema": {
-          "cnpj": {
-            "type": "string",
-            "required": true,
-            "description": "CNPJ do cliente (apenas números)",
-            "constraints": {
-              "min": 14
-            }
-          }
-        },
-        "examples": [
-          "// Buscar cliente por CNPJ\nawait executeMcpTool('buscar_cliente_por_cnpj', {\n  cnpj: '12345678000190'\n});"
+          "// Buscar cliente por CPF\nawait executeMcpTool('buscar_cliente_por_documento', {\n  documento: '12345678901'\n});",
+          "// Buscar cliente por CNPJ\nawait executeMcpTool('buscar_cliente_por_documento', {\n  documento: '12345678000190'\n});"
         ]
       },
       {
@@ -443,15 +391,15 @@
         ]
       },
       {
-        "name": "buscar_contrato_por_cliente",
-        "description": "Busca contratos de um cliente específico",
+        "name": "buscar_contratos_por_documento",
+        "description": "Busca todos os contratos de um cliente pelo CPF (11 dígitos) ou CNPJ (14 dígitos)",
         "feature": "contratos",
         "requiresAuth": true,
         "schema": {
-          "cliente_id": {
-            "type": "number",
+          "documento": {
+            "type": "string",
             "required": true,
-            "description": "ID do cliente"
+            "description": "CPF (11 dígitos) ou CNPJ (14 dígitos) do cliente"
           },
           "limite": {
             "type": "number",
@@ -465,7 +413,7 @@
           }
         },
         "examples": [
-          "// Uso básico de buscar_contrato_por_cliente\nawait executeMcpTool('buscar_contrato_por_cliente', {\n  // parâmetros adequados\n});"
+          "// Buscar contratos por CPF\nawait executeMcpTool('buscar_contratos_por_documento', {\n  documento: '12345678901'\n});"
         ]
       }
     ],
@@ -2533,18 +2481,15 @@
       ]
     },
     {
-      "name": "buscar_processos_por_cpf",
-      "description": "Busca todos os processos vinculados a um cliente por CPF",
+      "name": "buscar_processos_por_documento",
+      "description": "Busca todos os processos vinculados a um cliente por CPF ou CNPJ",
       "feature": "processos",
       "requiresAuth": true,
       "schema": {
-        "cpf": {
+        "documento": {
           "type": "string",
           "required": true,
-          "description": "CPF do cliente (apenas números)",
-          "constraints": {
-            "min": 11
-          }
+          "description": "CPF (11 dígitos) ou CNPJ (14 dígitos) do cliente"
         },
         "limite": {
           "type": "number",
@@ -2558,36 +2503,8 @@
         }
       },
       "examples": [
-        "// Buscar processos de um cliente por CPF\nawait executeMcpTool('buscar_processos_por_cpf', {\n  cpf: '12345678901',\n  limite: 50\n});"
-      ]
-    },
-    {
-      "name": "buscar_processos_por_cnpj",
-      "description": "Busca todos os processos vinculados a um cliente por CNPJ",
-      "feature": "processos",
-      "requiresAuth": true,
-      "schema": {
-        "cnpj": {
-          "type": "string",
-          "required": true,
-          "description": "CNPJ do cliente (apenas números)",
-          "constraints": {
-            "min": 14
-          }
-        },
-        "limite": {
-          "type": "number",
-          "required": false,
-          "default": 50,
-          "description": "Número máximo de processos",
-          "constraints": {
-            "min": 1,
-            "max": 100
-          }
-        }
-      },
-      "examples": [
-        "// Buscar processos de uma empresa por CNPJ\nawait executeMcpTool('buscar_processos_por_cnpj', {\n  cnpj: '12345678000190',\n  limite: 50\n});"
+        "// Buscar processos de um cliente por CPF\nawait executeMcpTool('buscar_processos_por_documento', {\n  documento: '12345678901',\n  limite: 50\n});",
+        "// Buscar processos de uma empresa por CNPJ\nawait executeMcpTool('buscar_processos_por_documento', {\n  documento: '12345678000190',\n  limite: 50\n});"
       ]
     },
     {
@@ -2646,41 +2563,20 @@
       ]
     },
     {
-      "name": "buscar_cliente_por_cpf",
-      "description": "Busca cliente por CPF com endereço e processos relacionados",
+      "name": "buscar_cliente_por_documento",
+      "description": "Busca cliente por CPF ou CNPJ com endereço e processos relacionados",
       "feature": "partes",
       "requiresAuth": true,
       "schema": {
-        "cpf": {
+        "documento": {
           "type": "string",
           "required": true,
-          "description": "CPF do cliente (apenas números)",
-          "constraints": {
-            "min": 11
-          }
+          "description": "CPF (11 dígitos) ou CNPJ (14 dígitos) do cliente"
         }
       },
       "examples": [
-        "// Buscar cliente por CPF\nawait executeMcpTool('buscar_cliente_por_cpf', {\n  cpf: '12345678901'\n});"
-      ]
-    },
-    {
-      "name": "buscar_cliente_por_cnpj",
-      "description": "Busca cliente por CNPJ com endereço e processos relacionados",
-      "feature": "partes",
-      "requiresAuth": true,
-      "schema": {
-        "cnpj": {
-          "type": "string",
-          "required": true,
-          "description": "CNPJ do cliente (apenas números)",
-          "constraints": {
-            "min": 14
-          }
-        }
-      },
-      "examples": [
-        "// Buscar cliente por CNPJ\nawait executeMcpTool('buscar_cliente_por_cnpj', {\n  cnpj: '12345678000190'\n});"
+        "// Buscar cliente por CPF\nawait executeMcpTool('buscar_cliente_por_documento', {\n  documento: '12345678901'\n});",
+        "// Buscar cliente por CNPJ\nawait executeMcpTool('buscar_cliente_por_documento', {\n  documento: '12345678000190'\n});"
       ]
     },
     {
@@ -2907,15 +2803,15 @@
       ]
     },
     {
-      "name": "buscar_contrato_por_cliente",
-      "description": "Busca contratos de um cliente específico",
+      "name": "buscar_contratos_por_documento",
+      "description": "Busca todos os contratos de um cliente pelo CPF (11 dígitos) ou CNPJ (14 dígitos)",
       "feature": "contratos",
       "requiresAuth": true,
       "schema": {
-        "cliente_id": {
-          "type": "number",
+        "documento": {
+          "type": "string",
           "required": true,
-          "description": "ID do cliente"
+          "description": "CPF (11 dígitos) ou CNPJ (14 dígitos) do cliente"
         },
         "limite": {
           "type": "number",
@@ -2929,7 +2825,7 @@
         }
       },
       "examples": [
-        "// Uso básico de buscar_contrato_por_cliente\nawait executeMcpTool('buscar_contrato_por_cliente', {\n  // parâmetros adequados\n});"
+        "// Buscar contratos por CPF\nawait executeMcpTool('buscar_contratos_por_documento', {\n  documento: '12345678901'\n});"
       ]
     },
     {

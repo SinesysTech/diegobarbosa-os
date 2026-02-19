@@ -29,17 +29,15 @@ await executeMcpTool('listar_processos', {
   limite: 20
 });`
   ],
-  buscar_processos_por_cpf: [
+  buscar_processos_por_documento: [
     `// Buscar processos de um cliente por CPF
-await executeMcpTool('buscar_processos_por_cpf', {
-  cpf: '12345678901',
+await executeMcpTool('buscar_processos_por_documento', {
+  documento: '12345678901',
   limite: 50
-});`
-  ],
-  buscar_processos_por_cnpj: [
+});`,
     `// Buscar processos de uma empresa por CNPJ
-await executeMcpTool('buscar_processos_por_cnpj', {
-  cnpj: '12345678000190',
+await executeMcpTool('buscar_processos_por_documento', {
+  documento: '12345678000190',
   limite: 50
 });`
   ],
@@ -62,16 +60,14 @@ await executeMcpTool('listar_clientes', {
   tipo: 'fisica'
 });`
   ],
-  buscar_cliente_por_cpf: [
+  buscar_cliente_por_documento: [
     `// Buscar cliente por CPF
-await executeMcpTool('buscar_cliente_por_cpf', {
-  cpf: '12345678901'
-});`
-  ],
-  buscar_cliente_por_cnpj: [
+await executeMcpTool('buscar_cliente_por_documento', {
+  documento: '12345678901'
+});`,
     `// Buscar cliente por CNPJ
-await executeMcpTool('buscar_cliente_por_cnpj', {
-  cnpj: '12345678000190'
+await executeMcpTool('buscar_cliente_por_documento', {
+  documento: '12345678000190'
 });`
   ],
 

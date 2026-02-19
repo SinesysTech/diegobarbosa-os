@@ -2,10 +2,10 @@
  * Registro de Ferramentas MCP - Contratos
  *
  * Tools disponíveis:
- * - listar_contratos: Lista contratos com filtros
+ * - listar_contratos: Lista contratos com filtros (por documento CPF/CNPJ do cliente)
  * - criar_contrato: Cria novo contrato
  * - atualizar_contrato: Atualiza contrato existente
- * - buscar_contrato_por_cliente: Busca contratos de um cliente
+ * - buscar_contratos_por_documento: Busca contratos de um cliente por CPF ou CNPJ
  */
 
 import { z } from 'zod';
@@ -13,6 +13,31 @@ import { registerMcpTool } from '../server';
 import { actionResultToMcp } from '../utils';
 import { errorResult } from '../types';
 import type { ActionResult } from '@/lib/safe-action';
+
+/**
+ * Resolve um documento (CPF ou CNPJ) para o ID do cliente.
+ * Retorna o ID numérico ou null se não encontrado.
+ */
+async function resolverClienteIdPorDocumento(documento: string): Promise<{ clienteId: number | null; erro: string | null }> {
+  const { buscarClientePorCPF, buscarClientePorCNPJ } = await import('@/features/partes/server');
+  const docLimpo = documento.replace(/\D/g, '');
+
+  if (docLimpo.length === 11) {
+    const result = await buscarClientePorCPF(docLimpo);
+    if (!result.success) return { clienteId: null, erro: result.error.message };
+    if (!result.data) return { clienteId: null, erro: `Cliente não encontrado com CPF: ${documento}` };
+    return { clienteId: result.data.id, erro: null };
+  }
+
+  if (docLimpo.length === 14) {
+    const result = await buscarClientePorCNPJ(docLimpo);
+    if (!result.success) return { clienteId: null, erro: result.error.message };
+    if (!result.data) return { clienteId: null, erro: `Cliente não encontrado com CNPJ: ${documento}` };
+    return { clienteId: result.data.id, erro: null };
+  }
+
+  return { clienteId: null, erro: `Documento inválido: deve ser CPF (11 dígitos) ou CNPJ (14 dígitos). Recebido: ${docLimpo.length} dígitos` };
+}
 
 /**
  * Registra ferramentas MCP do módulo Contratos
@@ -29,11 +54,11 @@ export async function registerContratosTools(): Promise<void> {
   } = await import('@/features/contratos');
 
   /**
-   * Lista contratos do sistema com filtros por tipo, status, cliente
+   * Lista contratos do sistema com filtros por tipo, status e documento do cliente (CPF ou CNPJ)
    */
   registerMcpTool({
     name: 'listar_contratos',
-    description: 'Lista contratos do sistema com filtros por tipo, status, cliente',
+    description: 'Lista contratos do sistema com filtros por tipo, status e documento do cliente (CPF ou CNPJ). Para filtrar por cliente, informe o CPF (11 dígitos) ou CNPJ (14 dígitos).',
     feature: 'contratos',
     requiresAuth: true,
     schema: z.object({
@@ -41,11 +66,26 @@ export async function registerContratosTools(): Promise<void> {
       offset: z.number().min(0).default(0).describe('Offset para paginação'),
       tipo: tipoContratoSchema.optional().describe('Filtrar por tipo de contrato'),
       status: statusContratoSchema.optional().describe('Filtrar por status'),
-      clienteId: z.number().optional().describe('Filtrar por ID do cliente'),
+      documento: z.string().optional().describe('CPF (11 dígitos) ou CNPJ (14 dígitos) do cliente para filtrar contratos'),
     }),
     handler: async (args) => {
       try {
-        const result = await actionListarContratos(args);
+        const { documento, ...rest } = args as {
+          documento?: string;
+          limite: number;
+          offset: number;
+          tipo?: string;
+          status?: string;
+        };
+
+        let clienteId: number | undefined;
+        if (documento) {
+          const resolved = await resolverClienteIdPorDocumento(documento);
+          if (resolved.erro) return errorResult(resolved.erro);
+          clienteId = resolved.clienteId!;
+        }
+
+        const result = await actionListarContratos({ ...rest, clienteId });
         return actionResultToMcp(result as ActionResult<unknown>);
       } catch (error) {
         return errorResult(error instanceof Error ? error.message : 'Erro ao listar contratos');
@@ -137,27 +177,31 @@ export async function registerContratosTools(): Promise<void> {
   });
 
   /**
-   * Busca contratos de um cliente específico
+   * Busca contratos de um cliente pelo CPF ou CNPJ
    */
   registerMcpTool({
-    name: 'buscar_contrato_por_cliente',
-    description: 'Busca contratos de um cliente específico',
+    name: 'buscar_contratos_por_documento',
+    description: 'Busca todos os contratos de um cliente pelo CPF (11 dígitos) ou CNPJ (14 dígitos). Aceita documento com ou sem formatação (pontos, traços, barras).',
     feature: 'contratos',
     requiresAuth: true,
     schema: z.object({
-      cliente_id: z.number().positive().describe('ID do cliente'),
+      documento: z.string().describe('CPF (11 dígitos) ou CNPJ (14 dígitos) do cliente'),
       limite: z.number().min(1).max(100).default(20).describe('Número máximo de contratos'),
       status: statusContratoSchema.optional().describe('Filtrar por status'),
     }),
     handler: async (args) => {
       try {
-        const { cliente_id, limite, status } = args as {
-          cliente_id: number;
+        const { documento, limite, status } = args as {
+          documento: string;
           limite: number;
           status?: 'em_contratacao' | 'contratado' | 'distribuido' | 'desistencia'
         };
+
+        const resolved = await resolverClienteIdPorDocumento(documento);
+        if (resolved.erro) return errorResult(resolved.erro);
+
         const result = await actionListarContratos({
-          clienteId: cliente_id,
+          clienteId: resolved.clienteId!,
           limite,
           status,
         });

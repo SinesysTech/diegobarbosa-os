@@ -11,14 +11,12 @@ import * as path from 'path';
 const toolExamples: Record<string, string[]> = {
   // PROCESSOS
   listar_processos: [`await executeMcpTool('listar_processos', { limite: 10, trt: 'TRT15', status: 'ativo' });`],
-  buscar_processos_por_cpf: [`await executeMcpTool('buscar_processos_por_cpf', { cpf: '12345678901', limite: 50 });`],
-  buscar_processos_por_cnpj: [`await executeMcpTool('buscar_processos_por_cnpj', { cnpj: '12345678000190' });`],
+  buscar_processos_por_documento: [`await executeMcpTool('buscar_processos_por_documento', { documento: '12345678901', limite: 50 });`],
   buscar_processo_por_numero: [`await executeMcpTool('buscar_processo_por_numero', { numero_processo: '0001234-56.2023.5.15.0001' });`],
 
   // PARTES
   listar_clientes: [`await executeMcpTool('listar_clientes', { limite: 20 });`],
-  buscar_cliente_por_cpf: [`await executeMcpTool('buscar_cliente_por_cpf', { cpf: '12345678901' });`],
-  buscar_cliente_por_cnpj: [`await executeMcpTool('buscar_cliente_por_cnpj', { cnpj: '12345678000190' });`],
+  buscar_cliente_por_documento: [`await executeMcpTool('buscar_cliente_por_documento', { documento: '12345678901' });`],
   listar_partes_contrarias: [`await executeMcpTool('listar_partes_contrarias', { limite: 10 });`],
   listar_terceiros: [`await executeMcpTool('listar_terceiros', { limite: 10 });`],
   listar_representantes: [`await executeMcpTool('listar_representantes', { limite: 10 });`],
@@ -27,7 +25,7 @@ const toolExamples: Record<string, string[]> = {
   listar_contratos: [`await executeMcpTool('listar_contratos', { limite: 10, status: 'ativo' });`],
   criar_contrato: [`await executeMcpTool('criar_contrato', { cliente_id: 1, tipo: 'honorarios', valor: 5000 });`],
   atualizar_contrato: [`await executeMcpTool('atualizar_contrato', { contrato_id: 1, status: 'ativo' });`],
-  buscar_contrato_por_cliente: [`await executeMcpTool('buscar_contrato_por_cliente', { cliente_id: 1 });`],
+  buscar_contratos_por_documento: [`await executeMcpTool('buscar_contratos_por_documento', { documento: '12345678901' });`],
 
   // FINANCEIRO - Plano de Contas
   listar_plano_contas: [`await executeMcpTool('listar_plano_contas', {});`],

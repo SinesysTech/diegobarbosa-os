@@ -89,9 +89,9 @@ await executeMcpTool('listar_processos', {
 
 ---
 
-#### `buscar_processos_por_cpf`
+#### `buscar_processos_por_documento`
 
-Busca todos os processos vinculados a um cliente por CPF
+Busca todos os processos vinculados a um cliente por CPF (11 dígitos) ou CNPJ (14 dígitos)
 
 **🔒 Requer autenticação**
 
@@ -99,59 +99,42 @@ Busca todos os processos vinculados a um cliente por CPF
 
 | Nome | Tipo | Obrigatório | Padrão | Descrição |
 |------|------|-------------|---------|----------|
-| `cpf` | `string (min: 11)` | ✅ | - | CPF do cliente (apenas números) |
+| `documento` | `string` | ✅ | - | CPF (11 dígitos) ou CNPJ (14 dígitos) do cliente. Aceita documentos formatados (com pontos, traços e barras) |
 | `limite` | `number (min: 1, max: 100)` | ❌ | `50` | Número máximo de processos |
 
 **Exemplos:**
 
 ```typescript
 // Buscar processos de um cliente por CPF
-await executeMcpTool('buscar_processos_por_cpf', {
-  cpf: '12345678901',
+await executeMcpTool('buscar_processos_por_documento', {
+  documento: '12345678901',
   limite: 50
 });
 ```
-
-**Casos de erro:**
-
-- **401 Unauthorized:** Token de autenticação inválido ou ausente
-- **400 Bad Request:** `cpf` é obrigatório
-- **400 Bad Request:** `cpf` deve ter no mínimo 11 caracteres
-- **400 Bad Request:** `limite` deve ter no mínimo 1 
-- **400 Bad Request:** `limite` deve ter no máximo 100 
-
----
-
-#### `buscar_processos_por_cnpj`
-
-Busca todos os processos vinculados a um cliente por CNPJ
-
-**🔒 Requer autenticação**
-
-**Parâmetros:**
-
-| Nome | Tipo | Obrigatório | Padrão | Descrição |
-|------|------|-------------|---------|----------|
-| `cnpj` | `string (min: 14)` | ✅ | - | CNPJ do cliente (apenas números) |
-| `limite` | `number (min: 1, max: 100)` | ❌ | `50` | Número máximo de processos |
-
-**Exemplos:**
 
 ```typescript
 // Buscar processos de uma empresa por CNPJ
-await executeMcpTool('buscar_processos_por_cnpj', {
-  cnpj: '12345678000190',
+await executeMcpTool('buscar_processos_por_documento', {
+  documento: '12345678000190',
   limite: 50
+});
+```
+
+```typescript
+// Buscar processos com documento formatado
+await executeMcpTool('buscar_processos_por_documento', {
+  documento: '123.456.789-01',
+  limite: 20
 });
 ```
 
 **Casos de erro:**
 
 - **401 Unauthorized:** Token de autenticação inválido ou ausente
-- **400 Bad Request:** `cnpj` é obrigatório
-- **400 Bad Request:** `cnpj` deve ter no mínimo 14 caracteres
-- **400 Bad Request:** `limite` deve ter no mínimo 1 
-- **400 Bad Request:** `limite` deve ter no máximo 100 
+- **400 Bad Request:** `documento` é obrigatório
+- **400 Bad Request:** `documento` deve ser um CPF (11 dígitos) ou CNPJ (14 dígitos) válido
+- **400 Bad Request:** `limite` deve ter no mínimo 1
+- **400 Bad Request:** `limite` deve ter no máximo 100
 
 ---
 
@@ -230,9 +213,9 @@ await executeMcpTool('listar_clientes', {
 
 ---
 
-#### `buscar_cliente_por_cpf`
+#### `buscar_cliente_por_documento`
 
-Busca cliente por CPF com endereço e processos relacionados
+Busca cliente por CPF (11 dígitos) ou CNPJ (14 dígitos) com endereço e processos relacionados
 
 **🔒 Requer autenticação**
 
@@ -240,51 +223,36 @@ Busca cliente por CPF com endereço e processos relacionados
 
 | Nome | Tipo | Obrigatório | Padrão | Descrição |
 |------|------|-------------|---------|----------|
-| `cpf` | `string (min: 11)` | ✅ | - | CPF do cliente (apenas números) |
+| `documento` | `string` | ✅ | - | CPF (11 dígitos) ou CNPJ (14 dígitos) do cliente. Aceita documentos formatados (com pontos, traços e barras) |
 
 **Exemplos:**
 
 ```typescript
 // Buscar cliente por CPF
-await executeMcpTool('buscar_cliente_por_cpf', {
-  cpf: '12345678901'
+await executeMcpTool('buscar_cliente_por_documento', {
+  documento: '12345678901'
 });
 ```
-
-**Casos de erro:**
-
-- **401 Unauthorized:** Token de autenticação inválido ou ausente
-- **400 Bad Request:** `cpf` é obrigatório
-- **400 Bad Request:** `cpf` deve ter no mínimo 11 caracteres
-
----
-
-#### `buscar_cliente_por_cnpj`
-
-Busca cliente por CNPJ com endereço e processos relacionados
-
-**🔒 Requer autenticação**
-
-**Parâmetros:**
-
-| Nome | Tipo | Obrigatório | Padrão | Descrição |
-|------|------|-------------|---------|----------|
-| `cnpj` | `string (min: 14)` | ✅ | - | CNPJ do cliente (apenas números) |
-
-**Exemplos:**
 
 ```typescript
 // Buscar cliente por CNPJ
-await executeMcpTool('buscar_cliente_por_cnpj', {
-  cnpj: '12345678000190'
+await executeMcpTool('buscar_cliente_por_documento', {
+  documento: '12345678000190'
+});
+```
+
+```typescript
+// Buscar cliente com documento formatado
+await executeMcpTool('buscar_cliente_por_documento', {
+  documento: '12.345.678/0001-90'
 });
 ```
 
 **Casos de erro:**
 
 - **401 Unauthorized:** Token de autenticação inválido ou ausente
-- **400 Bad Request:** `cnpj` é obrigatório
-- **400 Bad Request:** `cnpj` deve ter no mínimo 14 caracteres
+- **400 Bad Request:** `documento` é obrigatório
+- **400 Bad Request:** `documento` deve ser um CPF (11 dígitos) ou CNPJ (14 dígitos) válido
 
 ---
 
@@ -499,9 +467,9 @@ await executeMcpTool('atualizar_contrato', {
 
 ---
 
-#### `buscar_contrato_por_cliente`
+#### `buscar_contratos_por_documento`
 
-Busca contratos de um cliente específico
+Busca todos os contratos de um cliente pelo CPF (11 dígitos) ou CNPJ (14 dígitos). Aceita documento com ou sem formatação.
 
 **🔒 Requer autenticação**
 
@@ -509,22 +477,29 @@ Busca contratos de um cliente específico
 
 | Nome | Tipo | Obrigatório | Padrão | Descrição |
 |------|------|-------------|---------|----------|
-| `cliente_id` | `number` | ✅ | - | ID do cliente |
+| `documento` | `string` | ✅ | - | CPF (11 dígitos) ou CNPJ (14 dígitos) do cliente |
 | `limite` | `number (min: 1, max: 100)` | ✅ | `20` | Número máximo de contratos |
+| `status` | `string` | ❌ | - | Filtrar por status do contrato |
 
 **Exemplos:**
 
 ```typescript
-// Uso básico de buscar_contrato_por_cliente
-await executeMcpTool('buscar_contrato_por_cliente', {
-  // parâmetros adequados
+// Buscar contratos por CPF
+await executeMcpTool('buscar_contratos_por_documento', {
+  documento: '12345678901'
+});
+
+// Buscar contratos por CNPJ
+await executeMcpTool('buscar_contratos_por_documento', {
+  documento: '12345678000199'
 });
 ```
 
 **Casos de erro:**
 
 - **401 Unauthorized:** Token de autenticação inválido ou ausente
-- **400 Bad Request:** `cliente_id` é obrigatório
+- **400 Bad Request:** `documento` é obrigatório
+- **404 Not Found:** Cliente não encontrado com o CPF/CNPJ informado
 - **400 Bad Request:** `limite` é obrigatório
 - **400 Bad Request:** `limite` deve ter no mínimo 1 
 - **400 Bad Request:** `limite` deve ter no máximo 100 
@@ -3567,9 +3542,9 @@ Headers de resposta:
 | Tool | Módulo | Auth | Uso Comum |
 |------|--------|------|-----------|
 | `listar_processos` | Processos | 🔒 | Lista processos do sistema com suporte a filtros (status, TRT, grau, advogado, período, busca textual) |
-| `buscar_processos_por_cpf` | Processos | 🔒 | Busca todos os processos vinculados a um cliente por CPF |
+| `buscar_processos_por_documento` | Processos | 🔒 | Busca todos os processos vinculados a um cliente por CPF (11 dígitos) ou CNPJ (14 dígitos) |
 | `listar_clientes` | Partes (Clientes, Contrárias, Terceiros, Representantes) | 🔒 | Lista clientes/partes do sistema com filtros (nome, CPF/CNPJ, tipo) |
-| `buscar_cliente_por_cpf` | Partes (Clientes, Contrárias, Terceiros, Representantes) | 🔒 | Busca cliente por CPF com endereço e processos relacionados |
+| `buscar_cliente_por_documento` | Partes (Clientes, Contrárias, Terceiros, Representantes) | 🔒 | Busca cliente por CPF (11 dígitos) ou CNPJ (14 dígitos) com endereço e processos relacionados |
 | `listar_contratos` | Contratos | 🔒 | Lista contratos do sistema com filtros por tipo, status, cliente |
 | `criar_contrato` | Contratos | 🔒 | Cria novo contrato no sistema |
 | `listar_plano_contas` | Financeiro | 🔒 | Lista plano de contas do sistema com hierarquia |
@@ -3634,14 +3609,14 @@ Headers de resposta:
 ### 1. Buscar Processos de um Cliente
 
 ```typescript
-// 1. Buscar cliente por CPF
-const cliente = await executeMcpTool('buscar_cliente_por_cpf', {
-  cpf: '12345678901'
+// 1. Buscar cliente por CPF ou CNPJ
+const cliente = await executeMcpTool('buscar_cliente_por_documento', {
+  documento: '12345678901' // CPF (11 dígitos) ou CNPJ (14 dígitos)
 });
 
 // 2. Buscar processos do cliente
-const processos = await executeMcpTool('buscar_processos_por_cpf', {
-  cpf: '12345678901',
+const processos = await executeMcpTool('buscar_processos_por_documento', {
+  documento: '12345678901',
   limite: 50
 });
 ```

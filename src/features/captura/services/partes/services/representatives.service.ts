@@ -116,15 +116,7 @@ async function processarRepresentante(
   const cpf = String(rep.numeroDocumento);
   const cpfNormalizado = normalizarDocumento(cpf);
 
-  // Buscar representante existente por CPF
-  const representanteExistente = await buscarRepresentantePorCPF(cpfNormalizado);
-
-  if (representanteExistente) {
-    // UPDATE: representante já existe
-    return representanteExistente.id;
-  }
-
-  // INSERT: novo representante
+  // Sempre faz upsert para atualizar dados (telefone, email, etc.) em representantes existentes
   const camposExtras = extrairCamposRepresentantePJE(rep);
 
   const params = {

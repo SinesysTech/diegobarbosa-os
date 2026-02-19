@@ -102,8 +102,8 @@ export function NovaObrigacaoDialog({ open, onOpenChange, onSuccess, dadosInicia
                 <Select value={trt} onValueChange={setTrt}>
                   <SelectTrigger><SelectValue placeholder="Selecione" /></SelectTrigger>
                   <SelectContent>
-                    {Array.from({length: 24}).map((_, i) => (
-                      <SelectItem key={`TRT${i+1}`} value={`TRT${i+1}`}>TRT{i+1}</SelectItem>
+                    {Array.from({ length: 24 }).map((_, i) => (
+                      <SelectItem key={`TRT${i + 1}`} value={`TRT${i + 1}`}>TRT{i + 1}</SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
@@ -149,7 +149,7 @@ export function NovaObrigacaoDialog({ open, onOpenChange, onSuccess, dadosInicia
         )}
 
         {selectedProcessoId ? (
-          <div className="rounded-lg border bg-background p-4 md:p-5">
+          <div className="rounded-lg border bg-card p-4 md:p-5">
             <AcordoForm
               processoId={selectedProcessoId}
               onSuccess={() => { onSuccess(); handleClose(); }}

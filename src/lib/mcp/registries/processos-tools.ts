@@ -3,8 +3,7 @@
  *
  * Tools disponíveis:
  * - listar_processos: Lista com filtros (TRT, status, grau, advogado)
- * - buscar_processos_por_cpf: Busca por CPF do cliente
- * - buscar_processos_por_cnpj: Busca por CNPJ do cliente
+ * - buscar_processos_por_documento: Busca por CPF ou CNPJ do cliente
  * - buscar_processo_por_numero: Busca por número processual (CNJ)
  *
  * IMPORTANTE: As ferramentas MCP chamam os SERVICES diretamente,
@@ -67,22 +66,30 @@ export async function registerProcessosTools(): Promise<void> {
   });
 
   /**
-   * Busca todos os processos vinculados a um cliente por CPF
+   * Busca todos os processos vinculados a um cliente por CPF ou CNPJ
    */
   registerMcpTool({
-    name: 'buscar_processos_por_cpf',
-    description: 'Busca todos os processos vinculados a um cliente por CPF',
+    name: 'buscar_processos_por_documento',
+    description: 'Busca todos os processos vinculados a um cliente pelo CPF (11 dígitos) ou CNPJ (14 dígitos). Retorna os processos com timeline de movimentações. Aceita documento com ou sem formatação.',
     feature: 'processos',
     requiresAuth: true,
     schema: z.object({
-      cpf: z.string().min(11).describe('CPF do cliente (apenas números)'),
+      documento: z.string().describe('CPF (11 dígitos) ou CNPJ (14 dígitos) do cliente'),
       limite: z.number().min(1).max(100).default(50).optional().describe('Número máximo de processos'),
     }),
     handler: async (args) => {
       try {
-        const { cpf, limite } = args as { cpf: string; limite?: number };
+        const { documento, limite } = args as { documento: string; limite?: number };
+        const docLimpo = documento.replace(/\D/g, '');
 
-        const result = await buscarProcessosPorClienteCPF(cpf, limite);
+        let result;
+        if (docLimpo.length === 11) {
+          result = await buscarProcessosPorClienteCPF(docLimpo, limite);
+        } else if (docLimpo.length === 14) {
+          result = await buscarProcessosPorClienteCNPJ(docLimpo, limite);
+        } else {
+          return errorResult(`Documento inválido: deve ser CPF (11 dígitos) ou CNPJ (14 dígitos). Recebido: ${docLimpo.length} dígitos`);
+        }
 
         if (!result.success) {
           return errorResult(result.error.message);
@@ -100,56 +107,12 @@ export async function registerProcessosTools(): Promise<void> {
 
         return jsonResult({
           message: `${enriquecidos.length} processo(s) encontrado(s)`,
-          cpf,
+          documento,
           total: enriquecidos.length,
           processos: enriquecidos,
         });
       } catch (error) {
-        return errorResult(error instanceof Error ? error.message : 'Erro ao buscar processos por CPF');
-      }
-    },
-  });
-
-  /**
-   * Busca todos os processos vinculados a um cliente por CNPJ
-   */
-  registerMcpTool({
-    name: 'buscar_processos_por_cnpj',
-    description: 'Busca todos os processos vinculados a um cliente por CNPJ',
-    feature: 'processos',
-    requiresAuth: true,
-    schema: z.object({
-      cnpj: z.string().min(14).describe('CNPJ do cliente (apenas números)'),
-      limite: z.number().min(1).max(100).default(50).optional().describe('Número máximo de processos'),
-    }),
-    handler: async (args) => {
-      try {
-        const { cnpj, limite } = args as { cnpj: string; limite?: number };
-
-        const result = await buscarProcessosPorClienteCNPJ(cnpj, limite);
-
-        if (!result.success) {
-          return errorResult(result.error.message);
-        }
-
-        const processos = result.data ?? [];
-        const enriquecidos = await Promise.all(
-          processos.map(async (p) => {
-            if (!p?.id) return { processo: p, timeline: [] };
-            const timelineResult = await buscarTimeline(p.id);
-            const timeline = timelineResult?.success ? timelineResult.data : [];
-            return { processo: p, timeline };
-          })
-        );
-
-        return jsonResult({
-          message: `${enriquecidos.length} processo(s) encontrado(s)`,
-          cnpj,
-          total: enriquecidos.length,
-          processos: enriquecidos,
-        });
-      } catch (error) {
-        return errorResult(error instanceof Error ? error.message : 'Erro ao buscar processos por CNPJ');
+        return errorResult(error instanceof Error ? error.message : 'Erro ao buscar processos por documento');
       }
     },
   });

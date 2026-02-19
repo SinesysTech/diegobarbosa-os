@@ -234,17 +234,24 @@ export async function actionDeletarSegmento(id: number): Promise<SegmentoActionR
   try {
     const db = createDbClient();
 
-    // Verificar se há contratos usando este segmento
-    const { data: contratosUsando } = await db
-      .from('contratos')
-      .select('id')
-      .eq('segmento_id', id)
-      .limit(1);
+    // Verificar todas as tabelas que referenciam segmentos
+    const [contratosResult, formulariosResult, assinaturasResult, pecasResult] = await Promise.all([
+      db.from('contratos').select('id').eq('segmento_id', id).limit(1),
+      db.from('assinatura_digital_formularios').select('id').eq('segmento_id', id).limit(1),
+      db.from('assinatura_digital_assinaturas').select('id').eq('segmento_id', id).limit(1),
+      db.from('pecas_modelos').select('id').eq('segmento_id', id).limit(1),
+    ]);
 
-    if (contratosUsando && contratosUsando.length > 0) {
+    const usadoPor: string[] = [];
+    if (contratosResult.data && contratosResult.data.length > 0) usadoPor.push('contratos');
+    if (formulariosResult.data && formulariosResult.data.length > 0) usadoPor.push('formulários de assinatura digital');
+    if (assinaturasResult.data && assinaturasResult.data.length > 0) usadoPor.push('assinaturas digitais');
+    if (pecasResult.data && pecasResult.data.length > 0) usadoPor.push('modelos de peças jurídicas');
+
+    if (usadoPor.length > 0) {
       return {
         success: false,
-        error: 'Não é possível deletar: existem contratos usando este segmento',
+        error: `Não é possível deletar: este segmento está sendo usado por ${usadoPor.join(', ')}`,
       };
     }
 

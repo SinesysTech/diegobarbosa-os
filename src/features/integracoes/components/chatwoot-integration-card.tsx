@@ -63,7 +63,7 @@ export function ChatwootIntegrationCard({ integracao }: ChatwootIntegrationCardP
             Configurar
           </Button>
           <Dialog open={configOpen} onOpenChange={setConfigOpen}>
-            <DialogContent className="max-w-2xl">
+            <DialogContent className="max-w-2xl bg-card max-h-[85vh] overflow-y-auto">
               <DialogHeader>
                 <DialogTitle>Configuração Chatwoot</DialogTitle>
                 <DialogDescription>
@@ -118,7 +118,7 @@ export function ChatwootIntegrationCard({ integracao }: ChatwootIntegrationCardP
         </Button>
 
         <Dialog open={configOpen} onOpenChange={setConfigOpen}>
-          <DialogContent className="max-w-2xl">
+          <DialogContent className="max-w-2xl bg-card max-h-[85vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle>Configuração Chatwoot</DialogTitle>
               <DialogDescription>

@@ -1,5 +1,7 @@
 import { redirect } from "next/navigation";
+import Link from "next/link";
 import { PageShell } from "@/components/shared/page-shell";
+import { Button } from "@/components/ui/button";
 import { actionObterMetricasDB } from "@/features/admin";
 import { MetricasDBContent } from "./components/metricas-db-content";
 
@@ -21,7 +23,14 @@ export default async function MetricasDBPage() {
   }
 
   return (
-    <PageShell>
+    <PageShell
+      title="Métricas do Banco de Dados"
+      actions={
+        <Button variant="outline" size="sm" asChild>
+          <Link href="/app/admin/metricas-db/avaliar-upgrade">Avaliar Upgrade</Link>
+        </Button>
+      }
+    >
       {result.data && <MetricasDBContent metricas={result.data} />}
     </PageShell>
   );

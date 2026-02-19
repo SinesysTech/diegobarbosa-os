@@ -80,8 +80,8 @@ export function IncomingCallDialog({
   const isVideo = callData.tipo === TipoChamada.Video;
 
   return (
-    <Dialog open={open} onOpenChange={() => {}}>
-      <DialogContent className="sm:max-w-md border-none shadow-2xl bg-linear-to-b from-background to-muted/20">
+    <Dialog open={open} onOpenChange={() => { }}>
+      <DialogContent className="sm:max-w-md border-none shadow-2xl bg-linear-to-b from-card to-muted/20">
         {/* Ringing Animation Effect */}
         <div className="absolute inset-0 z-[-1] overflow-hidden rounded-lg">
           <div className="absolute inset-0 bg-primary/5 animate-pulse" />
@@ -89,7 +89,7 @@ export function IncomingCallDialog({
 
         <DialogHeader className="flex flex-col items-center gap-4 py-6">
           <DialogTitle className="sr-only">Recebendo chamada</DialogTitle>
-          
+
           <div className="relative">
             <Avatar className="h-24 w-24 border-4 border-background shadow-xl">
               <AvatarImage src={callData.iniciadorAvatar} />

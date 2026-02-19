@@ -1,12 +1,10 @@
 'use client';
 
 import { useMemo } from "react";
-import { useRouter } from "next/navigation";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { Button } from "@/components/ui/button";
 import type { MetricasDB } from "@/features/admin";
 import { DiskIOCard } from "./disk-io-card";
 
@@ -26,8 +24,6 @@ function formatPercent(value: number | null | undefined): string {
 }
 
 export function MetricasDBContent({ metricas }: MetricasDBContentProps) {
-  const router = useRouter();
-
   const [indexHitRate, tableHitRate] = useMemo(() => {
     const cacheHitRate = metricas.cacheHitRate || [];
     const indexRate = cacheHitRate.find((c) => c.name.includes("index"));
@@ -37,18 +33,6 @@ export function MetricasDBContent({ metricas }: MetricasDBContentProps) {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-end gap-2">
-        <Button
-          variant="secondary"
-          onClick={() => router.push("/app/admin/metricas-db/avaliar-upgrade")}
-        >
-          Avaliar Upgrade
-        </Button>
-        <Button variant="secondary" onClick={() => router.refresh()}>
-          Atualizar
-        </Button>
-      </div>
-
       <DiskIOCard diskIO={metricas.diskIO} diskIOStatus={metricas.diskIOStatus} diskIOMessage={metricas.diskIOMessage} />
 
       <div className="grid gap-4 md:grid-cols-2">

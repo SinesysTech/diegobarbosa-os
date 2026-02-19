@@ -22,12 +22,8 @@ import type {
 import {
   upsertClientePorCPF,
   upsertClientePorCNPJ,
-  buscarClientePorCPF,
-  buscarClientePorCNPJ,
   upsertParteContrariaPorCPF,
   upsertParteContrariaPorCNPJ,
-  buscarParteContrariaPorCPF,
-  buscarParteContrariaPorCNPJ,
   criarParteContrariaSemDocumento,
   buscarTerceiroPorCPF,
   buscarTerceiroPorCNPJ,
@@ -193,17 +189,7 @@ async function processarCliente(
     return null;
   }
 
-  // Buscar entidade existente por CPF/CNPJ
-  const entidadeExistente = isPessoaFisica
-    ? await buscarClientePorCPF(documentoNormalizado)
-    : await buscarClientePorCNPJ(documentoNormalizado);
-
-  if (entidadeExistente) {
-    // UPDATE: entidade já existe
-    return entidadeExistente.id;
-  }
-
-  // INSERT: nova entidade
+  // Sempre faz upsert para atualizar dados (telefone, email, etc.) em entidades existentes
   if (isPessoaFisica) {
     const params: CriarClientePFParams = {
       ...dadosCompletos,
@@ -273,17 +259,7 @@ async function processarParteContrariaComDocumento(
   documentoNormalizado: string,
   dadosComuns: DadosComuns,
 ): Promise<number | null> {
-  // Buscar entidade existente por CPF/CNPJ
-  const entidadeExistente = isPessoaFisica
-    ? await buscarParteContrariaPorCPF(documentoNormalizado)
-    : await buscarParteContrariaPorCNPJ(documentoNormalizado);
-
-  if (entidadeExistente) {
-    // UPDATE: entidade já existe
-    return entidadeExistente.id;
-  }
-
-  // INSERT: nova entidade
+  // Sempre faz upsert para atualizar dados (telefone, email, etc.) em entidades existentes
   if (isPessoaFisica) {
     const params: CriarParteContrariaPFParams = {
       ...dadosComuns,
@@ -440,17 +416,7 @@ async function processarTerceiroComDocumento(
   documentoNormalizado: string,
   dadosCompletos: DadosComuns & Record<string, unknown>,
 ): Promise<number | null> {
-  // Buscar entidade existente por CPF/CNPJ
-  const entidadeExistente = isPessoaFisica
-    ? await buscarTerceiroPorCPF(documentoNormalizado)
-    : await buscarTerceiroPorCNPJ(documentoNormalizado);
-
-  if (entidadeExistente) {
-    // UPDATE: entidade já existe
-    return entidadeExistente.id;
-  }
-
-  // INSERT: nova entidade com documento
+  // Sempre faz upsert para atualizar dados (telefone, email, etc.) em entidades existentes
   const params = {
     ...dadosCompletos,
     tipo_pessoa: isPessoaFisica ? "pf" : "pj",

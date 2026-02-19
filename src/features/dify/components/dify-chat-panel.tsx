@@ -57,7 +57,7 @@ export function DifyChatPanel({
     };
 
     return (
-        <div className={cn("flex flex-col h-full border rounded-lg bg-background", className)}>
+        <div className={cn("flex flex-col h-full border rounded-lg bg-card", className)}>
             <div className="flex items-center p-4 border-b">
                 <Avatar className="h-8 w-8 mr-2">
                     <AvatarImage src={assistantAvatar} />

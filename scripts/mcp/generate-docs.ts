@@ -310,13 +310,13 @@ function generateDocumentation(): string {
 
   doc += '### 1. Buscar Processos de um Cliente\n\n';
   doc += '```typescript\n';
-  doc += '// 1. Buscar cliente por CPF\n';
-  doc += 'const cliente = await executeMcpTool(\'buscar_cliente_por_cpf\', {\n';
-  doc += '  cpf: \'12345678901\'\n';
+  doc += '// 1. Buscar cliente por documento (CPF ou CNPJ)\n';
+  doc += 'const cliente = await executeMcpTool(\'buscar_cliente_por_documento\', {\n';
+  doc += '  documento: \'12345678901\'\n';
   doc += '});\n\n';
   doc += '// 2. Buscar processos do cliente\n';
-  doc += 'const processos = await executeMcpTool(\'buscar_processos_por_cpf\', {\n';
-  doc += '  cpf: \'12345678901\',\n';
+  doc += 'const processos = await executeMcpTool(\'buscar_processos_por_documento\', {\n';
+  doc += '  documento: \'12345678901\',\n';
   doc += '  limite: 50\n';
   doc += '});\n';
   doc += '```\n\n';
@@ -380,7 +380,7 @@ function getModuleDescription(feature: string): string {
 function getCommonUseCase(toolName: string): string {
   const useCases: Record<string, string> = {
     listar_processos: 'Listar processos por TRT',
-    buscar_cliente_por_cpf: 'Buscar cliente por CPF',
+    buscar_cliente_por_documento: 'Buscar cliente por CPF ou CNPJ',
     listar_lancamentos: 'Listar lançamentos financeiros',
     listar_documentos: 'Listar documentos',
     listar_audiencias: 'Listar audiências futuras',

@@ -43,7 +43,7 @@ function DashboardHeader() {
     <header
       className={cn(
         "flex h-14 shrink-0 items-center justify-between gap-4 px-4 transition-all duration-200",
-        "bg-background/80 backdrop-blur-xl border-b border-border shadow-sm"
+        "bg-card border-b border-border shadow-sm"
       )}
     >
       <div className="flex items-center gap-3">
