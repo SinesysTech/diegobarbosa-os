@@ -167,7 +167,7 @@ export function WeekNavigator({
           <Button
             variant="outline"
             size="sm"
-            className="h-8 px-2.5 text-xs ml-1 bg-white hover:bg-white/90 border shadow-sm"
+            className="h-8 px-2.5 text-xs ml-1 bg-card hover:bg-card/90 border shadow-sm"
             onClick={onToday}
           >
             Hoje

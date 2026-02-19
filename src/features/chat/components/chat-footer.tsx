@@ -268,7 +268,7 @@ export function ChatFooter({ salaId, onEnviarMensagem, onTyping, typingIndicator
               onChange={handleChange}
               onKeyDown={handleKeyDown}
               disabled={isUploading}
-              className="h-14 border-transparent bg-white pe-32 text-base! shadow-transparent! ring-transparent! lg:pe-56"
+              className="h-14 border-transparent bg-card pe-32 text-base! shadow-transparent! ring-transparent! lg:pe-56"
               placeholder={isUploading ? "Enviando arquivo..." : "Digite uma mensagem..."}
             />
 

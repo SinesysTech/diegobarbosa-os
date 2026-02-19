@@ -211,7 +211,7 @@ export function CargosManagementDialog({
                   </EmptyHeader>
                 </Empty>
               ) : (
-                <div className="space-y-1 rounded-lg border bg-white dark:bg-gray-950">
+                <div className="space-y-1 rounded-lg border bg-card">
                   {cargos.map((cargo) => (
                     <div
                       key={cargo.id}
@@ -295,13 +295,13 @@ export function CargosManagementDialog({
               </div>
 
               {!isCreating && !editingId ? (
-                <div className="rounded-lg border bg-white dark:bg-gray-950 p-4">
+                <div className="rounded-lg border bg-card p-4">
                   <Typography.Muted>
                     Selecione um cargo para editar ou clique em <strong>Novo cargo</strong>.
                   </Typography.Muted>
                 </div>
               ) : (
-                <div className="rounded-lg border bg-white dark:bg-gray-950 p-4 space-y-4">
+                <div className="rounded-lg border bg-card p-4 space-y-4">
                   <div className="grid gap-2">
                     <Label htmlFor="nome">
                       Nome <span className="text-destructive">*</span>
@@ -314,7 +314,7 @@ export function CargosManagementDialog({
                       }
                       placeholder="Ex: Advogado, Estagiário, Secretária..."
                       disabled={isSaving}
-                      className="bg-white dark:bg-gray-950"
+                      className="bg-background"
                     />
                   </div>
 
@@ -329,7 +329,7 @@ export function CargosManagementDialog({
                       placeholder="Descrição opcional do cargo"
                       rows={3}
                       disabled={isSaving}
-                      className="bg-white dark:bg-gray-950"
+                      className="bg-background"
                     />
                   </div>
 

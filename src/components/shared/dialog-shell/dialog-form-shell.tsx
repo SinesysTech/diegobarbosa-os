@@ -101,7 +101,7 @@ export function DialogFormShell({
         showCloseButton={false}
         className={cn(
           maxWidthClass,
-          "bg-white",
+          "bg-background",
           "p-0 gap-0",
           className
         )}
@@ -134,13 +134,13 @@ export function DialogFormShell({
         )}
 
         {/* Body: conteúdo scrollável */}
-        <ResponsiveDialogBody className="flex-1 min-h-0 bg-white">
+        <ResponsiveDialogBody className="flex-1 min-h-0">
           {children}
         </ResponsiveDialogBody>
 
         {/* Footer: ações */}
         {!hideFooter && (
-          <ResponsiveDialogFooter className="px-6 py-4 border-t shrink-0 bg-white">
+          <ResponsiveDialogFooter className="px-6 py-4 border-t shrink-0">
             <div className="flex w-full items-center justify-between gap-3">
               {leftFooter ?? (
                 <Button
