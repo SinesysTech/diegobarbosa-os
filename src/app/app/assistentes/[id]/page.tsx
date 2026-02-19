@@ -72,7 +72,7 @@ export default async function AssistenteDetalhesPage({ params }: { params: Promi
           <span className="text-sm font-medium text-muted-foreground">{assistente.nome}</span>
         </div>
 
-        <div className="border rounded-md flex-1 overflow-hidden bg-white dark:bg-zinc-950 min-h-0">
+        <div className="border rounded-md flex-1 overflow-hidden bg-card min-h-0">
           <AssistenteNativoView appId={difyApp.id} appType={difyApp.app_type} />
         </div>
       </div>
@@ -91,7 +91,7 @@ export default async function AssistenteDetalhesPage({ params }: { params: Promi
         <span className="text-sm font-medium text-muted-foreground">{assistente.nome}</span>
       </div>
 
-      <div className="border rounded-md flex-1 overflow-hidden bg-white dark:bg-zinc-950 min-h-0">
+      <div className="border rounded-md flex-1 overflow-hidden bg-card min-h-0">
         <div
           className="w-full h-full [&>iframe]:w-full [&>iframe]:h-full [&>iframe]:border-0"
           dangerouslySetInnerHTML={{ __html: assistente.iframe_code || '' }}

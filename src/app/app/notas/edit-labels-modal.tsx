@@ -50,7 +50,7 @@ export function EditLabelsModal({ children }: Props) {
   return (
     <Dialog>
       <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent className="bg-white max-h-screen max-w-96 overflow-y-scroll dark:bg-gray-950 lg:overflow-y-auto">
+      <DialogContent className="max-h-screen max-w-96 overflow-y-scroll lg:overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Editar etiquetas</DialogTitle>
         </DialogHeader>

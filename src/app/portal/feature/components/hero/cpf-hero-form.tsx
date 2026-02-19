@@ -95,7 +95,7 @@ export function CpfHeroForm() {
               value={cpf}
               onChange={(e) => setCpf(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleConsultar()}
-              className="flex-1 py-6 px-4 text-base bg-white dark:bg-card shadow-sm"
+              className="flex-1 py-6 px-4 text-base bg-card shadow-sm"
               disabled={isPending}
             />
             <Button

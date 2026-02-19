@@ -123,7 +123,7 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
               id="email"
               type="email"
               placeholder="seu@email.com"
-              className="h-11 pl-10 bg-white dark:bg-input/30"
+              className="h-11 pl-10 bg-background dark:bg-input/30"
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -148,7 +148,7 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
             <Input
               id="password"
               type={showPassword ? 'text' : 'password'}
-              className="h-11 pl-10 pr-10 bg-white dark:bg-input/30"
+              className="h-11 pl-10 pr-10 bg-background dark:bg-input/30"
               required
               value={password}
               onChange={(e) => setPassword(e.target.value)}

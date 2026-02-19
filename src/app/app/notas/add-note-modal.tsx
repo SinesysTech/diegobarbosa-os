@@ -184,7 +184,7 @@ function NoteModalBase({ mode, note, children }: NoteModalBaseProps) {
             name="title"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            className="bg-white dark:bg-gray-950"
+            className="bg-background"
           />
 
           <MinimalTiptapEditor

@@ -11,7 +11,7 @@ export function TabsList02Responsive({ className, ...props }: React.ComponentPro
   return (
     <TabsList
       className={cn(
-        "h-auto w-fit bg-white dark:bg-muted/50 justify-start gap-1 border border-border dark:border-border/50 p-1 flex-wrap",
+        "h-auto w-fit bg-card justify-start gap-1 border border-border dark:border-border/50 p-1 flex-wrap",
         className
       )}
       {...props}

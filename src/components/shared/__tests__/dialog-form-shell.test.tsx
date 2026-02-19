@@ -185,8 +185,8 @@ describe('DialogFormShell - Property-Based Tests', () => {
 
                         const className = content?.className || '';
 
-                        // Verifica background branco
-                        expect(className).toMatch(/bg-white|dark:bg-gray-950/);
+                        // Verifica background
+                        expect(className).toMatch(/bg-background/);
                     });
                 }
             ),

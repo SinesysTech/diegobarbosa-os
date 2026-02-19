@@ -156,7 +156,7 @@ export function EditarDocumentoClient({ uuid }: EditarDocumentoClientProps) {
 
       {/* Right Sidebar - hidden on mobile, FloatingSidebar renders Sheet on small viewports */}
       <div className="hidden lg:block w-[340px] py-3 pr-3 shrink-0">
-        <aside className="h-full bg-white dark:bg-card rounded-xl border shadow-lg flex flex-col overflow-hidden">
+        <aside className="h-full bg-card rounded-xl border shadow-lg flex flex-col overflow-hidden">
           <FloatingSidebar
             className="flex-1 flex flex-col"
             signers={signers}

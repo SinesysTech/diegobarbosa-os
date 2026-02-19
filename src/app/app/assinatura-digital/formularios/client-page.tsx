@@ -529,7 +529,7 @@ export function FormulariosClient() {
                       <Button
                         variant="outline"
                         size="icon"
-                        className="bg-white dark:bg-card"
+                        className="bg-card"
                         onClick={() => setSegmentosDialogOpen(true)}
                       >
                         <Tags className="h-4 w-4" />

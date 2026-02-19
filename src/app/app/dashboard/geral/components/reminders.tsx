@@ -81,7 +81,7 @@ export function Reminders({ lembretes: initialReminders = [] }: RemindersProps) 
               {lembretes.slice(0, 3).map((lembrete) => (
                 <div
                   key={lembrete.id}
-                  className="flex items-start gap-3 rounded-md border bg-white p-3 dark:bg-gray-950"
+                  className="flex items-start gap-3 rounded-md border bg-card p-3"
                 >
                   <span
                     className={cn("mt-1.5 size-2 shrink-0 rounded-full", {
