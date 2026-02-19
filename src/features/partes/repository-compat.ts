@@ -69,7 +69,7 @@ export async function upsertParteContrariaPorCPF(
   if (!result.success) {
     throw new Error(result.error.message);
   }
-  
+
   if (result.data) {
     const updateResult = await updateParteContraria(result.data.id, input as UpdateParteContrariaInput, result.data);
     if (!updateResult.success) {
@@ -77,9 +77,21 @@ export async function upsertParteContrariaPorCPF(
     }
     return { parteContraria: updateResult.data, created: false };
   }
-  
+
   const createResult = await saveParteContraria(input);
   if (!createResult.success) {
+    if (createResult.error.code === 'CONFLICT') {
+      // Race condition: another process created the record between check and insert
+      // Retry update with the newly created record
+      const retryResult = await findParteContrariaByCPF(cpf);
+      if (retryResult.success && retryResult.data) {
+        const updateResult = await updateParteContraria(retryResult.data.id, input as UpdateParteContrariaInput, retryResult.data);
+        if (!updateResult.success) {
+          throw new Error(updateResult.error.message);
+        }
+        return { parteContraria: updateResult.data, created: false };
+      }
+    }
     throw new Error(createResult.error.message);
   }
   return { parteContraria: createResult.data, created: true };
@@ -101,7 +113,7 @@ export async function upsertParteContrariaPorCNPJ(
   if (!result.success) {
     throw new Error(result.error.message);
   }
-  
+
   if (result.data) {
     const updateResult = await updateParteContraria(result.data.id, input as UpdateParteContrariaInput, result.data);
     if (!updateResult.success) {
@@ -109,9 +121,21 @@ export async function upsertParteContrariaPorCNPJ(
     }
     return { parteContraria: updateResult.data, created: false };
   }
-  
+
   const createResult = await saveParteContraria(input);
   if (!createResult.success) {
+    if (createResult.error.code === 'CONFLICT') {
+      // Race condition: another process created the record between check and insert
+      // Retry update with the newly created record
+      const retryResult = await findParteContrariaByCNPJ(cnpj);
+      if (retryResult.success && retryResult.data) {
+        const updateResult = await updateParteContraria(retryResult.data.id, input as UpdateParteContrariaInput, retryResult.data);
+        if (!updateResult.success) {
+          throw new Error(updateResult.error.message);
+        }
+        return { parteContraria: updateResult.data, created: false };
+      }
+    }
     throw new Error(createResult.error.message);
   }
   return { parteContraria: createResult.data, created: true };

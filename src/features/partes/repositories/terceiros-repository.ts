@@ -273,15 +273,15 @@ export async function findAllTerceirosComEnderecoEProcessos(
         ...terceiro,
         endereco: endereco
           ? {
-              id: endereco.id as number,
-              cep: endereco.cep as string | null,
-              logradouro: endereco.logradouro as string | null,
-              numero: endereco.numero as string | null,
-              complemento: endereco.complemento as string | null,
-              bairro: endereco.bairro as string | null,
-              municipio: endereco.municipio as string | null,
-              estado_sigla: endereco.estado_sigla as string | null,
-            }
+            id: endereco.id as number,
+            cep: endereco.cep as string | null,
+            logradouro: endereco.logradouro as string | null,
+            numero: endereco.numero as string | null,
+            complemento: endereco.complemento as string | null,
+            bairro: endereco.bairro as string | null,
+            municipio: endereco.municipio as string | null,
+            estado_sigla: endereco.estado_sigla as string | null,
+          }
           : null,
         processos_relacionados: processosMap.get(terceiro.id) || [],
       } as TerceiroComEnderecoEProcessos;
@@ -509,6 +509,16 @@ export async function upsertTerceiroByCPF(
 
     const createResult = await saveTerceiro(input);
     if (!createResult.success) {
+      if (createResult.error.code === 'CONFLICT') {
+        const retryResult = await findTerceiroByCPF(cpfNormalizado);
+        if (retryResult.success && retryResult.data) {
+          const updateResult = await updateTerceiro(retryResult.data.id, input as UpdateTerceiroInput, retryResult.data);
+          if (!updateResult.success) {
+            return err(updateResult.error);
+          }
+          return ok({ terceiro: updateResult.data, created: false });
+        }
+      }
       return err(createResult.error);
     }
     return ok({ terceiro: createResult.data, created: true });
@@ -543,6 +553,16 @@ export async function upsertTerceiroByCNPJ(
 
     const createResult = await saveTerceiro(input);
     if (!createResult.success) {
+      if (createResult.error.code === 'CONFLICT') {
+        const retryResult = await findTerceiroByCNPJ(cnpjNormalizado);
+        if (retryResult.success && retryResult.data) {
+          const updateResult = await updateTerceiro(retryResult.data.id, input as UpdateTerceiroInput, retryResult.data);
+          if (!updateResult.success) {
+            return err(updateResult.error);
+          }
+          return ok({ terceiro: updateResult.data, created: false });
+        }
+      }
       return err(createResult.error);
     }
     return ok({ terceiro: createResult.data, created: true });

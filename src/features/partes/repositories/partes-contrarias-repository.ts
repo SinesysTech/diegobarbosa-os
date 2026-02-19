@@ -365,16 +365,16 @@ export async function findAllPartesContrariasComEnderecoEProcessos(
         ...parteContraria,
         endereco: endereco
           ? {
-              id: endereco.id as number,
-              cep: endereco.cep as string | null,
-              logradouro: endereco.logradouro as string | null,
-              numero: endereco.numero as string | null,
-              complemento: endereco.complemento as string | null,
-              bairro: endereco.bairro as string | null,
-              municipio: endereco.municipio as string | null,
-              estado_sigla: endereco.estado_sigla as string | null,
-              pais: endereco.pais as string | null,
-            }
+            id: endereco.id as number,
+            cep: endereco.cep as string | null,
+            logradouro: endereco.logradouro as string | null,
+            numero: endereco.numero as string | null,
+            complemento: endereco.complemento as string | null,
+            bairro: endereco.bairro as string | null,
+            municipio: endereco.municipio as string | null,
+            estado_sigla: endereco.estado_sigla as string | null,
+            pais: endereco.pais as string | null,
+          }
           : null,
         processos_relacionados: processosMap.get(parteContraria.id) || [],
       } as ParteContrariaComEnderecoEProcessos;
@@ -644,6 +644,20 @@ export async function upsertParteContrariaByCPF(
 
     const createResult = await saveParteContraria(input);
     if (!createResult.success) {
+      if (createResult.error.code === 'CONFLICT') {
+        const retryResult = await findParteContrariaByCPF(cpf);
+        if (retryResult.success && retryResult.data) {
+          const updateResult = await updateParteContraria(retryResult.data.id, input as UpdateParteContrariaInput, retryResult.data);
+          if (!updateResult.success) {
+            return err(updateResult.error);
+          }
+          return {
+            success: true,
+            data: { parteContraria: updateResult.data, created: false },
+            created: false,
+          } as Result<{ parteContraria: ParteContraria; created: boolean }>;
+        }
+      }
       return err(createResult.error);
     }
     return {
@@ -689,6 +703,20 @@ export async function upsertParteContrariaByCNPJ(
 
     const createResult = await saveParteContraria(input);
     if (!createResult.success) {
+      if (createResult.error.code === 'CONFLICT') {
+        const retryResult = await findParteContrariaByCNPJ(cnpj);
+        if (retryResult.success && retryResult.data) {
+          const updateResult = await updateParteContraria(retryResult.data.id, input as UpdateParteContrariaInput, retryResult.data);
+          if (!updateResult.success) {
+            return err(updateResult.error);
+          }
+          return {
+            success: true,
+            data: { parteContraria: updateResult.data, created: false },
+            created: false,
+          } as Result<{ parteContraria: ParteContraria; created: boolean }>;
+        }
+      }
       return err(createResult.error);
     }
     return {

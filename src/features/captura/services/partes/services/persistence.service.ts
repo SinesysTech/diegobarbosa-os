@@ -20,20 +20,21 @@ import type {
   CreateTerceiroPJInput as CriarTerceiroPJParams,
 } from "@/features/partes/domain";
 import {
-  upsertClientePorCPF,
-  upsertClientePorCNPJ,
-  upsertParteContrariaPorCPF,
-  upsertParteContrariaPorCNPJ,
-  criarParteContrariaSemDocumento,
-  buscarTerceiroPorCPF,
-  buscarTerceiroPorCNPJ,
-  criarTerceiroSemDocumento,
-} from "@/features/partes/repository-compat";
-import {
+  upsertClienteByCPF,
+  upsertClienteByCNPJ,
+  upsertParteContrariaByCPF,
+  upsertParteContrariaByCNPJ,
+  saveParteContraria,
+  findParteContrariaByCPF,
+  findParteContrariaByCNPJ,
+  updateParteContraria,
   upsertCadastroPJE,
   buscarEntidadePorIdPessoaPJE,
   upsertTerceiroByCPF,
   upsertTerceiroByCNPJ,
+  findTerceiroByCPF,
+  findTerceiroByCNPJ,
+  saveTerceiro,
 } from "@/features/partes/repositories";
 import { withRetry } from "@/lib/utils/retry";
 import { CAPTURA_CONFIG } from "../config";
@@ -182,8 +183,7 @@ async function processarCliente(
   // Cliente sem documento válido não pode ser processado
   if (!documentoValido) {
     console.warn(
-      `[PARTES] Cliente "${parte.nome}" sem documento válido (${
-        isPessoaFisica ? "CPF" : "CNPJ"
+      `[PARTES] Cliente "${parte.nome}" sem documento válido (${isPessoaFisica ? "CPF" : "CNPJ"
       }) - ignorando`,
     );
     return null;
@@ -198,7 +198,7 @@ async function processarCliente(
       ativo: true,
     };
     const result = await withRetry(
-      () => upsertClientePorCPF(documentoNormalizado, params),
+      () => upsertClienteByCPF(documentoNormalizado, params),
       {
         maxAttempts: CAPTURA_CONFIG.RETRY_MAX_ATTEMPTS,
         baseDelay: CAPTURA_CONFIG.RETRY_BASE_DELAY_MS,
@@ -213,7 +213,7 @@ async function processarCliente(
       ativo: true,
     };
     const result = await withRetry(
-      () => upsertClientePorCNPJ(documentoNormalizado, params),
+      () => upsertClienteByCNPJ(documentoNormalizado, params),
       {
         maxAttempts: CAPTURA_CONFIG.RETRY_MAX_ATTEMPTS,
         baseDelay: CAPTURA_CONFIG.RETRY_BASE_DELAY_MS,
@@ -268,7 +268,7 @@ async function processarParteContrariaComDocumento(
       ativo: true,
     };
     const result = await withRetry(
-      () => upsertParteContrariaPorCPF(documentoNormalizado, params),
+      () => upsertParteContrariaByCPF(params),
       {
         maxAttempts: CAPTURA_CONFIG.RETRY_MAX_ATTEMPTS,
         baseDelay: CAPTURA_CONFIG.RETRY_BASE_DELAY_MS,
@@ -283,7 +283,7 @@ async function processarParteContrariaComDocumento(
       ativo: true,
     };
     const result = await withRetry(
-      () => upsertParteContrariaPorCNPJ(documentoNormalizado, params),
+      () => upsertParteContrariaByCNPJ(params),
       {
         maxAttempts: CAPTURA_CONFIG.RETRY_MAX_ATTEMPTS,
         baseDelay: CAPTURA_CONFIG.RETRY_BASE_DELAY_MS,
@@ -345,12 +345,17 @@ async function processarParteContrariaSemDocumento(
   };
 
   const result = await withRetry(
-    () =>
-      criarParteContrariaSemDocumento(
+    async () => {
+      const createResult = await saveParteContraria(
         params as unknown as
-          | CriarParteContrariaPFParams
-          | CriarParteContrariaPJParams,
-      ),
+        | CriarParteContrariaPFParams
+        | CriarParteContrariaPJParams
+      );
+      if (!createResult.success) {
+        throw new Error(createResult.error.message);
+      }
+      return { parteContraria: createResult.data };
+    },
     {
       maxAttempts: CAPTURA_CONFIG.RETRY_MAX_ATTEMPTS,
       baseDelay: CAPTURA_CONFIG.RETRY_BASE_DELAY_MS,
@@ -429,13 +434,13 @@ async function processarTerceiroComDocumento(
 
   const result = isPessoaFisica
     ? await upsertTerceiroByCPF(
-        documentoNormalizado,
-        params as UpsertTerceiroPorCPFParams,
-      )
+      documentoNormalizado,
+      params as UpsertTerceiroPorCPFParams,
+    )
     : await upsertTerceiroByCNPJ(
-        documentoNormalizado,
-        params as UpsertTerceiroPorCNPJParams,
-      );
+      documentoNormalizado,
+      params as UpsertTerceiroPorCNPJParams,
+    );
 
   if (result.success && result.data?.terceiro) {
     return result.data.terceiro.id;
@@ -447,11 +452,11 @@ async function processarTerceiroComDocumento(
     console.warn(
       `[PARTES] Conflito ao inserir terceiro "${parte.nome}" - tentando buscar existente`,
     );
-    const retryLookup = isPessoaFisica
-      ? await buscarTerceiroPorCPF(documentoNormalizado)
-      : await buscarTerceiroPorCNPJ(documentoNormalizado);
-    if (retryLookup) {
-      return retryLookup.id;
+    const retryResult = isPessoaFisica
+      ? await findTerceiroByCPF(documentoNormalizado)
+      : await findTerceiroByCNPJ(documentoNormalizado);
+    if (retryResult.success && retryResult.data) {
+      return retryResult.data.id;
     }
   }
 
@@ -516,8 +521,13 @@ async function processarTerceiroSemDocumento(
   };
 
   const result = await withRetry(
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    () => criarTerceiroSemDocumento(params as any),
+    async () => {
+      const createResult = await saveTerceiro(params as any);
+      if (!createResult.success) {
+        throw new Error(createResult.error.message);
+      }
+      return { terceiro: createResult.data };
+    },
     {
       maxAttempts: CAPTURA_CONFIG.RETRY_MAX_ATTEMPTS,
       baseDelay: CAPTURA_CONFIG.RETRY_BASE_DELAY_MS,

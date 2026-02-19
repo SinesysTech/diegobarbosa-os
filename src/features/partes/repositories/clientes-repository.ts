@@ -598,6 +598,20 @@ export async function upsertClienteByCPF(
 
     const createResult = await saveCliente(input);
     if (!createResult.success) {
+      if (createResult.error.code === 'CONFLICT') {
+        const retryResult = await findClienteByCPF(cpf);
+        if (retryResult.success && retryResult.data) {
+          const updateResult = await updateCliente(retryResult.data.id, input as UpdateClienteInput, retryResult.data);
+          if (!updateResult.success) {
+            return err(updateResult.error);
+          }
+          const result = ok({ cliente: updateResult.data, created: false });
+          return { ...(result as unknown as Record<string, unknown>), created: false } as unknown as Result<{
+            cliente: Cliente;
+            created: boolean;
+          }>;
+        }
+      }
       return err(createResult.error);
     }
     const result = ok({ cliente: createResult.data, created: true });
@@ -646,6 +660,20 @@ export async function upsertClienteByCNPJ(
 
     const createResult = await saveCliente(input);
     if (!createResult.success) {
+      if (createResult.error.code === 'CONFLICT') {
+        const retryResult = await findClienteByCNPJ(cnpj);
+        if (retryResult.success && retryResult.data) {
+          const updateResult = await updateCliente(retryResult.data.id, input as UpdateClienteInput, retryResult.data);
+          if (!updateResult.success) {
+            return err(updateResult.error);
+          }
+          const result = ok({ cliente: updateResult.data, created: false });
+          return { ...(result as unknown as Record<string, unknown>), created: false } as unknown as Result<{
+            cliente: Cliente;
+            created: boolean;
+          }>;
+        }
+      }
       return err(createResult.error);
     }
     const result = ok({ cliente: createResult.data, created: true });

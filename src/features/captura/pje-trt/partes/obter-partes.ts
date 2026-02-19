@@ -99,7 +99,7 @@ export async function obterPartesProcesso(
     // Faz requisição para obter partes do processo
     const response = await fetchPJEAPI<Record<string, unknown>>(
       page,
-      `/pje-comum-api/api/processos/id/${idProcesso}/partes`
+      `/pje-comum-api/api/processos/id/${idProcesso}/partes?retornaEndereco=true`
     );
 
     // Se resposta for vazia, retorna array vazio
@@ -138,7 +138,7 @@ export async function obterPartesProcesso(
         try {
           // Representantes sempre vêm no JSON de partes
           const representantesRaw = Array.isArray(parteData.representantes) ? parteData.representantes : [];
-          
+
           // Mapear representantes para o formato esperado pela interface
           const representantes = representantesRaw.map((rep: Record<string, unknown>) => {
             // Extrair número da OAB e UF (pode vir junto como "BA79812" ou separado)
