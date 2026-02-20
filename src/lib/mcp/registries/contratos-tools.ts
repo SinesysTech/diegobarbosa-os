@@ -13,6 +13,7 @@ import { registerMcpTool } from '../server';
 import { actionResultToMcp } from '../utils';
 import { errorResult } from '../types';
 import type { ActionResult } from '@/lib/safe-action';
+import type { StatusContrato } from '@/features/contratos/domain';
 
 /**
  * Resolve um documento (CPF ou CNPJ) para o ID do cliente.
@@ -75,7 +76,7 @@ export async function registerContratosTools(): Promise<void> {
           limite: number;
           offset: number;
           tipo?: string;
-          status?: string;
+          status?: StatusContrato;
         };
 
         let clienteId: number | undefined;
