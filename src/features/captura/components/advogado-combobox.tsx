@@ -3,7 +3,6 @@
 import { useMemo } from 'react';
 import { Combobox, type ComboboxOption } from '@/components/ui/combobox';
 import type { Advogado } from '@/features/advogados/domain';
-import { formatOabs } from '@/features/advogados/domain';
 
 interface AdvogadoComboboxProps {
   advogados: Advogado[];
@@ -24,17 +23,14 @@ export function AdvogadoCombobox({
 }: AdvogadoComboboxProps) {
   const options: ComboboxOption[] = useMemo(() => {
     return advogados.map((advogado) => {
-      // Formatar todas as OABs para exibição
-      const oabsDisplay = formatOabs(advogado.oabs);
-
-      // Texto de busca inclui todas as OABs
+      // Texto de busca inclui OABs e CPF para facilitar a filtragem
       const oabsSearch = (advogado.oabs ?? [])
         .map((oab) => `${oab.numero} ${oab.uf}`)
         .join(' ');
 
       return {
         value: advogado.id.toString(),
-        label: `${advogado.nome_completo} - OAB ${oabsDisplay}`,
+        label: advogado.nome_completo,
         searchText: `${advogado.nome_completo} ${oabsSearch} ${advogado.cpf}`,
       };
     });
