@@ -139,7 +139,7 @@ export function PermissoesMatriz({
             </Alert>
           )}
 
-          {!canEdit && (
+          {!canEdit && !isSuperAdmin && (
             <Alert>
               <Info className="h-4 w-4" />
               <AlertDescription>
