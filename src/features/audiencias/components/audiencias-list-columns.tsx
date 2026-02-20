@@ -181,7 +181,7 @@ export function ResponsavelCell({
                 {getInitials(nomeExibicao)}
               </AvatarFallback>
             </Avatar>
-            <span className="truncate max-w-[120px]">{nomeExibicao}</span>
+            <span className="truncate max-w-30">{nomeExibicao}</span>
           </>
         ) : (
           <span className="text-muted-foreground">Sem responsável</span>
@@ -392,16 +392,16 @@ export function getAudienciasColumns(
       size: 200,
       cell: ({ row, table }) => {
         const audiencia = row.original;
-        const meta = table.options.meta as { usuarios?: Usuario[]; onSuccess?: () => void } | undefined;
+        const meta = table.options.meta as { usuarios?: Usuario[]; onSuccessAction?: () => void } | undefined;
         const usuarios = meta?.usuarios || [];
-        const onSuccess = meta?.onSuccess;
+        const onSuccessAction = meta?.onSuccessAction;
 
         return (
           <div className="flex items-center py-2">
             <ResponsavelCell
               audiencia={audiencia}
               usuarios={usuarios}
-              onSuccessAction={onSuccess}
+              onSuccessAction={onSuccessAction}
             />
           </div>
         );
