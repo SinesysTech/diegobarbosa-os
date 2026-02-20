@@ -96,7 +96,7 @@ export function ContatoCell({
         )}
         <span
           className={cn(
-            'text-sm whitespace-nowrap',
+            'text-sm truncate',
             !telefoneData && 'text-muted-foreground'
           )}
         >
@@ -107,7 +107,7 @@ export function ContatoCell({
         )}
       </div>
       {/* Linha 2: E-mail */}
-      <div className="flex items-center gap-1.5 min-w-0 w-full">
+      <div className="flex items-center gap-1.5 min-w-0">
         {showIcons && (
           <Mail
             className={cn(
@@ -117,7 +117,7 @@ export function ContatoCell({
           />
         )}
         <span
-          className={cn('text-sm truncate', !emailValue && 'text-muted-foreground')}
+          className={cn('text-sm truncate min-w-0', !emailValue && 'text-muted-foreground')}
           title={emailValue || undefined}
         >
           {emailValue ? emailValue.toLowerCase() : '-'}

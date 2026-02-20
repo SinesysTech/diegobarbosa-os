@@ -15,7 +15,7 @@ interface AudienciasParams {
   credencial_ids: number[];
   dataInicio?: string;
   dataFim?: string;
-  status?: 'M' | 'C' | 'F'; // M=Designada, C=Cancelada, F=Realizada
+  statusList: ('M' | 'C' | 'F')[]; // M=Designada, C=Cancelada, F=Realizada
 }
 
 /**
@@ -179,7 +179,12 @@ export async function POST(request: NextRequest) {
 
     // 2. Validar e parsear body da requisição
     const body = await request.json();
-    const { advogado_id, credencial_ids, dataInicio, dataFim, status } = body as AudienciasParams;
+    const { advogado_id, credencial_ids, dataInicio, dataFim, statusList } = body as AudienciasParams;
+
+    // Validar statusList
+    const statusArray = (Array.isArray(statusList) && statusList.length > 0)
+      ? statusList
+      : ['M'] as ('M' | 'C' | 'F')[];
 
     // Validações básicas
     if (!advogado_id || !credencial_ids || !Array.isArray(credencial_ids) || credencial_ids.length === 0) {
@@ -265,7 +270,7 @@ export async function POST(request: NextRequest) {
       }> = [];
 
       for (const credCompleta of credenciaisOrdenadas) {
-        console.log(`[Audiências] Iniciando captura: ${credCompleta.tribunal} ${credCompleta.grau} (Credencial ID: ${credCompleta.credentialId})`);
+        console.log(`[Audiências] Iniciando captura: ${credCompleta.tribunal} ${credCompleta.grau} (Credencial ID: ${credCompleta.credentialId}) | Status: ${statusArray.join(', ')}`);
 
         let tribunalConfig;
         try {
@@ -273,7 +278,7 @@ export async function POST(request: NextRequest) {
         } catch (error) {
           const erroFormatado = formatarErroCaptura(error, credCompleta.tribunal, credCompleta.grau);
           const erroTecnico = formatarErroTecnico(error);
-          
+
           console.error(`Tribunal configuration not found for ${credCompleta.tribunal} ${credCompleta.grau}:`, erroTecnico);
           resultados.push({
             credencial_id: credCompleta.credentialId,
@@ -294,7 +299,7 @@ export async function POST(request: NextRequest) {
             requisicao: {
               dataInicioSolicitado: dataInicio,
               dataFimSolicitado: dataFim,
-              codigoSituacao: status || 'M',
+              codigoSituacoes: statusArray,
             },
             erro: erroTecnico,
           });
@@ -302,12 +307,14 @@ export async function POST(request: NextRequest) {
         }
 
         try {
+          // Passa todos os status selecionados para o serviço de captura
+          // O serviço autentica uma vez e itera pelos status na mesma sessão
           const resultado = await audienciasCapture({
             credential: credCompleta.credenciais,
             config: tribunalConfig,
             dataInicio,
             dataFim,
-            codigoSituacao: status || 'M', // Padrão: Designada
+            codigoSituacoes: statusArray,
           });
 
           console.log(`[Audiências] Captura concluída: ${credCompleta.tribunal} ${credCompleta.grau} (Credencial ID: ${credCompleta.credentialId})`);
@@ -331,7 +338,7 @@ export async function POST(request: NextRequest) {
             requisicao: {
               dataInicioSolicitado: dataInicio,
               dataFimSolicitado: dataFim,
-              codigoSituacao: status || 'M',
+              codigoSituacoes: statusArray,
               dataInicioExecutado: resultado.dataInicio,
               dataFimExecutado: resultado.dataFim,
             },
@@ -342,7 +349,7 @@ export async function POST(request: NextRequest) {
         } catch (error) {
           const erroFormatado = formatarErroCaptura(error, credCompleta.tribunal, credCompleta.grau);
           const erroTecnico = formatarErroTecnico(error);
-          
+
           console.error(`[Audiências] Erro ao capturar ${credCompleta.tribunal} ${credCompleta.grau} (Credencial ID: ${credCompleta.credentialId}):`, erroTecnico);
           resultados.push({
             credencial_id: credCompleta.credentialId,
@@ -363,7 +370,7 @@ export async function POST(request: NextRequest) {
             requisicao: {
               dataInicioSolicitado: dataInicio,
               dataFimSolicitado: dataFim,
-              codigoSituacao: status || 'M',
+              codigoSituacoes: statusArray,
             },
             erro: erroTecnico,
           });

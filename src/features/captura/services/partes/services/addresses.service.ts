@@ -64,6 +64,10 @@ export async function processarEndereco(
       return result.data.id;
     }
 
+    console.warn(
+      `⚠️ [Endereço] Falha no upsert para parte "${parte.nome}" (id_pje=${enderecoPJE.id}, entidade=${tipoParte}/${entidadeId}):`,
+      result.success === false && 'error' in result ? result.error : 'Resultado sem dados'
+    );
     return null;
   } catch (error) {
     throw new PersistenceError(
@@ -127,6 +131,10 @@ export async function processarEnderecoRepresentante(
       return result.data.id;
     }
 
+    console.warn(
+      `⚠️ [Endereço] Falha no upsert para representante "${rep.nome}" (id_pje=${enderecoPJE.id}, entidade=${tipoParte}/${parteId}):`,
+      result.success === false && 'error' in result ? result.error : 'Resultado sem dados'
+    );
     return null;
   } catch (error) {
     throw new PersistenceError(

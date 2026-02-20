@@ -30,8 +30,8 @@ export interface CapturaAudienciasParams extends CapturaTRTParams {
   dataInicio?: string;
   /** Data final do período de busca (formato: YYYY-MM-DD). Se não fornecido, usa hoje + 365 dias */
   dataFim?: string;
-  /** Código do status da audiência: 'M' = Designada, 'C' = Cancelada, 'F' = Realizada. Padrão: 'M' */
-  codigoSituacao?: 'M' | 'C' | 'F';
+  /** Códigos dos status de audiência: 'M' = Designada, 'C' = Cancelada, 'F' = Realizada. Padrão: ['M'] */
+  codigoSituacoes?: ('M' | 'C' | 'F')[];
 }
 
 /**

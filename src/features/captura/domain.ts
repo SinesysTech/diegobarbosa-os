@@ -343,7 +343,7 @@ export interface CapturaPartesParams extends BaseCapturaParams {
 export interface AudienciasParams extends BaseCapturaParams {
   dataInicio?: string;
   dataFim?: string;
-  status?: "M" | "C" | "F"; // M=Designada, C=Cancelada, F=Realizada
+  statusList: ("M" | "C" | "F")[]; // M=Designada, C=Cancelada, F=Realizada
 }
 
 /**

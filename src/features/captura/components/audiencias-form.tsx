@@ -7,13 +7,7 @@ import { capturarAudiencias } from '@/features/captura/services/api-client';
 import { STATUS_AUDIENCIA_OPTIONS } from '@/features/captura/constants';
 import { Label } from '@/components/ui/label';
 import { FormDatePicker } from '@/components/ui/form-date-picker';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
+import { Checkbox } from '@/components/ui/checkbox';
 import type { CapturaFormHandle } from '@/features/captura/types';
 
 interface AudienciasFormProps {
@@ -27,7 +21,7 @@ export const AudienciasForm = forwardRef<CapturaFormHandle, AudienciasFormProps>
     const [credenciaisSelecionadas, setCredenciaisSelecionadas] = useState<number[]>([]);
     const [dataInicio, setDataInicio] = useState('');
     const [dataFim, setDataFim] = useState('');
-    const [status, setStatus] = useState<'M' | 'C' | 'F'>('M');
+    const [statusList, setStatusList] = useState<('M' | 'C' | 'F')[]>(['M']);
     const [isLoading, setIsLoading] = useState(false);
     const [result, setResult] = useState<{
       success: boolean | null;
@@ -55,6 +49,11 @@ export const AudienciasForm = forwardRef<CapturaFormHandle, AudienciasFormProps>
         return;
       }
 
+      if (statusList.length === 0) {
+        setResult({ success: false, error: 'Selecione pelo menos um status de audiência' });
+        return;
+      }
+
       setIsLoading(true);
       setResult({ success: null });
 
@@ -64,11 +63,11 @@ export const AudienciasForm = forwardRef<CapturaFormHandle, AudienciasFormProps>
           credencial_ids: number[];
           dataInicio?: string;
           dataFim?: string;
-          status?: 'M' | 'C' | 'F';
+          statusList: ('M' | 'C' | 'F')[];
         } = {
           advogado_id: advogadoId,
           credencial_ids: credenciaisSelecionadas,
-          status,
+          statusList,
         };
 
         if (dataInicio) params.dataInicio = dataInicio;
@@ -95,7 +94,7 @@ export const AudienciasForm = forwardRef<CapturaFormHandle, AudienciasFormProps>
       } finally {
         setIsLoading(false);
       }
-    }, [advogadoId, credenciaisSelecionadas, dataInicio, dataFim, status, onSuccess]);
+    }, [advogadoId, credenciaisSelecionadas, dataInicio, dataFim, statusList, onSuccess]);
 
     // Expor método submit para o componente pai
     useImperativeHandle(ref, () => ({
@@ -112,22 +111,33 @@ export const AudienciasForm = forwardRef<CapturaFormHandle, AudienciasFormProps>
           onCredenciaisChange={setCredenciaisSelecionadas}
         >
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="space-y-2 md:col-span-2">
-              <Label htmlFor="status">Status da Audiência</Label>
-              <Select value={status} onValueChange={(value) => setStatus(value as 'M' | 'C' | 'F')}>
-                <SelectTrigger id="status">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {STATUS_AUDIENCIA_OPTIONS.map((option) => (
-                    <SelectItem key={option.value} value={option.value}>
-                      {option.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+            <div className="space-y-3 md:col-span-2">
+              <Label>Status da Audiência</Label>
+              <div className="flex flex-wrap gap-4">
+                {STATUS_AUDIENCIA_OPTIONS.map((option) => {
+                  const checked = statusList.includes(option.value);
+                  return (
+                    <label
+                      key={option.value}
+                      className="flex items-center gap-2 cursor-pointer"
+                    >
+                      <Checkbox
+                        checked={checked}
+                        onCheckedChange={(isChecked) => {
+                          setStatusList((prev) =>
+                            isChecked
+                              ? [...prev, option.value]
+                              : prev.filter((s) => s !== option.value)
+                          );
+                        }}
+                      />
+                      <span className="text-sm">{option.label}</span>
+                    </label>
+                  );
+                })}
+              </div>
               <p className="text-sm text-muted-foreground">
-                Selecione o status das audiências que deseja capturar
+                Selecione os status das audiências que deseja capturar (múltipla seleção)
               </p>
             </div>
             <div className="space-y-2">

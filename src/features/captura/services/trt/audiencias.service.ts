@@ -163,7 +163,7 @@ export async function audienciasCapture(
     console.log(`✅ [Audiências] Autenticado como: ${advogadoInfo.nome}`);
 
     // ═══════════════════════════════════════════════════════════════
-    // FASE 2: BUSCAR AUDIÊNCIAS
+    // FASE 2: BUSCAR AUDIÊNCIAS (itera por cada status na mesma sessão)
     // ═══════════════════════════════════════════════════════════════
     console.log("📡 [Audiências] Fase 2: Buscando audiências...");
 
@@ -199,19 +199,33 @@ export async function audienciasCapture(
       );
     }
 
-    const codigoSituacao = params.codigoSituacao || "M";
+    const STATUS_LABELS: Record<string, string> = { M: 'Designada', C: 'Cancelada', F: 'Realizada' };
+    const codigoSituacoes = (params.codigoSituacoes && params.codigoSituacoes.length > 0)
+      ? params.codigoSituacoes
+      : ['M'] as const;
+
     console.log(
-      `📅 [Audiências] Período: ${dataInicio} a ${dataFim} | Situação: ${codigoSituacao}`,
+      `📅 [Audiências] Período: ${dataInicio} a ${dataFim} | Situações: ${codigoSituacoes.map(s => STATUS_LABELS[s]).join(', ')}`,
     );
 
-    const { audiencias, paginas } = await obterTodasAudiencias(
-      page,
-      dataInicio,
-      dataFim,
-      codigoSituacao,
-    );
+    // Buscar audiências para cada status sequencialmente, na mesma sessão autenticada
+    const audiencias: Audiencia[] = [];
+    const paginas: PagedResponse<Audiencia>[] = [];
 
-    console.log(`✅ [Audiências] ${audiencias.length} audiências encontradas`);
+    for (const codigoSituacao of codigoSituacoes) {
+      console.log(`   📡 Buscando audiências "${STATUS_LABELS[codigoSituacao]}" (${codigoSituacao})...`);
+      const resultado = await obterTodasAudiencias(
+        page,
+        dataInicio,
+        dataFim,
+        codigoSituacao,
+      );
+      audiencias.push(...resultado.audiencias);
+      paginas.push(...resultado.paginas);
+      console.log(`   ✅ ${resultado.audiencias.length} audiências "${STATUS_LABELS[codigoSituacao]}" encontradas`);
+    }
+
+    console.log(`✅ [Audiências] Total: ${audiencias.length} audiências encontradas (${codigoSituacoes.length} status)`);
 
     // Se não há audiências, retornar imediatamente
     if (audiencias.length === 0) {
@@ -592,9 +606,11 @@ export async function audienciasCapture(
 
     // 5.5 Processar atas para audiências realizadas
     const atasMap: Record<number, { documentoId: number; url: string }> = {};
-    if (codigoSituacao === "F") {
-      console.log("   📄 Buscando atas de audiências realizadas...");
-      for (const a of audiencias) {
+    // Filtra apenas audiências realizadas (status F) independente dos status selecionados
+    const audienciasRealizadas = audiencias.filter(a => a.status === 'F');
+    if (audienciasRealizadas.length > 0) {
+      console.log(`   📄 Buscando atas de ${audienciasRealizadas.length} audiências realizadas...`);
+      for (const a of audienciasRealizadas) {
         try {
           // Usar timeline já capturada se disponível
           const dadosProcesso = dadosComplementares.porProcesso.get(
@@ -702,6 +718,7 @@ export async function audienciasCapture(
     // ═══════════════════════════════════════════════════════════════
     console.log("🏁 [Audiências] Captura concluída!");
     console.log(`   📊 Resumo:`);
+    console.log(`      - Status capturados: ${codigoSituacoes.map(s => STATUS_LABELS[s]).join(', ')}`);
     console.log(`      - Audiências: ${audiencias.length}`);
     console.log(`      - Processos únicos: ${processosIds.length}`);
     console.log(
