@@ -285,15 +285,10 @@ export function SegmentosContent() {
 
     return (
         <div className="space-y-6">
-            <div className="flex flex-col gap-2">
-                <h2 className="text-2xl font-bold tracking-tight">Segmentos</h2>
-                <p className="text-muted-foreground">
-                    Gerencie as áreas do direito utilizadas em contratos, peças e formulários.
-                </p>
-            </div>
+
 
             {/* Formulário de Criação/Edição */}
-            {(isCreating || editingId) ? (
+            {(isCreating || editingId) && (
                 <Card>
                     <CardHeader>
                         <div className="flex items-center justify-between">
@@ -405,21 +400,13 @@ export function SegmentosContent() {
                         </div>
                     </CardContent>
                 </Card>
-            ) : (
-                <div className="flex justify-end">
-                    <Button onClick={() => setIsCreating(true)}>
-                        <Plus className="h-4 w-4 mr-2" />
-                        Novo Segmento
-                    </Button>
-                </div>
             )}
 
             {/* Lista de Segmentos */}
             <Card>
                 <CardHeader className="pb-3">
                     <div className="flex items-center justify-between">
-                        <CardTitle>Segmentos Cadastrados</CardTitle>
-                        <div className="relative w-64">
+                        <div className="relative w-72">
                             <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
                             <Input
                                 placeholder="Buscar segmentos..."
@@ -428,6 +415,12 @@ export function SegmentosContent() {
                                 className="pl-8"
                             />
                         </div>
+                        {(!isCreating && !editingId) && (
+                            <Button onClick={() => setIsCreating(true)}>
+                                <Plus className="h-4 w-4 mr-2" />
+                                Novo Segmento
+                            </Button>
+                        )}
                     </div>
                 </CardHeader>
                 <CardContent>
