@@ -21,7 +21,7 @@ export async function GET(
       return NextResponse.json({ error: 'Template não encontrado' }, { status: 404 });
     }
 
-    const pdfUrl = template.arquivo_original;
+    const pdfUrl = template.pdf_url || template.arquivo_original;
     if (!pdfUrl) {
       return NextResponse.json({ error: 'Template não possui PDF associado' }, { status: 404 });
     }
@@ -31,10 +31,10 @@ export async function GET(
     // Aqui assumimos que a URL salva no banco é a pública ou já é válida.
     // Se for do Supabase, podemos gerar um presigned se for bucket privado.
     // Por simplicidade, vamos tentar gerar o presigned SE conseguirmos extrair a key.
-    
+
     // Tentar extrair key para gerar URL assinada e segura
     const bucket = process.env.SUPABASE_STORAGE_BUCKET || 'diegobarbosa-os';
-    
+
     // Simplificação: se tem "storage/v1/object/public", tentamos pegar a key
     if (pdfUrl.includes('/storage/v1/object/public/')) {
         const parts = pdfUrl.split('/storage/v1/object/public/');
@@ -43,7 +43,7 @@ export async function GET(
             // bucket é o primeiro segmento
             const [urlBucket, ...keyParts] = pathInside.split('/');
             const key = keyParts.join('/');
-            
+
             // Só gera presigned se for o mesmo bucket configurado (opcional, mas seguro)
             if (urlBucket === bucket) {
                  fetchUrl = await generatePresignedUrl(key, 3600);
@@ -76,7 +76,7 @@ export async function GET(
       status: 200,
       headers: {
         'Content-Type': 'application/pdf',
-        'Content-Disposition': `inline; filename="${template.arquivo_nome || 'template.pdf'}"`,
+        'Content-Disposition': `inline; filename="${encodeURIComponent(template.arquivo_nome || 'template.pdf')}"`,
         'Cache-Control': 'public, max-age=3600',
       },
     });
