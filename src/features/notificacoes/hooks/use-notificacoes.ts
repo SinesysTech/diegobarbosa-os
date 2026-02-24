@@ -281,9 +281,9 @@ export function useNotificacoesRealtime(options?: {
       if (isConnectingRef.current) return;
 
       isConnectingRef.current = true;
-      const startTime = Date.now();
 
       try {
+        // Aguardar dados do usuário (UserProvider pode não ter carregado ainda)
         if (!usuarioId) {
           isConnectingRef.current = false;
           return;
@@ -365,24 +365,15 @@ export function useNotificacoesRealtime(options?: {
           }
         );
 
-        channel.subscribe((status, err) => {
-          const duration = Date.now() - startTime;
+        // Subscrever ao canal com tratamento de status
+        channel.subscribe((status) => {
           isConnectingRef.current = false;
 
           if (status === REALTIME_SUBSCRIBE_STATES.SUBSCRIBED) {
             retryCountRef.current = 0;
             setUsePolling(false);
           } else if (status === REALTIME_SUBSCRIBE_STATES.CHANNEL_ERROR) {
-            const errorInfo = extractRealtimeErrorInfo(err);
-            console.warn("⚠️ [Notificações Realtime] Erro no canal:", {
-              status,
-              ...errorInfo,
-              channelName,
-              usuarioId,
-              duration,
-              tentativa: retryCountRef.current + 1,
-              maxTentativas: REALTIME_CONFIG.MAX_RETRIES,
-            });
+            // Tentar reconectar com backoff exponencial
             scheduleRetry(isMounted);
           } else if (status === REALTIME_SUBSCRIBE_STATES.TIMED_OUT) {
             scheduleRetry(isMounted);
@@ -393,11 +384,7 @@ export function useNotificacoesRealtime(options?: {
             // Retries já são tratados em CHANNEL_ERROR e TIMED_OUT.
           }
         });
-      } catch (error) {
-        const errorInfo = extractRealtimeErrorInfo(error);
-        console.warn(
-          `⚠️ [Notificações Realtime] Falha ao configurar (tentativa ${retryCountRef.current + 1}): ${errorInfo.message}`
-        );
+      } catch {
         isConnectingRef.current = false;
         scheduleRetry(isMounted);
       }
