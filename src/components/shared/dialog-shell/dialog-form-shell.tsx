@@ -116,6 +116,7 @@ export function DialogFormShell({
           </ResponsiveDialogTitle>
         </ResponsiveDialogHeader>
 
+<<<<<<< HEAD
         {/* Separator + barra de progresso para multi-step */}
         {multiStep ? (
           <div className="px-6 pb-4 space-y-3">
