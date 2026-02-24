@@ -19,6 +19,7 @@
 import { describe, it, expect, jest, beforeEach } from "@jest/globals";
 import * as arquivosRepo from "../../repositories/arquivos-repository";
 import * as pastasRepo from "../../repositories/pastas-repository";
+import * as b2Service from "../../services/b2-upload.service";
 import type {
   Arquivo,
   ArquivoComUsuario,
@@ -196,11 +197,7 @@ describe("Arquivos API Integration", () => {
       expect(result.pasta_id).toBe(pastaId);
     });
 
-    it("deve classificar tipos de arquivo via getTipoMedia", () => {
-      // Setup
-      // eslint-disable-next-line @typescript-eslint/no-require-imports
-      const storageService = require("../../services/storage-upload.service");
-
+    it("deve classificar tipos de arquivo via getTipoMedia", async () => {
       // Assert - Testar classificação de tipos
       expect(storageService.getTipoMedia("application/pdf")).toBe("pdf");
       expect(storageService.getTipoMedia("image/jpeg")).toBe("imagem");
@@ -209,11 +206,7 @@ describe("Arquivos API Integration", () => {
       expect(storageService.getTipoMedia("application/zip")).toBe("outros");
     });
 
-    it("deve validar tipo de arquivo", () => {
-      // Setup
-      // eslint-disable-next-line @typescript-eslint/no-require-imports
-      const storageService = require("../../services/storage-upload.service");
-
+    it("deve validar tipo de arquivo", async () => {
       // Assert - validateFileType retorna true por padrão no mock
       expect(storageService.validateFileType("application/pdf")).toBe(true);
 
@@ -224,11 +217,7 @@ describe("Arquivos API Integration", () => {
       );
     });
 
-    it("deve validar tamanho de arquivo", () => {
-      // Setup
-      // eslint-disable-next-line @typescript-eslint/no-require-imports
-      const storageService = require("../../services/storage-upload.service");
-
+    it("deve validar tamanho de arquivo", async () => {
       // Assert - validateFileSize retorna true por padrão no mock
       expect(storageService.validateFileSize(1024)).toBe(true);
 
