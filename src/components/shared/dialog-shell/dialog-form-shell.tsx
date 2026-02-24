@@ -114,7 +114,7 @@ export function DialogFormShell({
         showCloseButton={false}
         className={cn(
           maxWidthClass,
-          "bg-card",
+          "bg-card overflow-hidden",
           "p-0 gap-0",
           "transition-[max-width] duration-300 ease-in-out",
           className
