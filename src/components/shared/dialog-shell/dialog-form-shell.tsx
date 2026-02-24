@@ -6,11 +6,11 @@ import {
   ResponsiveDialogContent,
   ResponsiveDialogHeader,
   ResponsiveDialogTitle,
+  ResponsiveDialogDescription,
   ResponsiveDialogBody,
   ResponsiveDialogFooter,
 } from "@/components/ui/responsive-dialog";
 import { Progress } from "@/components/ui/progress";
-import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 
@@ -27,6 +27,10 @@ interface DialogFormShellProps {
    * Título do diálogo (deve ser constante em wizards, ex: "Novo Cliente")
    */
   title: React.ReactNode;
+  /**
+   * Descrição/subtítulo abaixo do título (ex: metadados, instruções)
+   */
+  description?: React.ReactNode;
   /**
    * Conteúdo do formulário
    */
@@ -55,11 +59,16 @@ interface DialogFormShellProps {
    * Largura máxima do diálogo (apenas desktop)
    * @default "lg"
    */
-  maxWidth?: "sm" | "md" | "lg" | "xl" | "2xl" | "3xl" | "4xl";
+  maxWidth?: "sm" | "md" | "lg" | "xl" | "2xl" | "3xl" | "4xl" | "5xl";
   /**
    * Classes adicionais para o container do conteúdo
    */
   className?: string;
+  /**
+   * Classes adicionais para o body (área de conteúdo scrollável).
+   * Use para override de overflow, layout flex, etc.
+   */
+  bodyClassName?: string;
   /**
    * Ocultar o rodapé padrão do shell (útil quando o formulário tem seu próprio rodapé)
    */
@@ -70,13 +79,14 @@ export function DialogFormShell({
   open,
   onOpenChange,
   title,
+  description,
   children,
   footer,
   leftFooter,
   multiStep,
   maxWidth = "lg",
-
   className,
+  bodyClassName,
   hideFooter,
 }: DialogFormShellProps) {
   // Calcular largura máxima
@@ -88,6 +98,7 @@ export function DialogFormShell({
     "2xl": "sm:max-w-2xl",
     "3xl": "sm:max-w-3xl",
     "4xl": "sm:max-w-4xl",
+    "5xl": "sm:max-w-5xl",
   }[maxWidth];
 
   // Calcular progresso para multi-step
@@ -110,35 +121,35 @@ export function DialogFormShell({
         )}
       >
         {/* Header: título do dialog */}
-        <ResponsiveDialogHeader className="px-6 pt-6 pb-4 shrink-0">
+        <ResponsiveDialogHeader className="px-6 py-4 shrink-0 border-b">
           <ResponsiveDialogTitle className="text-lg font-semibold leading-none tracking-tight">
             {title}
           </ResponsiveDialogTitle>
+
+          {description && (
+            <ResponsiveDialogDescription className="text-sm text-muted-foreground">
+              {description}
+            </ResponsiveDialogDescription>
+          )}
+
+          {/* Barra de progresso para multi-step */}
+          {multiStep && (
+            <div className="mt-3 space-y-1.5">
+              <div className="flex items-center justify-between text-sm text-muted-foreground">
+                <span className="font-medium text-foreground">
+                  {multiStep.stepTitle}
+                </span>
+                <span className="tabular-nums">
+                  Etapa {multiStep.current} de {multiStep.total}
+                </span>
+              </div>
+              <Progress value={progressValue} className="h-1.5" />
+            </div>
+          )}
         </ResponsiveDialogHeader>
 
-<<<<<<< HEAD
-        {/* Separator + barra de progresso para multi-step */}
-        {multiStep ? (
-          <div className="px-6 pb-4 space-y-3">
-            <Separator />
-            <div className="flex items-center justify-between text-sm">
-              <span className="font-medium text-foreground">
-                {multiStep.stepTitle}
-              </span>
-              <span className="text-muted-foreground tabular-nums">
-                Etapa {multiStep.current} de {multiStep.total}
-              </span>
-            </div>
-            <Progress value={progressValue} className="h-1.5" />
-          </div>
-        ) : (
-          <div className="px-6">
-            <Separator />
-          </div>
-        )}
-
         {/* Body: conteúdo scrollável */}
-        <ResponsiveDialogBody className="flex-1 min-h-0">
+        <ResponsiveDialogBody className={cn("flex-1 min-h-0", bodyClassName)}>
           {children}
         </ResponsiveDialogBody>
 
