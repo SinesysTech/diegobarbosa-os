@@ -6,7 +6,7 @@ import {
   storePdf,
   generateMockDataForPreview,
 } from "@/app/app/assinatura-digital/feature";
-import { generatePresignedUrl } from "@/lib/storage/backblaze-b2.service";
+import { createPresignedUrl as generatePresignedUrl } from "@/lib/storage/supabase-storage.service";
 import type {
   TemplateCampo,
   StatusTemplate,

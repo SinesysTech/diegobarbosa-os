@@ -5,7 +5,7 @@
  * para o Backblaze B2 com organização padronizada.
  */
 
-import { uploadToBackblaze, type BackblazeUploadResult } from '@/lib/storage/backblaze-b2.service';
+import { uploadToSupabase as uploadToBackblaze, type SupabaseUploadResult as BackblazeUploadResult } from '@/lib/storage/supabase-storage.service';
 import { gerarCaminhoCompletoTimeline } from '@/lib/storage/file-naming.utils';
 
 /**

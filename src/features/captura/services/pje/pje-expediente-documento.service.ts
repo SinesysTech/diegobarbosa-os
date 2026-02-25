@@ -34,7 +34,7 @@ import type {
   FetchDocumentoResult,
   ArquivoInfo,
 } from '../../types/documento-types';
-import { uploadToBackblaze } from '@/lib/storage/backblaze-b2.service';
+import { uploadToSupabase as uploadToBackblaze } from '@/lib/storage/supabase-storage.service';
 import { gerarCaminhoCompletoPendente } from '@/lib/storage/file-naming.utils';
 import { atualizarDocumentoPendente } from '@/features/captura/services/persistence/pendentes-persistence.service';
 

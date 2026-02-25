@@ -5,16 +5,6 @@ export type StorageProvider = 'supabase' | 'google_drive';
 
 export async function downloadFile(provider: StorageProvider, key: string): Promise<Buffer> {
   switch (provider) {
-    case 'backblaze': {
-      const url = await getBackblazeUrl(key);
-      const response = await fetch(url);
-      if (!response.ok) {
-        throw new Error(`Falha ao baixar de Backblaze: ${response.status} ${response.statusText || 'erro desconhecido'} (key: ${key})`);
-      }
-      const arrayBuffer = await response.arrayBuffer();
-      return Buffer.from(arrayBuffer);
-    }
-
     case 'supabase': {
       const arrayBuffer = await downloadFromSupabase(key);
       return Buffer.from(arrayBuffer);

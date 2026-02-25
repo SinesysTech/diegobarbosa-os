@@ -303,7 +303,7 @@
   "overrides": {
     "react": "$react",
     "react-dom": "$react-dom",
-    "glob": "^11.0.0",
+    "glob": "^13.0.0",
     "minimatch": "10.2.2",
     "rimraf": "^5.0.0",
     "fast-xml-parser": "^5.3.6",

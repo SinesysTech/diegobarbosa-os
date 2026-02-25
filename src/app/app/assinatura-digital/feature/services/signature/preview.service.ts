@@ -9,7 +9,7 @@
 
 import { generatePdfFromTemplate } from "../template-pdf.service";
 import { storePdf } from "../storage.service";
-import { generatePresignedUrl } from "@/lib/storage/backblaze-b2.service";
+import { createPresignedUrl as generatePresignedUrl } from "@/lib/storage/supabase-storage.service";
 import { getClienteBasico, getTemplateBasico } from "../data.service";
 import { logger, createTimer, LogServices, LogOperations } from "../logger";
 import type { PreviewPayload, PreviewResult } from "../../types/types";

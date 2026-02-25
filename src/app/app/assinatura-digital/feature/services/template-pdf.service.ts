@@ -199,12 +199,22 @@ function formatValue(tipo: string, raw: string) {
 async function loadTemplatePdf(url: string): Promise<Uint8Array> {
   let fetchUrl = url;
 
-  // Se a URL é do Backblaze (bucket privado), gerar presigned URL
-  const bucket = process.env.BACKBLAZE_BUCKET_NAME || process.env.B2_BUCKET;
-  if (bucket && url.includes(`/${bucket}/`)) {
-    const { generatePresignedUrl } = await import('@/lib/storage/backblaze-b2.service');
+  // Se a URL é do Supabase Storage (bucket privado), gerar presigned URL
+  const bucket = process.env.SUPABASE_STORAGE_BUCKET || 'diegobarbosa-os';
+  if (url.includes('/storage/v1/object/public/')) {
+    const parts = url.split('/storage/v1/object/public/');
+    if (parts.length > 1) {
+      const [urlBucket, ...keyParts] = parts[1].split('/');
+      if (urlBucket === bucket) {
+        const key = keyParts.join('/');
+        const { createPresignedUrl } = await import('@/lib/storage/supabase-storage.service');
+        fetchUrl = await createPresignedUrl(key, 3600);
+      }
+    }
+  } else if (url.includes(`/${bucket}/`)) {
     const fileKey = url.split(`/${bucket}/`)[1];
-    fetchUrl = await generatePresignedUrl(fileKey, 3600);
+    const { createPresignedUrl } = await import('@/lib/storage/supabase-storage.service');
+    fetchUrl = await createPresignedUrl(fileKey, 3600);
   }
 
   const res = await fetch(fetchUrl);

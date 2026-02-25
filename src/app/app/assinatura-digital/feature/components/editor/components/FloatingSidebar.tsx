@@ -102,7 +102,7 @@ function SidebarContent(props: FloatingSidebarProps) {
   } = props;
 
   const [isAddSignerOpen, setIsAddSignerOpen] = useState(false);
-  const titleDebounceRef = useRef<ReturnType<typeof setTimeout>>();
+  const titleDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const handleTitleChange = useCallback((value: string) => {
     if (titleDebounceRef.current) clearTimeout(titleDebounceRef.current);

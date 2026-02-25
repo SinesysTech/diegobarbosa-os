@@ -33,7 +33,7 @@ yarn-error.log*
 
 # env files
 # NOTA: .env.local está sendo rastreado (repositório privado)
-!.env.local
+.env.local
 .env*.local.bak
 .env.build
 docker-compose.portainer.yml
@@ -65,3 +65,4 @@ scripts/results/bundle-analysis/*.html
 
 # Diagnósticos de banco (podem conter dados sensíveis)
 DIAGNOSTICO_DISK_IO*.md
+

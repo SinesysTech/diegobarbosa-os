@@ -43,7 +43,7 @@ import {
 } from "./services/storage-upload.service";
 import { checkQuota, incrementQuota } from "@/lib/mcp/quotas"; // Moved to feature
 import { checkPermission } from "@/lib/auth/authorization";
-import { generatePresignedUrl as generatePresignedDownloadUrl } from "@/lib/storage/backblaze-b2.service";
+import { createPresignedUrl as generatePresignedDownloadUrl } from "@/lib/storage/supabase-storage.service";
 
 // ============================================================================
 // DOCUMENTOS

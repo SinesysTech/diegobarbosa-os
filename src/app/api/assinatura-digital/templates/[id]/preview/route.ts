@@ -28,7 +28,6 @@ export async function GET(
 
     // Determinar URL para fetch
     let fetchUrl = pdfUrl;
-    const bucket = process.env.BACKBLAZE_BUCKET_NAME || process.env.B2_BUCKET;
 
     // Tentar extrair key para gerar URL assinada e segura
     const bucket = process.env.SUPABASE_STORAGE_BUCKET || 'diegobarbosa-os';

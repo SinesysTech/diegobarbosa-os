@@ -222,7 +222,9 @@ export function ConfiguracoesTabsContent({
           <TabsContent value="prompts-ia" className="space-y-4">
             <PromptsIAContent systemPrompts={systemPrompts} />
           </TabsContent>
-        </div>
+          <TabsContent value="segmentos" className="space-y-4">
+            <SegmentosContent />
+          </TabsContent>
       </Tabs>
     </div>
   );
