@@ -37,32 +37,63 @@ RUN npm ci --legacy-peer-deps --ignore-scripts
 FROM --platform=linux/amd64 node:22-alpine AS builder
 WORKDIR /app
 
-# Configuracao de memoria para build
-ENV NODE_OPTIONS="--max-old-space-size=4096"
+# ============================================================================
+# CONFIGURACAO DE MEMORIA
+# ============================================================================
+# NOTA IMPORTANTE: NAO definir NODE_OPTIONS aqui!
+# O script build:ci no package.json define --max-old-space-size=6144 (6GB)
+# Se definirmos ENV aqui, ele SOBRESCREVE o valor do script
+# Resultado: build usa apenas 4GB e falha com OOM
+#
+# Build acontece no GitHub Actions (nao no CapRover):
+# - 6GB e suficiente para builds Next.js com cache persistente
+# - GitHub Actions runners tem ~7GB de RAM disponivel
+# - Cache handler customizado reduz uso de memoria em ~30%
+#
+# OTIMIZACOES ADICIONAIS (ver next.config.ts):
+# - productionBrowserSourceMaps: false (economiza ~500MB)
+# - serverSourceMaps: false (reduz tamanho da imagem)
+# - output: 'standalone' (build otimizado para Docker)
+# - cacheHandler: './cache-handler.js' (cache persistente)
+# - cacheMaxMemorySize: 0 (desabilita cache em memoria)
+# ============================================================================
 
-# Copiar dependencias do stage anterior
-COPY --from=deps /app/node_modules ./node_modules
-COPY . .
-
-# Criar diretorio de cache para builds incrementais
-RUN mkdir -p .next/cache
 
 # ============================================================================
-# BUILD ARGS - Variaveis NEXT_PUBLIC_* (inlined no build)
+# BUILD ARGS (DECLARADOS ANTES DO COPY)
 # ============================================================================
-# Placeholders usados em tempo de build. Os valores reais sao injetados
-# em runtime via window.__ENV__ no root layout (Server Component).
-# Se --build-arg for passado, o valor real sera usado; caso contrario,
-# o placeholder garante que o build nao falhe.
-ARG NEXT_PUBLIC_SUPABASE_URL=__PLACEHOLDER__
-ARG NEXT_PUBLIC_SUPABASE_PUBLISHABLE_OR_ANON_KEY=__PLACEHOLDER__
+# Declarar ARGs o mais cedo possível para melhor uso do cache
+# Se secrets mudarem, só invalida a partir daqui
+# ============================================================================
+ARG NEXT_PUBLIC_SUPABASE_URL
+ARG NEXT_PUBLIC_SUPABASE_PUBLISHABLE_OR_ANON_KEY
 
 # Converter ARGs para ENVs para o build
 ENV NEXT_PUBLIC_SUPABASE_URL=${NEXT_PUBLIC_SUPABASE_URL}
 ENV NEXT_PUBLIC_SUPABASE_PUBLISHABLE_OR_ANON_KEY=${NEXT_PUBLIC_SUPABASE_PUBLISHABLE_OR_ANON_KEY}
 
-# Build da aplicacao
-RUN npm run build:ci
+# Desabilitar TypeScript check durante build Docker (ja foi feito no CI)
+# Economiza ~1min e ~2GB de memoria
+ENV NEXT_BUILD_LINT_DISABLED=1
+ENV SKIP_TYPE_CHECK=true
+# Webpack é forçado via --webpack no script build:ci (package.json)
+# NÃO definir TURBOPACK=0 aqui — Next.js 16 rejeita múltiplas flags de bundler
+
+# Copiar dependencias do stage anterior
+COPY --from=deps /app/node_modules ./node_modules
+
+# Criar diretorio de cache ANTES de copiar codigo (melhor cache)
+RUN mkdir -p .next/cache
+
+# Copiar codigo fonte por ultimo (muda mais frequentemente)
+COPY . .
+
+# Build da aplicacao com cache persistente entre builds
+# --mount=type=cache persiste o diretorio .next/cache entre builds
+# uid/gid=1001 corresponde ao usuario nextjs no stage runner
+# NOTA: NODE_OPTIONS=--max-old-space-size=6144 vem do script build:ci
+RUN --mount=type=cache,target=/app/.next/cache,uid=1001,gid=1001 \
+    npm run build:ci
 
 # ============================================================================
 # STAGE 3: Runner (Cloudron Base Image)

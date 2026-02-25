@@ -230,6 +230,32 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Buscar configuração de contrato do formulário (contrato_config JSONB)
+    const { data: formularioData } = await supabase
+      .from('assinatura_digital_formularios')
+      .select('tipo_formulario, contrato_config')
+      .eq('id', formularioId)
+      .maybeSingle();
+
+    const contratoConfig = formularioData?.contrato_config as {
+      tipo_contrato_id?: number;
+      tipo_cobranca_id?: number;
+      papel_cliente?: 'autora' | 're';
+      pipeline_id?: number;
+    } | null;
+
+    // Se contrato_config presente, buscar estágio default do pipeline
+    let estagioDefaultId: number | null = null;
+    if (contratoConfig?.pipeline_id) {
+      const { data: estagioDefault } = await supabase
+        .from('contrato_pipeline_estagios')
+        .select('id')
+        .eq('pipeline_id', contratoConfig.pipeline_id)
+        .eq('is_default', true)
+        .maybeSingle();
+      estagioDefaultId = estagioDefault?.id ?? null;
+    }
+
     const { data: cliente, error: clienteError } = await supabase
       .from('clientes')
       .select('id, nome, cpf, cnpj, email')
@@ -248,67 +274,117 @@ export async function POST(request: NextRequest) {
       ? await upsertParteContraria(supabase, partePayload)
       : null;
 
-    const { data: contrato, error: contratoError } = await supabase
+    // Determinar papel do cliente e polo da parte contrária
+    const papelCliente = contratoConfig?.papel_cliente ?? 'autora';
+    const papelParteContraria = papelCliente === 'autora' ? 're' : 'autora';
+
+    // Idempotência: verificar se já existe contrato recente (últimos 5 min)
+    // para este cliente + segmento com status em_contratacao.
+    // Previne duplicatas quando o usuário volta e re-submete o formulário.
+    const IDEMPOTENCY_WINDOW_MS = 5 * 60 * 1000;
+    const idempotencyThreshold = new Date(Date.now() - IDEMPOTENCY_WINDOW_MS).toISOString();
+
+    const { data: existingContrato } = await supabase
       .from('contratos')
-      .insert({
+      .select('id, status')
+      .eq('cliente_id', payload.clienteId)
+      .eq('segmento_id', payload.segmentoId)
+      .eq('status', 'em_contratacao')
+      .gte('cadastrado_em', idempotencyThreshold)
+      .order('cadastrado_em', { ascending: false })
+      .limit(1)
+      .maybeSingle();
+
+    let contrato: { id: number; status: string };
+
+    if (existingContrato) {
+      // Reutilizar contrato existente (idempotente)
+      contrato = existingContrato;
+    } else {
+      // Montar dados de inserção: usa contrato_config se disponível, senão fallback
+      const contratoInsert: Record<string, unknown> = {
         segmento_id: payload.segmentoId,
-        tipo_contrato: 'ajuizamento',
-        tipo_cobranca: 'pro_exito',
         cliente_id: payload.clienteId,
-        papel_cliente_no_contrato: 'autora',
-        status: 'em_contratacao',
         cadastrado_em: new Date().toISOString(),
         observacoes:
           pickString(payload.dados, ['observacoes', 'descricao_caso']) ??
           `Contrato iniciado via formulário ${payload.formularioNome}`,
-      })
-      .select('id, status')
-      .single();
+      };
 
-    if (contratoError || !contrato) {
-      throw new Error(contratoError?.message || 'Falha ao criar contrato');
+      if (contratoConfig) {
+        // Usar configuração do formulário (novas colunas FK)
+        contratoInsert.tipo_contrato_id = contratoConfig.tipo_contrato_id ?? null;
+        contratoInsert.tipo_cobranca_id = contratoConfig.tipo_cobranca_id ?? null;
+        contratoInsert.papel_cliente_no_contrato = papelCliente;
+        contratoInsert.estagio_id = estagioDefaultId;
+        // Manter colunas enum para backward compat durante transição
+        contratoInsert.tipo_contrato = 'ajuizamento';
+        contratoInsert.tipo_cobranca = 'pro_exito';
+        contratoInsert.status = 'em_contratacao';
+      } else {
+        // Fallback: valores hard-coded originais (backward compat)
+        contratoInsert.tipo_contrato = 'ajuizamento';
+        contratoInsert.tipo_cobranca = 'pro_exito';
+        contratoInsert.papel_cliente_no_contrato = 'autora';
+        contratoInsert.status = 'em_contratacao';
+      }
+
+      const { data: novoContrato, error: contratoError } = await supabase
+        .from('contratos')
+        .insert(contratoInsert)
+        .select('id, status')
+        .single();
+
+      if (contratoError || !novoContrato) {
+        throw new Error(contratoError?.message || 'Falha ao criar contrato');
+      }
+
+      contrato = novoContrato;
     }
 
-    const partesRows: Array<Record<string, unknown>> = [
-      {
-        contrato_id: contrato.id,
-        tipo_entidade: 'cliente',
-        entidade_id: payload.clienteId,
-        papel_contratual: 'autora',
-        ordem: 0,
-      },
-    ];
+    // Somente inserir partes e histórico se o contrato é novo (não reutilizado)
+    if (!existingContrato) {
+      const partesRows: Array<Record<string, unknown>> = [
+        {
+          contrato_id: contrato.id,
+          tipo_entidade: 'cliente',
+          entidade_id: payload.clienteId,
+          papel_contratual: papelCliente,
+          ordem: 0,
+        },
+      ];
 
-    if (parteContraria?.id) {
-      partesRows.push({
-        contrato_id: contrato.id,
-        tipo_entidade: 'parte_contraria',
-        entidade_id: parteContraria.id,
-        papel_contratual: 're',
-        ordem: 1,
-      });
-    }
+      if (parteContraria?.id) {
+        partesRows.push({
+          contrato_id: contrato.id,
+          tipo_entidade: 'parte_contraria',
+          entidade_id: parteContraria.id,
+          papel_contratual: papelParteContraria,
+          ordem: 1,
+        });
+      }
 
-    const { error: partesError } = await supabase
-      .from('contrato_partes')
-      .insert(partesRows);
+      const { error: partesError } = await supabase
+        .from('contrato_partes')
+        .insert(partesRows);
 
-    if (partesError) {
-      throw new Error(`Falha ao salvar partes do contrato: ${partesError.message}`);
-    }
+      if (partesError) {
+        throw new Error(`Falha ao salvar partes do contrato: ${partesError.message}`);
+      }
 
-    const { error: historicoError } = await supabase
-      .from('contrato_status_historico')
-      .insert({
-        contrato_id: contrato.id,
-        from_status: null,
-        to_status: 'em_contratacao',
-        changed_at: new Date().toISOString(),
-        reason: 'Contrato criado a partir de formulário de assinatura digital',
-      });
+      const { error: historicoError } = await supabase
+        .from('contrato_status_historico')
+        .insert({
+          contrato_id: contrato.id,
+          from_status: null,
+          to_status: 'em_contratacao',
+          changed_at: new Date().toISOString(),
+          reason: 'Contrato criado a partir de formulário de assinatura digital',
+        });
 
-    if (historicoError) {
-      throw new Error(`Falha ao registrar histórico de status: ${historicoError.message}`);
+      if (historicoError) {
+        throw new Error(`Falha ao registrar histórico de status: ${historicoError.message}`);
+      }
     }
 
     return NextResponse.json({

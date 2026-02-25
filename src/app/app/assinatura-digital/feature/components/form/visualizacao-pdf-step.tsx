@@ -103,7 +103,7 @@ export default function VisualizacaoPdfStep() {
 
           // If not cached, fetch and cache
           try {
-            const response = await fetch(`/api/templates/${id}`);
+            const response = await fetch(API_ROUTES.templateById(id));
             const data = await response.json();
 
             if (data.success && data.data) {
@@ -199,12 +199,14 @@ export default function VisualizacaoPdfStep() {
       }
 
       // Preparar payload
+      // contrato_id pode ser null quando salvar-acao retorna 404 ou não cria contrato.
+      const contratoId = dadosContrato.contrato_id;
+
       const payload = {
         template_id: templateId,
         cliente_id: dadosPessoais.cliente_id,
-        contrato_id: dadosContrato.contrato_id,
+        contrato_id: contratoId,
         ...(fotoBase64 && { foto_base64: fotoBase64 }),
-        incluirAssinatura: false,
       };
 
       console.log('[PDF-PREVIEW] Payload completo:', payload);
@@ -226,7 +228,7 @@ export default function VisualizacaoPdfStep() {
         setDadosVisualizacaoPdf(pdfData);
         toast.success("Sucesso", { description: "Documento gerado com sucesso!" });
       } else {
-        throw new Error(response.message || "Erro ao gerar documento");
+        throw new Error(response.error || response.message || "Erro ao gerar documento");
       }
     } catch (err: unknown) {
       console.error("Erro ao gerar PDF preview:", err);

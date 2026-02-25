@@ -207,7 +207,9 @@ const nextConfig = {
     resolveExtensions: [".tsx", ".ts", ".jsx", ".js"],
   },
   typescript: {
-    ignoreBuildErrors: false,
+    // Build will fail on TypeScript errors - ensures type safety
+    // Can be skipped in Docker builds with SKIP_TYPE_CHECK=true (already done in CI)
+    ignoreBuildErrors: process.env.SKIP_TYPE_CHECK === "true",
   },
   webpack: (config) => {
     config.module = {

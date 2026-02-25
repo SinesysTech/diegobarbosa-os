@@ -171,32 +171,58 @@ export function ConfiguracoesTabsContent({
               </CardFooter>
             </Card>
 
-            <Card className="opacity-60 grayscale cursor-not-allowed">
-              <CardHeader className="pb-3">
-                <Blocks className="h-10 w-10 mb-2" />
-                <CardTitle>Zapier</CardTitle>
-                <CardDescription>Em breve.</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <p className="text-sm text-muted-foreground">
-                  Integração com milhares de apps via Zapier.
-                </p>
-              </CardContent>
-              <CardFooter>
-                <Button variant="outline" disabled className="w-full">Em Breve</Button>
-              </CardFooter>
-            </Card>
-          </div>
-        </TabsContent>
-        <TabsContent value="aparencia" className="space-y-4">
-          <AparenciaContent />
-        </TabsContent>
-        <TabsContent value="prompts-ia" className="space-y-4">
-          <PromptsIAContent systemPrompts={systemPrompts} />
-        </TabsContent>
-        <TabsContent value="segmentos" className="space-y-4">
-          <SegmentosContent />
-        </TabsContent>
+              {/* Card Editor de Texto IA */}
+              <EditorIAIntegrationCard integracao={integracaoEditorIA} />
+
+              {/* Card Dify */}
+              <Card>
+                <CardHeader className="pb-3">
+                  <Bot className="h-10 w-10 mb-2 text-primary" />
+                  <CardTitle>Dify AI</CardTitle>
+                  <CardDescription>Conecte seus agentes e workflows do Dify.</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm text-muted-foreground">
+                    Gerencie múltiplos aplicativos Dify, incluindo chatbots e workflows de automação.
+                  </p>
+                </CardContent>
+                <CardFooter>
+                  <div className="flex w-full flex-col gap-2">
+                    <Button variant="outline" className="w-full" asChild>
+                      <Link href="/app/configuracoes/dify">Gerenciar Apps</Link>
+                    </Button>
+                    <Button variant="secondary" className="w-full" asChild>
+                      <Link href="/app/configuracoes/assistentes-tipos">Vincular por Tipo de Expediente</Link>
+                    </Button>
+                  </div>
+                </CardFooter>
+              </Card>
+
+              {/* Exemplo de Card Futuro (Placeholder) */}
+              <Card className="opacity-60 grayscale cursor-not-allowed">
+                <CardHeader className="pb-3">
+                  <Blocks className="h-10 w-10 mb-2" />
+                  <CardTitle>Zapier</CardTitle>
+                  <CardDescription>Em breve.</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm text-muted-foreground">
+                    Integração com milhares de apps via Zapier.
+                  </p>
+                </CardContent>
+                <CardFooter>
+                  <Button variant="outline" disabled className="w-full">Em Breve</Button>
+                </CardFooter>
+              </Card>
+            </div>
+          </TabsContent>
+          <TabsContent value="aparencia" className="space-y-4">
+            <AparenciaContent />
+          </TabsContent>
+          <TabsContent value="prompts-ia" className="space-y-4">
+            <PromptsIAContent systemPrompts={systemPrompts} />
+          </TabsContent>
+        </div>
       </Tabs>
     </div>
   );

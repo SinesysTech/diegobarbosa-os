@@ -5,6 +5,16 @@ export type StorageProvider = 'supabase' | 'google_drive';
 
 export async function downloadFile(provider: StorageProvider, key: string): Promise<Buffer> {
   switch (provider) {
+    case 'backblaze': {
+      const url = await getBackblazeUrl(key);
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error(`Falha ao baixar de Backblaze: ${response.status} ${response.statusText || 'erro desconhecido'} (key: ${key})`);
+      }
+      const arrayBuffer = await response.arrayBuffer();
+      return Buffer.from(arrayBuffer);
+    }
+
     case 'supabase': {
       const arrayBuffer = await downloadFromSupabase(key);
       return Buffer.from(arrayBuffer);
@@ -25,6 +35,21 @@ export function extractKeyFromUrl(url: string): string {
 
   try {
     const urlObj = new URL(url);
+
+    // Backblaze B2
+    if (urlObj.hostname.includes('backblazeb2.com')) {
+      const pathParts = urlObj.pathname.split('/');
+
+      // Formato B2 nativo: https://f005.backblazeb2.com/file/bucket-name/path/to/file.pdf
+      // pathname: /file/bucket-name/path/to/file.pdf → slice(3)
+      if (pathParts[1] === 'file') {
+        return pathParts.slice(3).join('/');
+      }
+
+      // Formato S3-compatible: https://s3.region.backblazeb2.com/bucket-name/path/to/file.pdf
+      // pathname: /bucket-name/path/to/file.pdf → slice(2)
+      return pathParts.slice(2).join('/');
+    }
 
     // Supabase Storage
     if (urlObj.hostname.includes('supabase')) {

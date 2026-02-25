@@ -14,11 +14,11 @@
     "dev:verbose": "next dev --turbo",
     "dev:no-deprecation": "NODE_OPTIONS=--no-deprecation next dev --turbo",
     "dev:trace": "node --trace-deprecation node_modules/next/dist/bin/next dev --turbo",
-    "build": "npm run check:architecture && cross-env NODE_OPTIONS=--max-old-space-size=4096 node node_modules/next/dist/bin/next build --experimental-build-mode=compile",
-    "build:ci": "cross-env NODE_OPTIONS=--max-old-space-size=6144 DISABLE_PWA=true node node_modules/next/dist/bin/next build",
+    "build": "npm run check:architecture && cross-env NODE_OPTIONS=--max-old-space-size=4096 NEXT_TELEMETRY_DISABLED=1 node node_modules/next/dist/bin/next build --webpack",
+    "build:ci": "cross-env NODE_OPTIONS=--max-old-space-size=6144 DISABLE_PWA=true NEXT_TELEMETRY_DISABLED=1 node node_modules/next/dist/bin/next build --webpack",
     "build:windows": "npm run check:architecture && cross-env NODE_OPTIONS=--max-old-space-size=8192 node node_modules/next/dist/bin/next build --webpack",
-    "build:verbose": "next build --turbopack",
-    "build:no-deprecation": "NODE_OPTIONS=--no-deprecation next build --turbopack",
+    "build:verbose": "cross-env NEXT_TELEMETRY_DISABLED=1 next build --webpack",
+    "build:no-deprecation": "cross-env NODE_OPTIONS=--no-deprecation NEXT_TELEMETRY_DISABLED=1 next build --webpack",
     "build:prod": "next build --webpack",
     "build:prod:webpack": "next build --webpack",
     "build:prod:turbopack": "next build --turbopack",
@@ -303,8 +303,21 @@
   "overrides": {
     "react": "$react",
     "react-dom": "$react-dom",
-    "glob": "^13.0.0",
+    "glob": "^11.0.0",
+    "minimatch": "10.2.2",
     "rimraf": "^5.0.0",
+    "fast-xml-parser": "^5.3.6",
+    "dompurify": "^3.3.1",
+    "@excalidraw/excalidraw": {
+      "nanoid": "3.3.8"
+    },
+    "@excalidraw/mermaid-to-excalidraw": {
+      "nanoid": "5.0.9",
+      "mermaid": "10.9.4"
+    },
+    "readdir-glob": {
+      "minimatch": "10.2.2"
+    },
     "ajv": "^8.17.1",
     "@eslint/eslintrc": {
       "ajv": "^6.12.4"

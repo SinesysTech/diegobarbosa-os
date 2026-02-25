@@ -115,12 +115,11 @@ export function DialogFormShell({
         className={cn(
           maxWidthClass,
           "bg-card overflow-hidden",
-          "p-0 gap-0",
-          "transition-[max-width] duration-300 ease-in-out",
+          "p-0 gap-0", // Removemos padding padrão para controlar layout
+          "transition-[max-width] duration-300 ease-in-out", // Transição suave ao mudar largura
           className
         )}
       >
-        {/* Header: título do dialog */}
         <ResponsiveDialogHeader className="px-6 py-4 shrink-0 border-b">
           <ResponsiveDialogTitle className="text-lg font-semibold leading-none tracking-tight">
             {title}
@@ -148,7 +147,6 @@ export function DialogFormShell({
           )}
         </ResponsiveDialogHeader>
 
-        {/* Body: conteúdo scrollável */}
         <ResponsiveDialogBody className={cn("flex-1 min-h-0", bodyClassName)}>
           {children}
         </ResponsiveDialogBody>
@@ -156,16 +154,14 @@ export function DialogFormShell({
         {/* Footer: ações */}
         {!hideFooter && (
           <ResponsiveDialogFooter className="px-6 py-4 border-t shrink-0">
-            <div className="flex w-full items-center justify-between gap-3">
-              {leftFooter ?? (
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => onOpenChange(false)}
-                >
-                  Cancelar
-                </Button>
-              )}
+            <div className="flex w-full items-center justify-between gap-2">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => onOpenChange(false)}
+              >
+                Cancelar
+              </Button>
               <div className="flex items-center gap-2">
                 {footer}
               </div>

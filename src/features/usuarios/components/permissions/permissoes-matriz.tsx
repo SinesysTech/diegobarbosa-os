@@ -24,7 +24,13 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { AppBadge } from '@/components/ui/app-badge';
 import { Shield, Save, RotateCcw, Info, Loader2, AlertCircle } from 'lucide-react';
 import type { PermissaoMatriz } from '../../domain';
-import { formatarNomeRecurso, formatarNomeOperacao, contarPermissoesAtivas, obterTotalPermissoes } from '../../permissions-utils';
+import {
+  agruparPermissoesPorModulo,
+  formatarNomeRecurso,
+  formatarNomeOperacao,
+  contarPermissoesAtivas,
+  obterTotalPermissoes,
+} from '../../permissions-utils';
 import { Empty, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty';
 import { Typography } from '@/components/ui/typography';
 
@@ -66,6 +72,7 @@ export function PermissoesMatriz({
 
   const totalPermissoesAtivas = contarPermissoesAtivas(matriz);
   const totalPermissoes = obterTotalPermissoes();
+  const gruposModulo = agruparPermissoesPorModulo(matriz);
 
   if (isLoading) {
     return (
@@ -91,11 +98,11 @@ export function PermissoesMatriz({
                 <Shield className="h-5 w-5" />
                 Permissões do Usuário
               </CardTitle>
-              <CardDescription className="mt-1.5">
-                {isSuperAdmin
-                  ? 'Como Super Admin, este usuário tem acesso total a todos os recursos'
-                  : `${totalPermissoesAtivas} de ${totalPermissoes} permissões ativas`}
-              </CardDescription>
+              {!isSuperAdmin && (
+                <CardDescription className="mt-1.5">
+                  {totalPermissoesAtivas} de {totalPermissoes} permissões ativas
+                </CardDescription>
+              )}
             </div>
             {canEdit && !isSuperAdmin && hasChanges && (
               <div className="flex items-center gap-2">
@@ -130,82 +137,106 @@ export function PermissoesMatriz({
           </div>
         </CardHeader>
         <CardContent className="space-y-4">
-          {isSuperAdmin && (
+          {isSuperAdmin ? (
             <Alert>
               <Info className="h-4 w-4" />
               <AlertDescription>
                 Este usuário possui acesso total ao sistema. Todas as permissões estão implicitamente concedidas.
               </AlertDescription>
             </Alert>
-          )}
+          ) : (
+            <>
+              {!canEdit && (
+                <Alert>
+                  <Info className="h-4 w-4" />
+                  <AlertDescription>
+                    Você não tem permissão para gerenciar permissões de usuários. Visualização apenas.
+                  </AlertDescription>
+                </Alert>
+              )}
 
-          {!canEdit && !isSuperAdmin && (
-            <Alert>
-              <Info className="h-4 w-4" />
-              <AlertDescription>
-                Você não tem permissão para gerenciar permissões de usuários. Visualização apenas.
-              </AlertDescription>
-            </Alert>
-          )}
+              <div className="space-y-5">
+                {gruposModulo.map((grupo) => {
+                  const permissoesAtivasModulo = grupo.itens.reduce((acc, item) => {
+                    return acc + Object.values(item.operacoes).filter(Boolean).length;
+                  }, 0);
+                  const totalModulo = grupo.itens.reduce((acc, item) => {
+                    return acc + Object.keys(item.operacoes).length;
+                  }, 0);
 
-          <Accordion type="multiple" className="w-full">
-            {matriz.map((item) => {
-              const permissoesAtivas = Object.values(item.operacoes).filter(Boolean).length;
-              const totalOperacoes = Object.keys(item.operacoes).length;
-              const todasAtivas = permissoesAtivas === totalOperacoes;
-              const nenhumaAtiva = permissoesAtivas === 0;
+                  return (
+                    <div key={grupo.chave} className="space-y-2">
+                      <div className="flex items-center gap-2">
+                        <h4 className="text-sm font-semibold text-foreground">{grupo.titulo}</h4>
+                        <AppBadge variant="neutral">
+                          {permissoesAtivasModulo}/{totalModulo}
+                        </AppBadge>
+                      </div>
 
-              return (
-                <AccordionItem key={item.recurso} value={item.recurso}>
-                  <AccordionTrigger className="hover:no-underline">
-                    <div className="flex items-center gap-2 w-full">
-                      <span className="font-medium text-base">
-                        {formatarNomeRecurso(item.recurso)}
-                      </span>
-                      <AppBadge variant={todasAtivas ? 'success' : nenhumaAtiva ? 'neutral' : 'info'} className="ml-auto mr-2">
-                        {permissoesAtivas}/{totalOperacoes}
-                      </AppBadge>
+                      <Accordion type="multiple" className="w-full">
+                        {grupo.itens.map((item) => {
+                          const permissoesAtivas = Object.values(item.operacoes).filter(Boolean).length;
+                          const totalOperacoes = Object.keys(item.operacoes).length;
+                          const todasAtivas = permissoesAtivas === totalOperacoes;
+                          const nenhumaAtiva = permissoesAtivas === 0;
+
+                          return (
+                            <AccordionItem key={item.recurso} value={item.recurso}>
+                              <AccordionTrigger className="hover:no-underline">
+                                <div className="flex items-center gap-2 w-full">
+                                  <span className="font-medium text-sm">
+                                    {formatarNomeRecurso(item.recurso)}
+                                  </span>
+                                  <AppBadge variant={todasAtivas ? 'success' : nenhumaAtiva ? 'neutral' : 'info'} className="ml-auto mr-2">
+                                    {permissoesAtivas}/{totalOperacoes}
+                                  </AppBadge>
+                                </div>
+                              </AccordionTrigger>
+                              <AccordionContent>
+                                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 pt-2">
+                                  {Object.entries(item.operacoes).map(([operacao, permitido]) => (
+                                    <label
+                                      key={`${item.recurso}-${operacao}`}
+                                      className="flex items-center gap-2 cursor-pointer hover:bg-muted/50 p-2 rounded-md transition-colors"
+                                    >
+                                      <Checkbox
+                                        id={`perm-${item.recurso}-${operacao}`}
+                                        checked={Boolean(permitido)}
+                                        onCheckedChange={() => {
+                                          if (canEdit) {
+                                            onTogglePermissao(item.recurso, operacao);
+                                          }
+                                        }}
+                                        disabled={!canEdit || isSaving}
+                                        aria-label={`Permitir ${formatarNomeOperacao(operacao)} em ${formatarNomeRecurso(item.recurso)}`}
+                                      />
+                                      <span className="text-sm">
+                                        {formatarNomeOperacao(operacao)}
+                                      </span>
+                                    </label>
+                                  ))}
+                                </div>
+                              </AccordionContent>
+                            </AccordionItem>
+                          );
+                        })}
+                      </Accordion>
                     </div>
-                  </AccordionTrigger>
-                  <AccordionContent>
-                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 pt-2">
-                      {Object.entries(item.operacoes).map(([operacao, permitido]) => (
-                        <label
-                          key={`${item.recurso}-${operacao}`}
-                          className="flex items-center gap-2 cursor-pointer hover:bg-muted/50 p-2 rounded-md transition-colors"
-                        >
-                          <Checkbox
-                            id={`perm-${item.recurso}-${operacao}`}
-                            checked={Boolean(isSuperAdmin || permitido)}
-                            onCheckedChange={() => {
-                              if (canEdit && !isSuperAdmin) {
-                                onTogglePermissao(item.recurso, operacao);
-                              }
-                            }}
-                            disabled={!canEdit || isSuperAdmin || isSaving}
-                            aria-label={`Permitir ${formatarNomeOperacao(operacao)} em ${formatarNomeRecurso(item.recurso)}`}
-                          />
-                          <span className="text-sm">
-                            {formatarNomeOperacao(operacao)}
-                          </span>
-                        </label>
-                      ))}
-                    </div>
-                  </AccordionContent>
-                </AccordionItem>
-              );
-            })}
-          </Accordion>
+                  );
+                })}
+              </div>
 
-          {matriz.length === 0 && (
-            <Empty>
-              <EmptyHeader>
-                <EmptyMedia variant="icon">
-                  <AlertCircle className="h-6 w-6" />
-                </EmptyMedia>
-                <EmptyTitle>Nenhuma permissão encontrada</EmptyTitle>
-              </EmptyHeader>
-            </Empty>
+              {matriz.length === 0 && (
+                <Empty>
+                  <EmptyHeader>
+                    <EmptyMedia variant="icon">
+                      <AlertCircle className="h-6 w-6" />
+                    </EmptyMedia>
+                    <EmptyTitle>Nenhuma permissão encontrada</EmptyTitle>
+                  </EmptyHeader>
+                </Empty>
+              )}
+            </>
           )}
         </CardContent>
       </Card>

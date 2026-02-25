@@ -28,9 +28,7 @@ export async function GET(
 
     // Determinar URL para fetch
     let fetchUrl = pdfUrl;
-    // Aqui assumimos que a URL salva no banco é a pública ou já é válida.
-    // Se for do Supabase, podemos gerar um presigned se for bucket privado.
-    // Por simplicidade, vamos tentar gerar o presigned SE conseguirmos extrair a key.
+    const bucket = process.env.BACKBLAZE_BUCKET_NAME || process.env.B2_BUCKET;
 
     // Tentar extrair key para gerar URL assinada e segura
     const bucket = process.env.SUPABASE_STORAGE_BUCKET || 'diegobarbosa-os';

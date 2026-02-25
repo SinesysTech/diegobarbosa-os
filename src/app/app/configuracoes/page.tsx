@@ -6,7 +6,8 @@ import { actionListarIntegracoesPorTipo } from "@/features/integracoes";
 import { actionListarSystemPrompts } from "@/features/system-prompts";
 import { ConfiguracoesTabsContent } from "./components/configuracoes-tabs-content";
 
-export const dynamic = 'force-dynamic';
+// Next.js 16: Force dynamic rendering because this route uses cookies()
+export const dynamic = "force-dynamic";
 
 export default async function ConfiguracoesPage() {
   const [metricasResult, integracoes2FAuthResult, integracoesChatwootResult, integracoesDyteResult, integracoesEditorIAResult, systemPromptsResult] = await Promise.all([
