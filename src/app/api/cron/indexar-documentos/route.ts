@@ -113,11 +113,7 @@ export async function POST(request: NextRequest) {
                   "@/features/ai/services/extraction.service"
                 );
 
-                const storageProvider =
-                  storageProviderRaw === "supabase" ||
-                  storageProviderRaw === "google_drive"
-                    ? storageProviderRaw
-                    : "supabase";
+                const storageProvider: "supabase" = "supabase";
 
                 const buffer = await downloadFile(storageProvider, storageKey);
                 texto = await extractText(buffer, contentType);

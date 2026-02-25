@@ -213,7 +213,7 @@ export function ProcessoVisualizacao({ id }: ProcessoVisualizacaoProps) {
         <>
           {/* Desktop: ResizablePanelGroup */}
           <Card className="hidden md:flex h-[calc(100vh-420px)] min-h-125 overflow-hidden">
-            <ResizablePanelGroup direction="horizontal">
+            <ResizablePanelGroup orientation="horizontal">
               <ResizablePanel defaultSize={30} minSize={20} maxSize={45}>
                 <TimelineSidebar
                   items={timeline.timeline as TimelineItemWithGrau[]}

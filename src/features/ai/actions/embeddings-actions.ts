@@ -9,7 +9,7 @@ export async function actionIndexarDocumento(
     entity_type: string;
     entity_id: number;
     parent_id?: number | null;
-    storage_provider: 'backblaze' | 'supabase' | 'google_drive';
+    storage_provider: 'supabase';
     storage_key: string;
     content_type: string;
     metadata?: Record<string, unknown>;
@@ -43,7 +43,7 @@ export async function actionReindexarDocumento(
     entity_type: string;
     entity_id: number;
     parent_id?: number | null;
-    storage_provider: 'backblaze' | 'supabase' | 'google_drive';
+    storage_provider: 'supabase';
     storage_key: string;
     content_type: string;
     metadata?: Record<string, unknown>;

@@ -26,7 +26,7 @@ export const indexDocumentSchema = z.object({
   entity_type: z.enum(entityTypeValues),
   entity_id: z.number(),
   parent_id: z.number().nullable().optional(),
-  storage_provider: z.enum(['supabase', 'google_drive']),
+  storage_provider: z.enum(['supabase']),
   storage_key: z.string(),
   content_type: z.string(),
   metadata: z.record(z.unknown()).optional(),

@@ -32,7 +32,7 @@ export async function buscarAuthLogsPorUsuario(
       return [];
     }
 
-    return data.map((session) => ({
+    return data.map((session: { created_at: string; event_type: string; ip_address: string | null; user_agent: string | null }) => ({
       timestamp: session.created_at,
       eventType: parseEventType(session.event_type),
       ipAddress: session.ip_address || null,
