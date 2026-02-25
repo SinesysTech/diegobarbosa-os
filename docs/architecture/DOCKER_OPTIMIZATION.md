@@ -289,7 +289,7 @@ docker build \
   --build-arg NEXT_PUBLIC_SUPABASE_URL=your_url \
   --build-arg NEXT_PUBLIC_SUPABASE_PUBLISHABLE_OR_ANON_KEY=your_key \
   -f Dockerfile \
-  -t zattar-os:test .
+  -t diegobarbosa-os:test .
 ```
 
 ### 2. Push to Master
@@ -300,7 +300,7 @@ git push origin master
 ```
 
 ### 3. Monitor Build
-1. Go to: https://github.com/SinesysTech/zattar-os/actions
+1. Go to: https://github.com/SinesysTech/diegobarbosa-os/actions
 2. Watch the "Build & Push" workflow
 3. Estimated time: **~6 minutes** (was 8+ minutes with failures)
 

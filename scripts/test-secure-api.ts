@@ -9,7 +9,9 @@ async function testSecureApi() {
     const bucket = 'diegobarbosa-os';
     const key = 'processos/0010088-83.2025.5.03.0173/audiencias/ata_4955319_20260216.pdf';
     // Simula a URL pública que está salva no banco
-    const publicUrl = `https://hiwwrglhmyogsmoqirpr.supabase.co/storage/v1/object/public/${bucket}/${key}`;
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    if (!supabaseUrl) throw new Error('NEXT_PUBLIC_SUPABASE_URL not set');
+    const publicUrl = `${supabaseUrl}/storage/v1/object/public/${bucket}/${key}`;
 
     const apiUrl = `http://localhost:3000/api/storage/secure-url?url=${encodeURIComponent(publicUrl)}`;
 

@@ -356,7 +356,7 @@ mcp_io_github_ups_get -
 // 3. Atualizar documentação em repo
 mcp_io_github_git_create_or_update_file({
   owner: "SinesysTech",
-  repo: "zattar-os",
+  repo: "diegobarbosa-os",
   path: "docs/internal/chatwoot/CHATWOOT_API_OFFICIAL.md",
   content: "novo conteúdo",
   message: "docs: atualizar API via Context7",

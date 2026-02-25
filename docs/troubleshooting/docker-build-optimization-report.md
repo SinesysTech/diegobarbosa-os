@@ -137,18 +137,18 @@ docker build --no-cache --progress=plain . 2>&1 | grep "Sending build context"
 
 ```bash
 # Build local (com cache do GitHub Actions)
-docker build -t zattar-os:test \
+docker build -t diegobarbosa-os:test \
   --build-arg NEXT_PUBLIC_SUPABASE_URL=$NEXT_PUBLIC_SUPABASE_URL \
   --build-arg NEXT_PUBLIC_SUPABASE_PUBLISHABLE_OR_ANON_KEY=$NEXT_PUBLIC_SUPABASE_PUBLISHABLE_OR_ANON_KEY \
   .
 
 # Verificar tamanho da imagem
-docker images zattar-os:test
+docker images diegobarbosa-os:test
 ```
 
 ### 3. Monitorar próximo build no GitHub Actions:
 
-Acesse: https://github.com/SinesysTech/zattar-os/actions
+Acesse: https://github.com/SinesysTech/diegobarbosa-os/actions
 
 Observe:
 
@@ -171,9 +171,9 @@ Observe:
 1. **Analisar tamanho da imagem final**:
 
    ```bash
-   docker pull sinesystec/zattar-os:latest
-   docker images sinesystec/zattar-os:latest
-   docker history sinesystec/zattar-os:latest
+   docker pull sinesystec/diegobarbosa-os:latest
+   docker images sinesystec/diegobarbosa-os:latest
+   docker history sinesystec/diegobarbosa-os:latest
    ```
 
 2. **Considerar otimizações adicionais**:

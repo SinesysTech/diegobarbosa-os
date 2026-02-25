@@ -31,11 +31,11 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
-# env files
-# NOTA: .env.local está sendo rastreado (repositório privado)
+# env files (NUNCA rastrear arquivos com secrets)
 .env.local
 .env*.local.bak
 .env.build
+env.sh
 docker-compose.portainer.yml
 
 # vercel
