@@ -1,78 +1,96 @@
 # Índice de Features (FSD)
 
-Este documento é um índice rápido dos módulos em `src/features/` e onde encontrar documentação específica (README/RULES) quando existir.
+Este documento acompanha o estado real de `src/features/` e da documentação em `docs/modules/`.
 
-> Convenção: evite imports profundos. Sempre prefira `@/features/<modulo>` (barrel exports).
+> Convenção: evitar imports profundos. Preferir sempre `@/features/<modulo>` (barrel export via `index.ts`).
+> Sincronização automática deste índice: `npm run docs:sync:modules`.
 
-## Módulos (status em 2026-02-25)
+## Resumo (2026-02-26)
 
-Total em `src/features`: **37 módulos**.
+<!-- AUTO-GENERATED:START -->
+- Módulos em `src/features`: **37**
+- Pastas em `docs/modules`: **38**
+- Módulos sem pasta em `docs/modules`: nenhum
+- Pasta sem módulo correspondente em `src/features`: `assinatura-digital`
 
-### ✅ Completos (20)
+## Classificação estrutural dos módulos
 
-`acervo`, `advogados`, `ai`, `captura`, `cargos`, `config-atribuicao`, `contratos`, `dify`, `enderecos`, `integracoes`, `notificacoes`, `obrigacoes`, `pecas-juridicas`, `pericias`, `processos`, `rh`, `system-prompts`, `tasks`, `tipos-expedientes`, `usuarios`
+Critério de módulo **completo**: `domain.ts` + `service.ts` + `repository.ts` + `index.ts` + `actions/` + `components/`.
 
-### ⚠️ Parciais (12)
+- ✅ **Completos (18)**: `acervo`, `advogados`, `ai`, `captura`, `config-atribuicao`, `contratos`, `dify`, `enderecos`, `integracoes`, `notificacoes`, `obrigacoes`, `pecas-juridicas`, `pericias`, `processos`, `rh`, `system-prompts`, `tipos-expedientes`, `usuarios`
+- ⚠️ **Parciais (13)**: `assistentes-tipos`, `audiencias`, `calendar`, `cargos`, `chat`, `chatwoot`, `documentos`, `expedientes`, `financeiro`, `partes`, `perfil`, `profiles`, `tags`
+- 🧩 **Iniciais (6)**: `admin`, `audit`, `busca`, `repasses`, `tasks`, `twofauth`
 
-`assistentes-tipos`, `audiencias`, `calendar`, `chat`, `chatwoot`, `documentos`, `expedientes`, `financeiro`, `partes`, `perfil`, `profiles`, `tags`
+## Cobertura de artefatos por módulo
 
-### 🧩 Shell/legado (5)
+| Artefato              | Cobertura |
+| --------------------- | --------- |
+| `index.ts`            | 36/37     |
+| `components/`         | 31/37     |
+| `domain.ts`           | 29/37     |
+| `actions/`            | 28/37     |
+| `service.ts`          | 27/37     |
+| `repository.ts`       | 24/37     |
+| `RULES.md`            | 9/37      |
+| `README.md` no módulo | 6/37      |
 
-`admin`, `audit`, `busca`, `repasses`, `twofauth`
+## Documentação funcional disponível
 
-## Referência por módulo
+Índice navegável com status (ordem alfabética):
 
-| Feature           | Pasta                                                                  | Wiki                                                            | RULES                                             |
-| ----------------- | ---------------------------------------------------------------------- | --------------------------------------------------------------- | ------------------------------------------------- |
-| acervo            | [src/features/acervo](../../src/features/acervo)                       | [docs/modules/acervo](./acervo/README.md)                       | —                                                 |
-| admin             | [src/features/admin](../../src/features/admin)                         | [docs/modules/admin](./admin/README.md)                         | —                                                 |
-| advogados         | [src/features/advogados](../../src/features/advogados)                 | [docs/modules/advogados](./advogados/README.md)                 | —                                                 |
-| ai                | [src/features/ai](../../src/features/ai)                               | [docs/modules/ai](./ai/README.md)                               | —                                                 |
-| assistentes-tipos | [src/features/assistentes-tipos](../../src/features/assistentes-tipos) | —                                                               | —                                                 |
-| audiencias        | [src/features/audiencias](../../src/features/audiencias)               | [docs/modules/audiencias](./audiencias/README.md)               | [RULES](../../src/features/audiencias/RULES.md)   |
-| audit             | [src/features/audit](../../src/features/audit)                         | [docs/modules/audit](./audit/README.md)                         | —                                                 |
-| busca             | [src/features/busca](../../src/features/busca)                         | [docs/modules/busca](./busca/README.md)                         | [RULES](../../src/features/busca/RULES.md)        |
-| calendar          | [src/features/calendar](../../src/features/calendar)                   | [docs/modules/calendar](./calendar/README.md)                   | —                                                 |
-| captura           | [src/features/captura](../../src/features/captura)                     | [docs/modules/captura](./captura/README.md)                     | —                                                 |
-| cargos            | [src/features/cargos](../../src/features/cargos)                       | [docs/modules/cargos](./cargos/README.md)                       | —                                                 |
-| chat              | [src/features/chat](../../src/features/chat)                           | [docs/modules/chat](./chat/README.md)                           | —                                                 |
-| chatwoot          | [src/features/chatwoot](../../src/features/chatwoot)                   | [docs/modules/chatwoot](./chatwoot/README.md)                   | —                                                 |
-| config-atribuicao | [src/features/config-atribuicao](../../src/features/config-atribuicao) | [docs/modules/config-atribuicao](./config-atribuicao/README.md) | —                                                 |
-| contratos         | [src/features/contratos](../../src/features/contratos)                 | [docs/modules/contratos](./contratos/README.md)                 | [RULES](../../src/features/contratos/RULES.md)    |
-| dify              | [src/features/dify](../../src/features/dify)                           | —                                                               | —                                                 |
-| documentos        | [src/features/documentos](../../src/features/documentos)               | [docs/modules/documentos](./documentos/README.md)               | [RULES](../../src/features/documentos/RULES.md)   |
-| enderecos         | [src/features/enderecos](../../src/features/enderecos)                 | [docs/modules/enderecos](./enderecos/README.md)                 | —                                                 |
-| expedientes       | [src/features/expedientes](../../src/features/expedientes)             | [docs/modules/expedientes](./expedientes/README.md)             | —                                                 |
-| financeiro        | [src/features/financeiro](../../src/features/financeiro)               | [docs/modules/financeiro](./financeiro/README.md)               | [RULES](../../src/features/financeiro/RULES.md)   |
-| integracoes       | [src/features/integracoes](../../src/features/integracoes)             | —                                                               | —                                                 |
-| notificacoes      | [src/features/notificacoes](../../src/features/notificacoes)           | [docs/modules/notificacoes](./notificacoes/README.md)           | [RULES](../../src/features/notificacoes/RULES.md) |
-| obrigacoes        | [src/features/obrigacoes](../../src/features/obrigacoes)               | [docs/modules/obrigacoes](./obrigacoes/README.md)               | [RULES](../../src/features/obrigacoes/RULES.md)   |
-| partes            | [src/features/partes](../../src/features/partes)                       | [docs/modules/partes](./partes/README.md)                       | [RULES](../../src/features/partes/RULES.md)       |
-| pecas-juridicas   | [src/features/pecas-juridicas](../../src/features/pecas-juridicas)     | [docs/modules/pecas-juridicas](./pecas-juridicas/README.md)     | —                                                 |
-| perfil            | [src/features/perfil](../../src/features/perfil)                       | [docs/modules/perfil](./perfil/README.md)                       | —                                                 |
-| pericias          | [src/features/pericias](../../src/features/pericias)                   | [docs/modules/pericias](./pericias/README.md)                   | —                                                 |
-| processos         | [src/features/processos](../../src/features/processos)                 | [docs/modules/processos](./processos/README.md)                 | [RULES](../../src/features/processos/RULES.md)    |
-| profiles          | [src/features/profiles](../../src/features/profiles)                   | [docs/modules/profiles](./profiles/README.md)                   | —                                                 |
-| repasses          | [src/features/repasses](../../src/features/repasses)                   | [docs/modules/repasses](./repasses/README.md)                   | —                                                 |
-| rh                | [src/features/rh](../../src/features/rh)                               | [docs/modules/rh](./rh/README.md)                               | —                                                 |
-| system-prompts    | [src/features/system-prompts](../../src/features/system-prompts)       | —                                                               | —                                                 |
-| tags              | [src/features/tags](../../src/features/tags)                           | [docs/modules/tags](./tags/README.md)                           | —                                                 |
-| tasks             | [src/features/tasks](../../src/features/tasks)                         | [docs/modules/tasks](./tasks/README.md)                         | [RULES](../../src/features/tasks/RULES.md)        |
-| tipos-expedientes | [src/features/tipos-expedientes](../../src/features/tipos-expedientes) | [docs/modules/tipos-expedientes](./tipos-expedientes/README.md) | —                                                 |
-| twofauth          | [src/features/twofauth](../../src/features/twofauth)                   | —                                                               | —                                                 |
-| usuarios          | [src/features/usuarios](../../src/features/usuarios)                   | [docs/modules/usuarios](./usuarios/README.md)                   | —                                                 |
+| Módulo | Documento | Status estrutural | Observação |
+| --- | --- | --- | --- |
+| acervo | [README](./acervo/README.md) | Completo | — |
+| admin | [README](./admin/README.md) | Inicial | — |
+| advogados | [README](./advogados/README.md) | Completo | — |
+| ai | [README](./ai/README.md) | Completo | — |
+| assinatura-digital | [README](./assinatura-digital/README.md) | Histórico | Não há módulo correspondente em `src/features` |
+| assistentes-tipos | [README](./assistentes-tipos/README.md) | Parcial | — |
+| audiencias | [README](./audiencias/README.md) | Parcial | — |
+| audit | [README](./audit/README.md) | Inicial | — |
+| busca | [README](./busca/README.md) | Inicial | — |
+| calendar | [README](./calendar/README.md) | Parcial | — |
+| captura | [README](./captura/README.md) | Completo | — |
+| cargos | [README](./cargos/README.md) | Parcial | — |
+| chat | [README](./chat/README.md) | Parcial | — |
+| chatwoot | [README](./chatwoot/README.md) | Parcial | — |
+| config-atribuicao | [README](./config-atribuicao/README.md) | Completo | — |
+| contratos | [README](./contratos/README.md) | Completo | — |
+| dify | [README](./dify/README.md) | Completo | — |
+| documentos | [README](./documentos/README.md) | Parcial | — |
+| enderecos | [README](./enderecos/README.md) | Completo | — |
+| expedientes | [README](./expedientes/README.md) | Parcial | — |
+| financeiro | [README](./financeiro/README.md) | Parcial | — |
+| integracoes | [README](./integracoes/README.md) | Completo | — |
+| notificacoes | [README](./notificacoes/README.md) | Completo | — |
+| obrigacoes | [README](./obrigacoes/README.md) | Completo | — |
+| partes | [README](./partes/README.md) | Parcial | — |
+| pecas-juridicas | [README](./pecas-juridicas/README.md) | Completo | — |
+| perfil | [README](./perfil/README.md) | Parcial | — |
+| pericias | [README](./pericias/README.md) | Completo | — |
+| processos | [README](./processos/README.md) | Completo | — |
+| profiles | [README](./profiles/README.md) | Parcial | — |
+| repasses | [README](./repasses/README.md) | Inicial | — |
+| rh | [README](./rh/README.md) | Completo | — |
+| system-prompts | [README](./system-prompts/README.md) | Completo | — |
+| tags | [README](./tags/README.md) | Parcial | — |
+| tasks | [README](./tasks/README.md) | Inicial | — |
+| tipos-expedientes | [README](./tipos-expedientes/README.md) | Completo | — |
+| twofauth | [README](./twofauth/README.md) | Inicial | — |
+| usuarios | [README](./usuarios/README.md) | Completo | — |
+<!-- AUTO-GENERATED:END -->
 
 ## Testes por feature
 
-Scripts úteis (quando aplicável) ficam no `package.json`. Alguns atalhos existentes:
+Scripts úteis (quando aplicável) no `package.json`:
 
 - `npm run test:actions:processos`
 - `npm run test:actions:partes`
 - `npm run test:actions:financeiro`
 - `npm run test:enderecos`
 - `npm run test:pericias`
-- `npm run test:portal-cliente`
 
 E2E (Playwright): `npm run test:e2e` (docs: `../../src/testing/e2e/README.md`).
 
-> Nota: funcionalidades legadas como “portal-cliente” e “pangea” ainda possuem código em outros caminhos (ex.: `src/app/.../feature`) e scripts de teste específicos, mas não fazem parte do inventário atual de `src/features`.
+
+

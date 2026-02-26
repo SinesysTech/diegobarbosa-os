@@ -1,6 +1,6 @@
 # Documentação Sinesys
 
-Bem-vindo à documentação do Sinesys! Esta pasta contém toda a documentação técnica, guias e relatórios do projeto.
+Bem-vindo à documentação do Sinesys. Esta pasta concentra documentação técnica, guias operacionais, relatórios e material interno.
 
 ## 📖 Navegação Rápida
 
@@ -12,6 +12,7 @@ Consulte o [INDEX.md](./INDEX.md) para uma lista completa e organizada de toda a
 docs/
 ├── INDEX.md                    # Índice completo da documentação
 ├── README.md                   # Este arquivo
+├── ORGANIZACAO_PROJETO.md      # Mapa da organização documental
 ├── architecture/               # Arquitetura e design do sistema
 ├── modules/                    # Documentação por módulo/feature
 ├── internal/                   # Guias técnicos internos e troubleshooting
@@ -20,7 +21,10 @@ docs/
 ├── audits/                    # Relatórios de auditoria
 ├── dify/                      # Documentação Dify AI
 ├── features/                  # Documentação de features
-└── security/                  # Segurança e configurações
+├── modules/                   # Documentação por módulo do produto
+├── troubleshooting/           # Troubleshooting público
+├── configuracao/              # Guias de configuração
+└── internal/                  # Documentação interna (segurança, deploy, mcp, etc.)
 ```
 
 ## 🚀 Começando
@@ -49,7 +53,7 @@ Ao adicionar nova documentação:
 1. Coloque na pasta apropriada
 2. Atualize o [INDEX.md](./INDEX.md)
 3. Use formato Markdown
-4. Inclua data de última atualização
+4. Indique claramente se o conteúdo é **normativo** (estado atual) ou **histórico** (relatório de execução)
 
 ## 🔗 Links Úteis
 

@@ -325,7 +325,7 @@ function ModalidadeCell({
   };
 
   // Determinar o que mostrar baseado na modalidade
-  const currentValue = isVirtual
+  const _currentValue = isVirtual
     ? audiencia.urlAudienciaVirtual
     : audiencia.enderecoPresencial
       ? formatEndereco(audiencia.enderecoPresencial)

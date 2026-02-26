@@ -15,9 +15,20 @@
 - [STATUS.md](./architecture/STATUS.md) - Status do projeto
 - [DOCKER_BUILD_FIX.md](./architecture/DOCKER_BUILD_FIX.md) - Correções Docker
 
-### 🧩 Módulos
+### 🧩 Módulos de Produto
 
-- [modules/README.md](./modules/README.md) - Índice dos módulos em `src/features`
+- [README.md](./modules/README.md) - Índice de módulos e cobertura de documentação
+- [processos](./modules/processos/README.md)
+- [partes](./modules/partes/README.md)
+- [audiencias](./modules/audiencias/README.md)
+- [contratos](./modules/contratos/README.md)
+- [documentos](./modules/documentos/README.md)
+- [assistentes-tipos](./modules/assistentes-tipos/README.md)
+- [dify](./modules/dify/README.md)
+- [integracoes](./modules/integracoes/README.md)
+- [system-prompts](./modules/system-prompts/README.md)
+- [twofauth](./modules/twofauth/README.md)
+- [usuarios](./modules/usuarios/README.md)
 
 ### 🔌 Integrações
 
@@ -52,10 +63,21 @@
 
 - [VERIFICACOES_ASSINATURA_DIGITAL.md](./features/VERIFICACOES_ASSINATURA_DIGITAL.md) - Assinatura digital
 
-### 🔐 Segurança
+### 🔐 Segurança (interna)
 
-- [cors-configuration.md](./security/cors-configuration.md) - Configuração CORS
-- [security-headers.md](./security/security-headers.md) - Headers de segurança
+- [secrets-management.md](./internal/security/secrets-management.md) - Gestão de segredos
+- [cors-configuration.md](./internal/security/cors-configuration.md) - Configuração CORS
+- [security-headers.md](./internal/security/security-headers.md) - Headers de segurança
+
+### 🛠️ Operação e Troubleshooting
+
+- [troubleshooting](./troubleshooting/docker-build-optimization-report.md) - Relatório de otimização Docker
+- [troubleshooting](./troubleshooting/erro-401-management-api.md) - Erro 401 na Management API
+- [internal/troubleshooting](./internal/troubleshooting/README.md) - Base interna de troubleshooting
+
+### ⚙️ Configuração
+
+- [management-api.md](./configuracao/management-api.md) - Configuração da Management API
 
 ### 🛠️ Interno (Engenharia)
 

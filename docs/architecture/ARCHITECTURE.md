@@ -1,4 +1,4 @@
-# Arquitetura Sinesys 2.0
+# Arquitetura Sinesys
 
 ## Visão Geral
 
@@ -41,7 +41,7 @@ O Sinesys é um sistema de gestão jurídica desenvolvido com arquitetura AI-Fir
 ## Estrutura de Diretórios
 
 ```
-sinesys/
+zattar-os/
 ├── src/
 │   ├── app/                    # App Router (Next.js 16)
 │   │   ├── (auth)/             # Rotas autenticadas
