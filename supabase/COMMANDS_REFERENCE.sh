@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # =====================================================
-# ZATTAR ADVOGADOS - DATABASE MIGRATION COMMANDS
+# ADVOCACIA DIEGO BARBOSA - DATABASE MIGRATION COMMANDS
 # =====================================================
 # This file contains ready-to-use commands for database migration
 # Copy and paste these commands, replacing placeholders as needed
@@ -15,7 +15,7 @@
 npm install -g supabase
 
 # Initialize Supabase in your project
-cd /path/to/zattar-advogados
+cd /path/to/diegobarbosa
 supabase init
 
 # Login to Supabase (opens browser)
@@ -51,14 +51,14 @@ pg_dump \
   --no-owner \
   --no-acl \
   --schema=public \
-  --file=zattar_schema_only.sql
+  --file=diegobarbosa_schema_only.sql
 
 # Data-only export
 pg_dump \
   "postgresql://postgres:PASSWORD@HOST:5432/postgres" \
   --data-only \
   --schema=public \
-  --file=zattar_data_only.sql
+  --file=diegobarbosa_data_only.sql
 
 # Complete export (schema + data)
 pg_dump \
@@ -66,15 +66,15 @@ pg_dump \
   --no-owner \
   --no-acl \
   --schema=public \
-  --file=zattar_complete.sql
+  --file=diegobarbosa_complete.sql
 
 # Import schema to new database
 psql "postgresql://postgres:NEW_PASSWORD@NEW_HOST:5432/postgres" \
-  --file=zattar_schema_only.sql
+  --file=diegobarbosa_schema_only.sql
 
 # Import data to new database
 psql "postgresql://postgres:NEW_PASSWORD@NEW_HOST:5432/postgres" \
-  --file=zattar_data_only.sql
+  --file=diegobarbosa_data_only.sql
 
 # =====================================================
 # SECTION 3: DIRECT PSQL COMMANDS
@@ -152,19 +152,19 @@ psql "postgresql://postgres:PASSWORD@HOST:5432/postgres" \
 pg_dump \
   "postgresql://postgres:PASSWORD@HOST:5432/postgres" \
   --format=custom \
-  --file=zattar_backup_$(date +%Y%m%d_%H%M%S).dump
+  --file=diegobarbosa_backup_$(date +%Y%m%d_%H%M%S).dump
 
 # Restore from compressed backup
 pg_restore \
   --dbname="postgresql://postgres:NEW_PASSWORD@NEW_HOST:5432/postgres" \
   --no-owner \
   --no-acl \
-  zattar_backup_20260210_143000.dump
+  diegobarbosa_backup_20260210_143000.dump
 
 # Create SQL backup with timestamp
 pg_dump \
   "postgresql://postgres:PASSWORD@HOST:5432/postgres" \
-  --file=zattar_backup_$(date +%Y%m%d_%H%M%S).sql
+  --file=diegobarbosa_backup_$(date +%Y%m%d_%H%M%S).sql
 
 # =====================================================
 # SECTION 7: USEFUL SQL QUERIES
@@ -235,7 +235,7 @@ psql "$NEW_DB_URL" --file=schema.sql
 echo "📦 Creating backup..."
 pg_dump "$CURRENT_DB_URL" \
   --format=custom \
-  --file=zattar_backup_$(date +%Y%m%d_%H%M%S).dump
+  --file=diegobarbosa_backup_$(date +%Y%m%d_%H%M%S).dump
 
 # Step 2: Export schema only
 echo "📋 Exporting schema..."
@@ -244,22 +244,22 @@ pg_dump "$CURRENT_DB_URL" \
   --no-owner \
   --no-acl \
   --schema=public \
-  --file=zattar_schema.sql
+  --file=diegobarbosa_schema.sql
 
 # Step 3: Create new database structure
 echo "🏗️  Creating structure in new database..."
-psql "$NEW_DB_URL" --file=zattar_schema.sql
+psql "$NEW_DB_URL" --file=diegobarbosa_schema.sql
 
 # Step 4: Export data (if needed)
 echo "📊 Exporting data..."
 pg_dump "$CURRENT_DB_URL" \
   --data-only \
   --schema=public \
-  --file=zattar_data.sql
+  --file=diegobarbosa_data.sql
 
 # Step 5: Import data
 echo "⬆️  Importing data..."
-psql "$NEW_DB_URL" --file=zattar_data.sql
+psql "$NEW_DB_URL" --file=diegobarbosa_data.sql
 
 # Step 6: Verify migration
 echo "✅ Verifying migration..."

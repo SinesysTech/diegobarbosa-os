@@ -1,7 +1,7 @@
 # Change: Integrar Conversations e Messages do Chatwoot
 
 ## Why
-O sistema Zattar ja possui integracao com contatos do Chatwoot, mas nao permite visualizar o historico de conversas e mensagens dos clientes/partes. Essa integracao permitira aos usuarios ver o historico completo de comunicacao com cada cliente diretamente no sistema, alem de possibilitar ao AI assistant acesso ao contexto de conversas para melhor atendimento.
+O sistema Diego Barbosa OS ja possui integracao com contatos do Chatwoot, mas nao permite visualizar o historico de conversas e mensagens dos clientes/partes. Essa integracao permitira aos usuarios ver o historico completo de comunicacao com cada cliente diretamente no sistema, alem de possibilitar ao AI assistant acesso ao contexto de conversas para melhor atendimento.
 
 ## What Changes
 - **ADDED** Tipos TypeScript para Conversations e Messages da API Chatwoot

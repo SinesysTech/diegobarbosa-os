@@ -76,12 +76,12 @@ import {
 
 ## Diferenças do Dashboard
 
-Estes componentes **não** usam o design system interno (Zattar Purple).
+Estes componentes **não** usam o design system interno (Brand Purple).
 Eles seguem uma identidade visual específica para páginas públicas:
 
 | Aspecto    | Dashboard         | Público      |
 | ---------- | ----------------- | ------------ |
-| Cor        | Zattar Purple     | Azul #135bec |
+| Cor        | Brand Purple      | Azul #135bec |
 | Layout     | PageShell interno | PublicPageShell |
 | Progresso  | FormStepLayout    | PublicStepLayout |
 | Background | Light/Dark Theme  | Dots pattern |

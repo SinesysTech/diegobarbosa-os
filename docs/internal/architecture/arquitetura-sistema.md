@@ -1,7 +1,7 @@
 # Arquitetura do Sistema Sinesys
 
 > **Documento de Arquitetura de Software**  
-> Sistema de Gestão Jurídica para Zattar Advogados  
+> Sistema de Gestão Jurídica para Advocacia Diego Barbosa
 > Versão: 1.0  
 > Data: Dezembro 2025
 
@@ -29,7 +29,7 @@
 
 ### 1.1. Propósito
 
-O **Sinesys** é um sistema completo de gestão jurídica desenvolvido especificamente para o escritório **Zattar Advogados**. O sistema integra captura automatizada de dados do PJE/TRT, gerenciamento de processos, controle de audiências, expedientes, obrigações financeiras e muito mais.
+O **Sinesys** é um sistema completo de gestão jurídica desenvolvido especificamente para o escritório **Advocacia Diego Barbosa**. O sistema integra captura automatizada de dados do PJE/TRT, gerenciamento de processos, controle de audiências, expedientes, obrigações financeiras e muito mais.
 
 ### 1.2. Características Principais
 
@@ -408,7 +408,7 @@ src/
 │   ├── (auth)/                 # Rotas de Autenticação (Login, Recuperar senha)
 │   │   └── layout.tsx          # Layout limpo (sem sidebar)
 │   │
-│   ├── (dashboard)/            # O "Zattar Shell" (A aplicação principal)
+│   ├── (dashboard)/            # O "Diego Barbosa Shell" (A aplicação principal)
 │   │   ├── layout.tsx          # ⚠️ AQUI vive o Layout Grid (Sidebar + Main)
 │   │   ├── loading.tsx         # Skeleton global do dashboard
 │   │   │
@@ -461,7 +461,7 @@ src/
 │   │   ├── theme/              # Theme config providers
 │   │   └── pickers/            # Date/time pickers
 │   │
-│   └── shared/                 # Padrões Zattar Reutilizáveis
+│   └── shared/                 # Padrões Diego Barbosa OS Reutilizáveis
 │       ├── data-table-shell.tsx # Superfície de Dados (Toolbar + Table + Footer)
 │       └── table-toolbar.tsx    # Componente de busca e filtros
 │
@@ -2057,7 +2057,7 @@ export default withPWA({
 {
   "name": "Sinesys - Gestão Jurídica",
   "short_name": "Sinesys",
-  "description": "Sistema de Gestão Jurídica para Zattar Advogados",
+  "description": "Sistema de Gestão Jurídica para Advocacia Diego Barbosa",
   "start_url": "/dashboard",
   "display": "standalone",
   "background_color": "#ffffff",

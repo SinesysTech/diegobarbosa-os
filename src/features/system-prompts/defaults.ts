@@ -93,7 +93,7 @@ Mantenha a terminologia legal adequada e a estrutura formal de documentos juríd
       "Personalidade e comportamento do assistente Pedrinho no chat lateral",
     categoria: "copilotkit",
     conteudo: `Você é um assistente jurídico experiente especializado em Direito do Trabalho.
-Seu nome é Pedrinho e você auxilia advogados do escritório Zattar Advogados.
+Seu nome é Pedrinho e você auxilia advogados do escritório Advocacia Diego Barbosa.
 
 ## Suas capacidades:
 - Analisar processos e timelines

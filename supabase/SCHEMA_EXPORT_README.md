@@ -2,7 +2,7 @@
 
 ## Overview
 
-This directory contains the database schema export for the Zattar Advogados (Sinesys) application.
+This directory contains the database schema export for the Advocacia Diego Barbosa (Sinesys) application.
 
 ## Files
 

@@ -1,5 +1,5 @@
 -- Migration: Create usuarios_chatwoot table for user/agent mapping
--- Purpose: Map local Zattar users to Chatwoot agents for assignment and automation
+-- Purpose: Map local Diego Barbosa users to Chatwoot agents for assignment and automation
 -- Supports role-based routing and skill-based assignment
 
 -- =============================================================================
@@ -51,10 +51,10 @@ CREATE TABLE IF NOT EXISTS "public"."usuarios_chatwoot" (
 );
 
 -- Add comment on table
-COMMENT ON TABLE "public"."usuarios_chatwoot" IS 'Mapeamento entre usuários locais (Zattar) e agentes do Chatwoot. Suporta atribuição baseada em skills e disponibilidade.';
+COMMENT ON TABLE "public"."usuarios_chatwoot" IS 'Mapeamento entre usuários locais (Diego Barbosa) e agentes do Chatwoot. Suporta atribuição baseada em skills e disponibilidade.';
 
 -- Add comments on columns
-COMMENT ON COLUMN "public"."usuarios_chatwoot"."usuario_id" IS 'ID único do usuário no Zattar (UUID from auth.users or profiles)';
+COMMENT ON COLUMN "public"."usuarios_chatwoot"."usuario_id" IS 'ID único do usuário no Diego Barbosa (UUID from auth.users or profiles)';
 COMMENT ON COLUMN "public"."usuarios_chatwoot"."chatwoot_agent_id" IS 'ID do agente no Chatwoot';
 COMMENT ON COLUMN "public"."usuarios_chatwoot"."chatwoot_account_id" IS 'ID da conta no Chatwoot (suporte multi-tenant)';
 COMMENT ON COLUMN "public"."usuarios_chatwoot"."email" IS 'Email armazenado em cache para convenência (sincronizado do Chatwoot)';

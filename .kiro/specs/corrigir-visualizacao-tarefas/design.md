@@ -468,4 +468,4 @@ Não é necessário atualizar o AGENTS.md, pois as mudanças seguem os padrões 
 
 **Documentação**:
 - Feature-Sliced Design (FSD)
-- Zattar Design Patterns (PageShell, DataShell, DialogFormShell)
+- Diego Barbosa OS Design Patterns (PageShell, DataShell, DialogFormShell)

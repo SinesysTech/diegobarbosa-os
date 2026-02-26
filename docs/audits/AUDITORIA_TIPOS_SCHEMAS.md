@@ -1,7 +1,7 @@
-# Auditoria de Tipos e Schemas - Zattar Advogados
+# Auditoria de Tipos e Schemas - Advocacia Diego Barbosa
 
-**Data**: 2026-02-16  
-**Projeto**: Zattar OS (Sinesys)  
+**Data**: 2026-02-16
+**Projeto**: Diego Barbosa OS (Sinesys)  
 **Banco**: Supabase (cxxdivtgeslrujpfpivs)
 
 ## 🔍 Resumo Executivo

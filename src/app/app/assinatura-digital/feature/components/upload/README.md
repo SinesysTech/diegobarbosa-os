@@ -1,6 +1,6 @@
 # DocumentUploadDropzone
 
-Componente de upload de documentos para assinatura digital, inspirado no protótipo SignFlow e adaptado à identidade visual Zattar.
+Componente de upload de documentos para assinatura digital, inspirado no protótipo SignFlow e adaptado à identidade visual Diego Barbosa.
 
 ## Features
 
@@ -75,9 +75,9 @@ proximaEtapa();
 
 ## Customização
 
-### Cores (Identidade Zattar)
+### Cores (Identidade Diego Barbosa)
 
-- Primary: `bg-primary` (roxo Zattar)
+- Primary: `bg-primary` (roxo Diego Barbosa)
 - Hover: `hover:bg-primary/90`
 - Border: `border-primary`
 

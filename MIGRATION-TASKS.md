@@ -95,7 +95,7 @@ Os seguintes arquivos em `src/app/app/tarefas/` podem ser removidos após valida
 ### Design System
 - ✅ Uso de `getSemanticBadgeVariant` para badges
 - ✅ Componentes shadcn/ui
-- ✅ Padrões Zattar (PageShell, DataShell, DialogFormShell)
+- ✅ Padrões Diego Barbosa OS (PageShell, DataShell, DialogFormShell)
 - ✅ Grid 4px para espaçamentos
 
 ### Arquitetura

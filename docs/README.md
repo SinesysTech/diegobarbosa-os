@@ -13,6 +13,8 @@ docs/
 ├── INDEX.md                    # Índice completo da documentação
 ├── README.md                   # Este arquivo
 ├── architecture/               # Arquitetura e design do sistema
+├── modules/                    # Documentação por módulo/feature
+├── internal/                   # Guias técnicos internos e troubleshooting
 ├── integrations/              # Guias de integrações
 ├── migrations/                # Documentação de migrations
 ├── audits/                    # Relatórios de auditoria
@@ -24,15 +26,19 @@ docs/
 ## 🚀 Começando
 
 ### Para Novos Desenvolvedores
+
 1. Leia [ARCHITECTURE.md](./architecture/ARCHITECTURE.md)
 2. Consulte [AGENTS.md](./architecture/AGENTS.md)
 3. Verifique [STATUS.md](./architecture/STATUS.md)
+4. Consulte [docs/modules/README.md](./modules/README.md)
 
 ### Para Configurar Integrações
+
 1. Leia [QUICK_START_INTEGRACOES.md](./integrations/QUICK_START_INTEGRACOES.md)
 2. Siga o [migration-guide.md](./integrations/migration-guide.md)
 
 ### Para Aplicar Migrations
+
 1. Consulte [APPLY_MIGRATION.md](./migrations/APPLY_MIGRATION.md)
 2. Veja exemplos em [SUPABASE_MIGRATION_SUMMARY.md](./migrations/SUPABASE_MIGRATION_SUMMARY.md)
 
@@ -53,5 +59,4 @@ Ao adicionar nova documentação:
 
 ---
 
-**Última atualização:** 2026-02-16
-
+**Última atualização:** 2026-02-25

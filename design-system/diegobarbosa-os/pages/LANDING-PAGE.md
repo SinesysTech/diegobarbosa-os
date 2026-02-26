@@ -13,7 +13,7 @@
 
 ## Page Overview
 
-A landing page principal do Zattar Advogados segue o padrão **Hero + Features + Testimonials + CTA**, otimizado para conversao em servicos juridicos.
+A landing page principal do Advocacia Diego Barbosa segue o padrão **Hero + Features + Testimonials + CTA**, otimizado para conversao em servicos juridicos.
 
 ### Estrutura de Secoes
 

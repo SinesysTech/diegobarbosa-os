@@ -1,4 +1,4 @@
-Aqui está o documento atualizado. Ele reflete a mudança da estrutura antiga (Zattar/Institucional) para a nova estrutura de **Alta Conversão/LegalTech** (Diego Barbosa), alinhado com o protótipo HTML que criamos.
+Aqui está o documento atualizado. Ele reflete a mudança da estrutura antiga para a nova estrutura de **Alta Conversão/LegalTech** (Diego Barbosa), alinhado com o protótipo HTML que criamos.
 
 ---
 

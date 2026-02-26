@@ -44,9 +44,9 @@
 
 ```
 OBJETIVO: Sincronizar contatos, conversas e mensagens
-entre Zattar e Chatwoot em tempo real.
+entre Diego Barbosa e Chatwoot em tempo real.
 
-RESULTADO: Gerenciamento omnichannel completo dentro do Zattar
+RESULTADO: Gerenciamento omnichannel completo dentro do Diego Barbosa OS
 ├─ Ver histórico de conversas do cliente
 ├─ Responder direto no perfil
 ├─ Notificações de novam ensagens
@@ -58,7 +58,7 @@ RESULTADO: Gerenciamento omnichannel completo dentro do Zattar
 
 ```
 ┌─────────────────┐
-│  ZATTAR APP     │  ← Cliente, Partes, Terceiros
+│  DIEGO BARBOSA  │  ← Cliente, Partes, Terceiros
 └────────┬────────┘
          │ Service Layer
          ▼
@@ -205,7 +205,7 @@ INTEGRATION_PLAN.md (Sequência)
 - [ ] **Database:** Criar migrations (partes_chatwoot, conversas_chatwoot)
 - [ ] **Types:** Definir todas as interfaces TypeScript
 - [ ] **Repository:** Implementar CRUD layer
-- [ ] **Service:** Sincronizar contatos Zattar → Chatwoot
+- [ ] **Service:** Sincronizar contatos Diego Barbosa → Chatwoot
 - [ ] **Tests:** Cobertura 80%+
 
 **Referência:** INTEGRATION_PLAN.md → Fase 1 + ARCHITECTURE.md → Estrutura de dados
@@ -253,7 +253,7 @@ INTEGRATION_PLAN.md (Sequência)
 
 - [ ] Auto-assignment de agentes
 - [ ] Respostas automáticas
-- [ ] Sincronização de usuários Zattar ↔ Chatwoot
+- [ ] Sincronização de usuários Diego Barbosa ↔ Chatwoot
 - [ ] Testes E2E completos
 - [ ] Deploy + monitoring
 

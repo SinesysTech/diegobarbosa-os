@@ -1,4 +1,4 @@
-# Zattar Advogados - Database Schema Export Index
+# Advocacia Diego Barbosa - Database Schema Export Index
 
 Generated on: **2026-02-10**
 
@@ -260,14 +260,14 @@ Bash script with ready-to-use commands:
 ## 👥 Contributors
 
 - **Schema Export**: Claude Code (Anthropic)
-- **Database Design**: Zattar Advogados Team
+- **Database Design**: Advocacia Diego Barbosa Team
 - **Framework**: Next.js 16 + Supabase
 
 ---
 
 ## 📄 License
 
-This schema export is proprietary to Zattar Advogados (Sinesys).
+This schema export is proprietary to Advocacia Diego Barbosa (Sinesys).
 Not for redistribution or public use.
 
 ---

@@ -1,6 +1,6 @@
-# 🏗️ Arquitetura de Sincronização Chatwoot-Zattar
+# 🏗️ Arquitetura de Sincronização Chatwoot-Diego Barbosa
 
-**Objetivo:** Manter contatos, conversas e mensagens sincronizadas entre Zattar e Chatwoot  
+**Objetivo:** Manter contatos, conversas e mensagens sincronizadas entre Diego Barbosa e Chatwoot  
 **Padrão:** Bidirecional com reconciliação eventual e débito de autoridade  
 **Data:** 17/02/2026
 
@@ -10,7 +10,7 @@
 
 ### 1. **Fonte Única de Verdade (SSOT)**
 
-- Zattar = Fonte primária para dados de **clientes, partes, terceiros**
+- Diego Barbosa = Fonte primária para dados de **clientes, partes, terceiros**
 - Chatwoot = Fonte primária para **conversas e mensagens**
 - Mapeamento = Tabela de reconciliação `partes_chatwoot`
 
@@ -83,7 +83,7 @@ const config = await getChatwootConfigWithFallback();
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                      ZATTAR APP (Frontend)                         │
+│                   DIEGO BARBOSA APP (Frontend)                      │
 ├─────────────┬──────────────────┬────────────────┬──────────────────┤
 │ Dashboard   │ Perfil Cliente   │ Chat           │ Configurações    │
 └─────┬───────┴──────────┬───────┴────────┬───────┴─────────┬────────┘
@@ -139,7 +139,7 @@ const config = await getChatwootConfigWithFallback();
 
 ## 🔄 Ciclos de Sincronização
 
-### Ciclo 1: CRIAR CONTATO (Zattar → Chatwoot)
+### Ciclo 1: CRIAR CONTATO (Diego Barbosa → Chatwoot)
 
 ```
 ┌─────────────┐
@@ -174,7 +174,7 @@ const config = await getChatwootConfigWithFallback();
 │    └─ IF EXISTS, retornar        │
 │                                  │
 │ 3. Criar identifier único        │
-│    └─ identifier = "zattar_cli..."│
+│    └─ identifier = "diegobarbosa_cli..."│
 │                                  │
 │ 4. POST /public/api/.../contacts│ ◄─── Chatwoot HTTP API
 │    ├─ Payload: identifier, name...│
@@ -201,7 +201,7 @@ Tempo total: ~2s
 Status BD: partes_chatwoot.sincronizado = true
 ```
 
-### Ciclo 2: ENVIAR MENSAGEM (Zattar → Chatwoot)
+### Ciclo 2: ENVIAR MENSAGEM (Diego Barbosa → Chatwoot)
 
 ```
 ┌──────────────────────────────┐
@@ -263,7 +263,7 @@ Tempo total: ~1s
 Status BD: notas com chatwoot_message_id
 ```
 
-### Ciclo 3: RECEBER MENSAGEM (Chatwoot → Zattar via Webhook)
+### Ciclo 3: RECEBER MENSAGEM (Chatwoot → Diego Barbosa via Webhook)
 
 ```
 ┌─────────────────────┐
@@ -281,7 +281,7 @@ Status BD: notas com chatwoot_message_id
           │
           ▼
 ┌──────────────────────────────────┐
-│ Webhook → Zattar                 │
+│ Webhook → Diego Barbosa           │
 │ POST /api/webhooks/chatwoot      │ ◄─── NextJS Route Handler
 │                                  │
 │ Body: {                          │
@@ -354,7 +354,7 @@ Confiabilidade: Retry automático se falhar
 partes_chatwoot {
   id: BIGSERIAL PRIMARY KEY
 
-  -- Identificação Zattar
+  -- Identificação Diego Barbosa
   tipo_entidade: VARCHAR(50)           -- 'cliente'|'parte_contraria'|'terceiro'
   entidade_id: BIGINT                  -- PK de clientes|partes|terceiros
 
@@ -393,7 +393,7 @@ conversas_chatwoot {
   chatwoot_conversation_id: INTEGER NOT NULL UNIQUE
   chatwoot_account_id: INTEGER NOT NULL
 
-  -- Zattar
+  -- Diego Barbosa
   tipo_entidade: VARCHAR(50)
   entidade_id: BIGINT
   cliente_id: BIGINT
@@ -635,7 +635,7 @@ logger.error({
 
 ### ✅ Fase 2: Sync Unidirecional
 
-- [ ] Sincronizar Zattar → Chatwoot (contatos)
+- [ ] Sincronizar Diego Barbosa → Chatwoot (contatos)
 - [ ] MCP tools para sync
 - [ ] Webhooks listener setup
 - [ ] UI para trigger manual

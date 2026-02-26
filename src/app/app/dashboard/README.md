@@ -1,6 +1,6 @@
 # Dashboard Module
 
-Módulo autocontido de Dashboard seguindo a arquitetura modular do projeto Zattar Advogados.
+Módulo autocontido de Dashboard seguindo a arquitetura modular do projeto Advocacia Diego Barbosa.
 
 ## Arquitetura
 

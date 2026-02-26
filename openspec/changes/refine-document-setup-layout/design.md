@@ -128,7 +128,7 @@ O protótipo de referência estabelece um padrão visual que não está totalmen
 </div>
 ```
 
-**Nota:** Usar `text-primary` (Zattar Purple) para links/ações, não cores hardcoded.
+**Nota:** Usar `text-primary` (Brand Purple) para links/ações, não cores hardcoded.
 
 **SignerCard - Estado ATIVO (selecionado):**
 ```tsx
@@ -203,11 +203,11 @@ O protótipo de referência estabelece um padrão visual que não está totalmen
 </div>
 ```
 
-**Nota:** `--highlight` é o Action Orange do design system Zattar.
+**Nota:** `--highlight` é o Action Orange do design system Diego Barbosa.
 
 ### D6: Botão CTA "Review & Send"
 
-**Usar tokens do design system (Primary = Zattar Purple):**
+**Usar tokens do design system (Primary = Brand Purple):**
 ```tsx
 <Button className="w-full h-12 text-base">
   Review & Send
@@ -215,7 +215,7 @@ O protótipo de referência estabelece um padrão visual que não está totalmen
 </Button>
 ```
 
-**Nota:** O Button padrão já usa `bg-primary` (Zattar Purple). Não usar cores hardcoded.
+**Nota:** O Button padrão já usa `bg-primary` (Brand Purple). Não usar cores hardcoded.
 
 ### D7: Cores dos Signatários
 
@@ -223,7 +223,7 @@ O protótipo de referência estabelece um padrão visual que não está totalmen
 ```typescript
 // Cores mapeadas para os tokens existentes em globals.css
 const SIGNER_COLORS = [
-  { name: 'primary', bg: 'bg-chart-1', text: 'text-primary-foreground' },   // Roxo Zattar
+  { name: 'primary', bg: 'bg-chart-1', text: 'text-primary-foreground' },   // Brand Purple
   { name: 'highlight', bg: 'bg-chart-2', text: 'text-primary-foreground' }, // Laranja
   { name: 'charcoal', bg: 'bg-chart-3', text: 'text-primary-foreground' },  // Charcoal
   { name: 'green', bg: 'bg-chart-4', text: 'text-primary-foreground' },     // Verde

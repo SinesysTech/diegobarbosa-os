@@ -6,7 +6,7 @@
 
 ---
 
-**Project:** Zattar OS
+**Project:** Diego Barbosa OS
 **Generated:** 2026-02-14 18:41:56
 **Category:** Analytics Dashboard
 
@@ -25,7 +25,7 @@
 | Text | `#1E293B` | `oklch(0.24 0 0)` | `--foreground` |
 | Muted Text | `#64748B` | `oklch(0.55 0.02 270)` | `--muted-foreground` |
 
-**Color Notes:** Zattar purple (brand identity) + action orange (CTAs, warnings). Use `bg-primary` and `bg-highlight` directly in Tailwind - do NOT wrap in `var()` or `hsl()`.
+**Color Notes:** Brand purple (Diego Barbosa) (brand identity) + action orange (CTAs, warnings). Use `bg-primary` and `bg-highlight` directly in Tailwind - do NOT wrap in `var()` or `hsl()`.
 
 ### Typography
 
@@ -78,7 +78,7 @@
 // Use shadcn/ui Button component - already configured
 import { Button } from "@/components/ui/button"
 
-// Primary (Zattar Purple)
+// Primary (Brand Purple)
 <Button variant="default">Salvar Processo</Button>
 
 // Action/Warning (Orange Highlight)
@@ -96,7 +96,7 @@ import { Button } from "@/components/ui/button"
 </Button>
 ```
 
-**Critical Rule:** Use shadcn/ui `<Button>` component, NOT custom CSS buttons. All variants are pre-configured with proper Zattar colors.
+**Critical Rule:** Use shadcn/ui `<Button>` component, NOT custom CSS buttons. All variants are pre-configured with proper brand colors.
 
 ### Cards
 
@@ -190,7 +190,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
   {/* Content */}
 </DialogContent>
 
-// BETTER: Use DialogFormShell wrapper (Zattar pattern)
+// BETTER: Use DialogFormShell wrapper (Diego Barbosa OS pattern)
 import { DialogFormShell } from "@/components/shared/dialog-form-shell"
 
 <DialogFormShell
@@ -203,7 +203,7 @@ import { DialogFormShell } from "@/components/shared/dialog-form-shell"
 </DialogFormShell>
 ```
 
-**Critical Rule:** Prefer `DialogFormShell` over raw `Dialog` for consistency with Zattar patterns.
+**Critical Rule:** Prefer `DialogFormShell` over raw `Dialog` for consistency with Diego Barbosa OS patterns.
 
 ### Badges (Status Indicators)
 

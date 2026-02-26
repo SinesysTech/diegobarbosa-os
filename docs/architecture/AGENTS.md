@@ -1,8 +1,9 @@
-
 # AGENTS.md
+
 This file provides guidance to Verdent when working with code in this repository.
 
 ## Table of Contents
+
 1. [Commonly Used Commands](#commands)
 2. [High-Level Architecture & Structure](#architecture)
 3. [Key Rules & Constraints](#key-rules--constraints)
@@ -11,6 +12,7 @@ This file provides guidance to Verdent when working with code in this repository
 ## Commands
 
 ### Development
+
 ```powershell
 # Start development server (Turbopack)
 npm run dev
@@ -24,6 +26,7 @@ npm run type-check:skip-lib
 ```
 
 ### Build
+
 ```powershell
 # Standard build (local)
 npm run build
@@ -41,6 +44,7 @@ npm run validate:arch:strict
 ```
 
 ### Testing
+
 ```powershell
 # Run all tests
 npm test
@@ -72,6 +76,7 @@ npm run test:portal-cliente
 ```
 
 ### Linting & Validation
+
 ```powershell
 # ESLint
 npm run lint
@@ -85,6 +90,7 @@ npm run validate:exports:verbose
 ```
 
 ### AI & MCP
+
 ```powershell
 # MCP server management
 npm run mcp:check             # Verify registered tools
@@ -101,6 +107,7 @@ npm run ai:index-dry-run      # Dry run indexing
 ```
 
 ### Database & Scripts
+
 ```powershell
 # Populate tables
 npm run populate:tabelas-audiencias
@@ -166,23 +173,23 @@ src/
 │       ├── mcp/              # MCP endpoint (SSE)
 │       └── plate/ai/         # Plate AI editor endpoint
 │
-├── features/                 # 🔥 FEATURE-SLICED DESIGN (30 modules)
+├── features/                 # 🔥 FEATURE-SLICED DESIGN (37 modules)
 │   ├── processos/            # ✅ Fully migrated
-│   ├── partes/               # ✅ Fully migrated
+│   ├── partes/               # ⚠️  Partial (missing repository.ts)
 │   ├── contratos/            # ✅ Fully migrated
-│   ├── audiencias/           # ⚠️  Partial (missing service.ts, repository.ts)
-│   ├── financeiro/           # ⚠️  Special subdomain pattern
-│   ├── documentos/           # ⚠️  Partial (missing service.ts, repository.ts)
-│   ├── assinatura-digital/   # ⚠️  Partial
+│   ├── audiencias/           # ⚠️  Partial (no actions/ directory)
+│   ├── financeiro/           # ⚠️  Partial (special subdomain pattern)
+│   ├── documentos/           # ⚠️  Partial (missing repository.ts)
+│   ├── twofauth/             # 🧩 Shell/legacy in FSD terms
 │   ├── acervo/               # ✅ Fully migrated
 │   ├── usuarios/             # ✅ Fully migrated
 │   ├── enderecos/            # ✅ Fully migrated
-│   └── [25 more features]/   # See migration status below
+│   └── [27 more features]/   # See migration status below
 │
 ├── components/               # Shared UI components
 │   ├── ui/                   # shadcn/ui primitives
 │   ├── layout/               # Layout components (sidebar, header)
-│   └── shared/               # Zattar patterns (PageShell, DataTableShell, etc.)
+│   └── shared/               # Diego Barbosa OS patterns (PageShell, DataTableShell, etc.)
 │
 ├── lib/                      # Infrastructure layer
 │   ├── ai/                   # AI/RAG (embeddings, indexing, retrieval)
@@ -218,27 +225,29 @@ src/features/{modulo}/
 ```
 
 **Key files**:
+
 - `domain.ts`: Zod schemas, types, constants, pure business rules
 - `service.ts`: Orchestrates business logic, calls repository, handles validation
 - `repository.ts`: Supabase queries (CRUD, filters)
 - `actions/*.ts`: Server Actions (use `authenticatedAction` wrapper)
-- `RULES.md`: AI context for business rules (9/30 features have this) [inferred]
+- `RULES.md`: AI context for business rules (10/37 features have this) [inferred]
 
 ### Feature Migration Status
 
-| Status | Count | Features |
-|--------|-------|----------|
-| ✅ **Fully Migrated** | 17/30 | acervo, advogados, ai, assistentes, captura, cargos, contratos, enderecos, expedientes, notificacoes, obrigacoes, pangea, pericias, processos, rh, tipos-expedientes, usuarios |
-| ⚠️ **Partially Migrated** | 7/30 | assinatura-digital, audiencias, chat, documentos, partes, perfil, portal-cliente |
-| ❌ **Not Migrated** | 6/30 | busca (actions-only), calendar (UI-only), financeiro (special pattern), profiles (config), repasses (stub), tasks (empty) |
+| Status                    | Count | Features                                                                                                                                                                                                                   |
+| ------------------------- | ----- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| ✅ **Fully Migrated**     | 20/37 | acervo, advogados, ai, captura, cargos, config-atribuicao, contratos, dify, enderecos, integracoes, notificacoes, obrigacoes, pecas-juridicas, pericias, processos, rh, system-prompts, tasks, tipos-expedientes, usuarios |
+| ⚠️ **Partially Migrated** | 12/37 | assistentes-tipos, audiencias, calendar, chat, chatwoot, documentos, expedientes, financeiro, partes, perfil, profiles, tags                                                                                               |
+| 🧩 **Shell/Legacy**       | 5/37  | admin, audit, busca, repasses, twofauth                                                                                                                                                                                    |
 
 **Architecture Completeness** [inferred]:
-- domain.ts: 23/30 (77%)
-- service.ts: 23/30 (77%)
-- repository.ts: 19/30 (63%) ← **Lowest coverage**
-- actions/: 25/30 (83%)
-- components/: 28/30 (93%)
-- RULES.md: 9/30 (30%) ← **Needs expansion**
+
+- domain.ts: 30/37 (81%)
+- service.ts: 28/37 (76%)
+- repository.ts: 25/37 (68%) ← **Lowest coverage**
+- actions/: 29/37 (78%)
+- components/: 32/37 (86%)
+- RULES.md: 10/37 (27%) ← **Needs expansion**
 
 ### Major Subsystems
 
@@ -302,6 +311,7 @@ src/features/{modulo}/
 ### Data Flows
 
 **Creating a Process (Processo)**:
+
 ```
 UI (React) → actionCriarProcesso (Server Action)
   → service.criarProcesso (validation, business rules)
@@ -312,6 +322,7 @@ UI (React) → actionCriarProcesso (Server Action)
 ```
 
 **MCP Tool Invocation**:
+
 ```
 AI Agent → POST /api/mcp { tool: "criar_processo", args: {...} }
   → mcpRegistry.execute("criar_processo")
@@ -320,6 +331,7 @@ AI Agent → POST /api/mcp { tool: "criar_processo", args: {...} }
 ```
 
 **AI Editor Streaming**:
+
 ```
 UI (Plate) → POST /api/plate/ai { prompt: "..." }
   → authenticateRequest (JWT or API key)
@@ -339,16 +351,16 @@ UI (Plate) → POST /api/plate/ai { prompt: "..." }
 
 ### Development Entry Points
 
-| Task | Entry Point |
-|------|-------------|
-| Add new feature | Create `src/features/{modulo}/` with domain → service → repository → actions |
-| Add new page | `src/app/(dashboard)/{route}/page.tsx` (import from `@/features/{modulo}`) |
-| Add new API endpoint | `src/app/api/{route}/route.ts` |
-| Add UI component | `src/components/shared/{component}.tsx` (or `ui/` for primitives) |
-| Add Server Action | `src/features/{modulo}/actions/{entity}-actions.ts` (use `authenticatedAction`) |
-| Modify sidebar | `src/components/layout/sidebar/app-sidebar.tsx` |
-| Add database migration | `supabase/migrations/{timestamp}_{name}.sql` |
-| Add AI tool | `src/lib/mcp/registry.ts` (register via `registerMcpTool`) |
+| Task                   | Entry Point                                                                     |
+| ---------------------- | ------------------------------------------------------------------------------- |
+| Add new feature        | Create `src/features/{modulo}/` with domain → service → repository → actions    |
+| Add new page           | `src/app/(dashboard)/{route}/page.tsx` (import from `@/features/{modulo}`)      |
+| Add new API endpoint   | `src/app/api/{route}/route.ts`                                                  |
+| Add UI component       | `src/components/shared/{component}.tsx` (or `ui/` for primitives)               |
+| Add Server Action      | `src/features/{modulo}/actions/{entity}-actions.ts` (use `authenticatedAction`) |
+| Modify sidebar         | `src/components/layout/sidebar/app-sidebar.tsx`                                 |
+| Add database migration | `supabase/migrations/{timestamp}_{name}.sql`                                    |
+| Add AI tool            | `src/lib/mcp/registry.ts` (register via `registerMcpTool`)                      |
 
 ## Key Rules & Constraints
 
@@ -360,6 +372,7 @@ UI (Plate) → POST /api/plate/ai { prompt: "..." }
    - Imports: `@/features/{modulo}`, `@/lib/{service}`, `@/components/{type}`
 
 2. **No direct imports from feature internals**
+
    ```typescript
    // ✅ Correct - use barrel exports
    import { ClientesTable, actionListarClientes } from "@/features/partes";
@@ -387,7 +400,7 @@ UI (Plate) → POST /api/plate/ai { prompt: "..." }
 
 6. **UI Component patterns**
    - Use shadcn/ui primitives (`@/components/ui`)
-   - Use Zattar patterns:
+   - Use Diego Barbosa OS patterns:
      - `PageShell` for page layout
      - `DataTableShell` for tables (includes toolbar & pagination)
      - `DialogFormShell` for forms (multi-step support)
@@ -401,6 +414,7 @@ UI (Plate) → POST /api/plate/ai { prompt: "..." }
    - Inputs: `w-full`
 
 8. **Data Table action button pattern** [inferred]
+
    ```typescript
    // ✅ Correct
    <DataShell
@@ -472,6 +486,7 @@ UI (Plate) → POST /api/plate/ai { prompt: "..." }
 ### From .cursor/rules/ (Supabase & Design)
 
 Files in `.cursor/rules/`:
+
 - `create-db-functions.mdc`
 - `create-migration.mdc`
 - `create-rls-policies.mdc`
@@ -481,6 +496,7 @@ Files in `.cursor/rules/`:
 - `writing-supabase-edge-functions.mdc`
 
 Key principles [inferred from file names]:
+
 - Follow PostgreSQL style guide for SQL
 - RLS policies required for all tables
 - Design system protocols for UI consistency
@@ -492,6 +508,7 @@ Key principles [inferred from file names]:
 ### Adding a New API Endpoint
 
 1. **Server Action (recommended)**:
+
    ```typescript
    // src/features/{modulo}/actions/{entity}-actions.ts
    "use server";
@@ -505,11 +522,12 @@ Key principles [inferred from file names]:
        const result = await service.criar(data);
        revalidatePath("/{modulo}");
        return result;
-     }
+     },
    );
    ```
 
 2. **API Route (for external integrations)**:
+
    ```typescript
    // src/app/api/{route}/route.ts
    import { NextRequest, NextResponse } from "next/server";
@@ -523,6 +541,7 @@ Key principles [inferred from file names]:
    ```
 
 3. **MCP Tool (for AI agents)**:
+
    ```typescript
    // src/lib/mcp/registry.ts
    import { registerMcpTool } from "./registry";
@@ -544,17 +563,20 @@ Key principles [inferred from file names]:
 **Localizacao**: `src/lib/cors/config.ts`
 
 **Adicionar nova origem permitida**:
+
 1. Editar `.env.local` (desenvolvimento) ou variaveis de ambiente (producao)
 2. Adicionar origem a variavel `ALLOWED_ORIGINS` (comma-separated)
 3. Exemplo: `ALLOWED_ORIGINS=https://app.example.com,https://api.example.com`
 
 **Endpoints com CORS configurado**:
+
 - `/api/mcp` (MCP Server)
 - `/api/mcp/stream` (MCP Stream)
 - `/api/csp-report` (CSP Violations)
 - Supabase Edge Functions (indexar-documentos, alertas-disk-io)
 
 **Troubleshooting**:
+
 - Erro "CORS policy: No 'Access-Control-Allow-Origin' header"
   -> Adicionar origem a whitelist via `ALLOWED_ORIGINS`
 - Erro "CORS policy: The 'Access-Control-Allow-Origin' header contains multiple values"
@@ -565,16 +587,19 @@ Key principles [inferred from file names]:
 ### Modifying CI/CD Pipeline
 
 **GitHub Actions**: `.github/workflows/tests.yml` [inferred from README]
+
 - Runs tests, coverage, E2E (Playwright)
 - Uploads to Codecov
 - Comments on PRs with coverage analysis
 
 **Docker Build**:
+
 - Use `npm run build:ci` (higher heap allocation)
 - Output: `standalone` (optimized for Docker)
 - Multi-stage build reduces image size
 
 **Caprover Deploy** [inferred from README, captain-definition file]:
+
 - Build command: `npm run build:caprover`
 - Uses `captain-definition` file in root
 
@@ -583,6 +608,7 @@ Key principles [inferred from file names]:
 #### Adding a New Feature Module
 
 1. **Create structure**:
+
    ```powershell
    mkdir src/features/nova-feature
    mkdir src/features/nova-feature/components
@@ -598,6 +624,7 @@ Key principles [inferred from file names]:
    ```
 
 2. **Define domain** (domain.ts):
+
    ```typescript
    import { z } from "zod";
 
@@ -619,6 +646,7 @@ Key principles [inferred from file names]:
    ```
 
 3. **Implement repository** (repository.ts):
+
    ```typescript
    import { createClient } from "@/lib/supabase/server";
    import type { NovaFeature } from "./domain";
@@ -648,6 +676,7 @@ Key principles [inferred from file names]:
    ```
 
 4. **Implement service** (service.ts):
+
    ```typescript
    import { novaFeatureSchema } from "./domain";
    import * as repo from "./repository";
@@ -666,6 +695,7 @@ Key principles [inferred from file names]:
    ```
 
 5. **Create Server Actions** (actions/nova-feature-actions.ts):
+
    ```typescript
    "use server";
    import { authenticatedAction } from "@/lib/safe-action";
@@ -678,7 +708,7 @@ Key principles [inferred from file names]:
      async (_, { user }) => {
        const data = await service.listar();
        return { success: true, data };
-     }
+     },
    );
 
    export const actionCriar = authenticatedAction(
@@ -687,11 +717,12 @@ Key principles [inferred from file names]:
        const result = await service.criar(data);
        revalidatePath("/nova-feature");
        return { success: true, data: result };
-     }
+     },
    );
    ```
 
 6. **Export via barrel** (index.ts):
+
    ```typescript
    export type { NovaFeature } from "./domain";
    export { novaFeatureSchema, STATUS_LABELS } from "./domain";
@@ -700,6 +731,7 @@ Key principles [inferred from file names]:
    ```
 
 7. **Create page** (src/app/(dashboard)/nova-feature/page.tsx):
+
    ```typescript
    import { PageShell } from "@/components/shared/page-shell";
    import { NovaFeatureTable } from "@/features/nova-feature/components/nova-feature-table";
@@ -727,13 +759,16 @@ Key principles [inferred from file names]:
    - Add route entry to navigation items
 
 9. **Create RULES.md** (for AI context):
+
    ```markdown
    # Regras de Negócio - Nova Feature
 
    ## Validação
+
    - Nome: mínimo 3 caracteres
 
    ## Regras
+
    - Não permitir duplicatas por nome
    - Status padrão: ativo
    ```
@@ -754,11 +789,13 @@ Key principles [inferred from file names]:
 #### Migrating an Existing Module
 
 **Priority order** (based on completeness metrics):
+
 1. Add `repository.ts` (lowest coverage: 63%)
 2. Add `RULES.md` (lowest coverage: 30%)
 3. Consolidate `service.ts` and `domain.ts` (77% coverage)
 
 **Steps**:
+
 1. Identify all files belonging to module (components, hooks, utils)
 2. Create feature structure: `src/features/{modulo}/`
 3. Move domain logic to `domain.ts` (schemas, types, constants)
@@ -780,6 +817,7 @@ Key principles [inferred from file names]:
 - Test: `npm run test:api-acervo-geral`, `npm run test:api-audiencias`, etc.
 
 **Adding a new tribunal**:
+
 1. Create driver in `src/features/captura/drivers/{tribunal}/`
 2. Implement interface from `src/features/captura/domain.ts`
 3. Register in `src/features/captura/service.ts`
@@ -789,6 +827,7 @@ Key principles [inferred from file names]:
 #### Working with AI/RAG
 
 **Indexing a new document type**:
+
 ```typescript
 import { indexarDocumento } from "@/lib/ai/indexing";
 
@@ -806,6 +845,7 @@ after(async () => {
 ```
 
 **Querying semantic search**:
+
 ```typescript
 import { buscaSemantica } from "@/lib/ai/retrieval";
 
@@ -817,6 +857,7 @@ const resultados = await buscaSemantica("query string", {
 ```
 
 **Reindexing**:
+
 ```powershell
 npm run ai:reindex
 ```
@@ -826,6 +867,7 @@ npm run ai:reindex
 **Location**: `src/middleware/security-headers.ts`
 
 **Headers applied**:
+
 - Content-Security-Policy (report-only mode by default)
 - Strict-Transport-Security (HSTS)
 - X-Frame-Options
@@ -834,6 +876,7 @@ npm run ai:reindex
 - Permissions-Policy
 
 **Using nonces in components**:
+
 ```typescript
 import { useCSPNonce } from '@/hooks/use-csp-nonce';
 
@@ -844,6 +887,7 @@ function MyComponent() {
 ```
 
 **Adding a trusted domain**:
+
 1. Edit `src/middleware/security-headers.ts`
 2. Add domain to `TRUSTED_DOMAINS` in the appropriate category
 3. Update `buildCSPDirectives()` to include it in the right directive
@@ -851,6 +895,7 @@ function MyComponent() {
 5. Check `/api/csp-report` for violations
 
 **Environment variables**:
+
 - `CSP_REPORT_ONLY=true` - Enable/disable enforcement (default: true)
 - `CSP_REPORT_URI=/api/csp-report` - Endpoint for violation reports
 
@@ -859,11 +904,13 @@ function MyComponent() {
 #### Environment Variables
 
 **Required**:
+
 - `NEXT_PUBLIC_SUPABASE_URL`
 - `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_OR_ANON_KEY`
 - `SUPABASE_SERVICE_ROLE_KEY`
 
 **Optional**:
+
 - `ENABLE_REDIS_CACHE=true`
 - `REDIS_URL`
 - `REDIS_PASSWORD`
@@ -877,35 +924,42 @@ function MyComponent() {
 #### Troubleshooting
 
 **Build fails with OOM (Out of Memory)**:
+
 - Use `npm run build:ci` (allocates more heap)
 - Or set `NODE_OPTIONS=--max-old-space-size=8192`
 
 **TypeScript errors on build**:
+
 - `ignoreBuildErrors: true` mantido em next.config.ts (remoção gradual planejada)
 - Executar `npm run type-check` localmente antes de commits
 - Para builds de emergência, use `npm run type-check:skip-lib` se disponível
 - Erros atuais concentrados em features novas (config-atribuicao) - código estável está limpo
 
 **Tests fail with coverage threshold**:
+
 - Check jest.config.js for thresholds
 - Run `npm run test:coverage:open` to see uncovered lines
 
 **PWA not working**:
+
 - Ensure build with Webpack: `npm run build:prod` (not Turbopack)
 - Check `public/` for generated service worker
 - See README.md section "Progressive Web App (PWA)"
 
 **MCP tools not registered**:
+
 - Run `npm run mcp:check` to verify
 - Check `.mcp.json` configuration
 - Restart MCP server: `npm run mcp:dev`
 
 **Redis connection fails**:
+
 - System degrades gracefully (no crash)
 - Check `REDIS_URL` and `REDIS_PASSWORD`
 - Verify `ENABLE_REDIS_CACHE=true`
 
 **Architecture validation fails**:
+
 - Run `npm run check:architecture`
 - Fix imports to follow FSD rules
 - Use barrel exports (`@/features/{modulo}`)

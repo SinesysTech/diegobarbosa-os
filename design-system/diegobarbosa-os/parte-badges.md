@@ -257,4 +257,4 @@ Ao criar ou modificar uma visualização com partes processuais:
 ---
 
 **Última atualização**: Janeiro 2026
-**Mantido por**: Equipe de Desenvolvimento Zattar
+**Mantido por**: Equipe de Desenvolvimento Diego Barbosa

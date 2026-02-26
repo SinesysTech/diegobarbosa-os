@@ -336,11 +336,11 @@ refactor(audiencias): migrar para nova arquitetura
 
 ## 📚 Recursos Adicionais
 
-- **[Arquitetura Completa](./arquitetura-sistema.md)**
-- **[Sistema de Cache Redis](./cache-redis.md)**
-- **[Guia de Deploy](./deploy.md)**
-- **[Troubleshooting](./troubleshooting.md)**
-- **[AGENTS.md](../AGENTS.md)** - Instruções para IA
+- **[Arquitetura Completa](../architecture/arquitetura-sistema.md)**
+- **[Sistema de Cache Redis](../cache/CACHE_REDIS_INDICE.md)**
+- **[Guia de Deploy](../deploy/deploy.md)**
+- **[Troubleshooting](../troubleshooting/README.md)**
+- **[AGENTS.md](../../architecture/AGENTS.md)** - Instruções para IA
 
 ## 💡 Dicas
 

@@ -1,7 +1,7 @@
 # Relatório Final - Auditoria de Tipos e Schemas
 
 **Data**: 2026-02-16  
-**Projeto**: Zattar OS (Sinesys)  
+**Projeto**: Diego Barbosa OS (Sinesys)  
 **Status**: ✅ 62% Concluído
 
 ---

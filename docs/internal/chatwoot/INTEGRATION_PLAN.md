@@ -1,6 +1,6 @@
 # 🚀 Plano de Integração Chatwoot - Full Stack
 
-**Objetivo:** Integração total entre Zattar e Chatwoot para gerenciamento de comunicação omnichannel  
+**Objetivo:** Integração total entre Diego Barbosa e Chatwoot para gerenciamento de comunicação omnichannel  
 **Data:** 17/02/2026  
 **Status:** Planejamento → Implementação
 
@@ -11,7 +11,7 @@
 ### Pré-requisitos
 
 1. **Instância Chatwoot ativa** com credenciais de acesso
-2. **Contrato de tenant** ativo no Zattar
+2. **Contrato de tenant** ativo no Diego Barbosa
 3. **Permissões de admin** para configurar integrações
 
 ### Configurar Chatwoot
@@ -67,7 +67,7 @@ curl -H "api_access_token: {seu_api_key}" \
 ### 1.1 Mapeamento de Dados
 
 ```
-Zattar                          Chatwoot
+Diego Barbosa                   Chatwoot
 ├─ clientes                     ├─ contacts (inbox)
 ├─ partes_contrarias      →     ├─ custom_attributes
 ├─ terceiros                    └─ identifier (unique)
@@ -101,7 +101,7 @@ partes_chatwoot {
 
 ### 1.3 Ações de Sincronização
 
-#### A. Criar Contato no Chatwoot (Zaztar → Chatwoot)
+#### A. Criar Contato no Chatwoot (Diego Barbosa → Chatwoot)
 
 ```typescript
 // src/lib/chatwoot/contacts.ts - Função NOVA
@@ -131,7 +131,7 @@ export async function sincronizarPartePara Chatwoot(
     }
 
     // 2. Criar identifica único para o contato
-    const identifier = `zattar_${params.tipo_entidade}_${params.entidade_id}`;
+    const identifier = `diegobarbosa_${params.tipo_entidade}_${params.entidade_id}`;
 
     // 3. Criar contato no Chatwoot via Public API
     const contactResponse = await fetch(
@@ -147,7 +147,7 @@ export async function sincronizarPartePara Chatwoot(
           custom_attributes: {
             tipo_entidade: params.tipo_entidade,
             entidade_id: params.entidade_id,
-            sistema_origem: 'zattar',
+            sistema_origem: 'diegobarbosa',
             ativo: params.ativo ?? true,
             documento: params.cpf_cnpj
           }
@@ -201,7 +201,7 @@ export async function atualizarContatoChatwoot(
     }
 
     // 2. Atualizar via API (future implementation)
-    // Para agora, será via webhook quando o contato é atualizado no Zattar
+    // Para agora, será via webhook quando o contato é atualizado no Diego Barbosa
 
     return ok(void 0);
   } catch (error) {
@@ -299,7 +299,7 @@ export async function sincronizarAppParaChatwoot(
 ### 2.1 Estrutura de Conversas Síncronizadas
 
 ```
-Zattar                              Chatwoot
+Diego Barbosa                       Chatwoot
 ├─ conversas_chatwoot (nova)        ├─ conversations (API)
 │  ├─ id (PK)                       ├─ id
 │  ├─ chatwoot_id                   ├─ uuid
@@ -385,7 +385,7 @@ export async function criarConversaIntegrada(
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          source_id: `zattar_conv_${Date.now()}_${Math.random()}`,
+          source_id: `diegobarbosa_conv_${Date.now()}_${Math.random()}`,
           inbox_id: CHATWOOT_DEFAULT_INBOX_ID,
           contact_id: mapeamento.chatwoot_contact_id,
           status: 'open',
@@ -1183,7 +1183,7 @@ export async function atribuirAgenteAutomaticamente(
 const AUTO_RESPONSES = {
   horario_fora:
     "Obrigado por sua mensagem! Estou offline no momento. Responderei assim que possível.",
-  aguardando_docs: "Aguardando documentos. Envie para: docs@zattar.com.br",
+  aguardando_docs: "Aguardando documentos. Envie para: docs@diegobarbosa.com.br",
   resolucao_padrao:
     "Caso resolvido. Você pode abrir uma nova conversa se tiver outras dúvidas.",
 };
@@ -1223,7 +1223,7 @@ export async function enviarRespostaAutomatica(
 
 ## 📊 Sincronização de Usuários/Agentes
 
-### Mapeamento Usuário Zattar ↔ Agente Chatwoot
+### Mapeamento Usuário Diego Barbosa ↔ Agente Chatwoot
 
 ```sql
 CREATE TABLE usuarios_chatwoot (
@@ -1329,7 +1329,7 @@ export async function sincronizarAgentesParaChatwoot(): Promise<
 ## 🔄 Ciclo de Sincronização
 
 ```
-Usuário Zattar
+Usuário Diego Barbosa
   ↓
   ├→ Criar/Editar Cliente
   │  └→ Hook: useSyncChatwoot
@@ -1345,7 +1345,7 @@ Usuário Zattar
   └→ Resolver Conversa
      └→ PUT /conversations/{id} status=resolved
         └→ Webhook: conversation.status_changed
-           └→ Notificar usuário Zattar
+           └→ Notificar usuário Diego Barbosa
 ```
 
 ---

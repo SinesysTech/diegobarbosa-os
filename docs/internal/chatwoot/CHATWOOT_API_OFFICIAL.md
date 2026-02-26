@@ -111,7 +111,7 @@ const createContact = async (inboxId, userData) => {
   "avatar_url": "https://example.com/avatar.jpg",
   "custom_attributes": {
     "tipo_entidade": "cliente",
-    "sistema_origem": "zattar",
+    "sistema_origem": "diegobarbosa",
     "entidade_id": 456
   }
 }
@@ -656,7 +656,7 @@ const contact = await createContact(inboxId, {
     tipo_entidade: "cliente", // cliente, parte_contraria, terceiro
 
     // Seus atributos customizados
-    sistema_origem: "zattar",
+    sistema_origem: "diegobarbosa",
     entidade_id: 456,
     cpf: "123.456.789-00",
     cnpj: "12.345.678/0001-90",
@@ -715,7 +715,7 @@ const contact = await createContact(inboxId, {
 
 ```javascript
 /**
- * Fluxo completo: Usuário Zattar → Chatwoot
+ * Fluxo completo: Usuário Diego Barbosa → Chatwoot
  * 1. Criar contato
  * 2. Criar conversa
  * 3. Enviar mensagem
@@ -732,14 +732,14 @@ const contactResponse = await fetch(
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      identifier: 'usuario_zattar_456', // unique ID do Zattar
+      identifier: 'usuario_diegobarbosa_456', // unique ID do Diego Barbosa
       name: 'João Silva',
       email: 'joao@example.com',
       phone_number: '+5511999999999',
       custom_attributes: {
         entidade_id: 456,
         tipo_entidade: 'cliente',
-        sistema_origem: 'zattar'
+        sistema_origem: 'diegobarbosa'
       }
     })
   }
@@ -758,7 +758,7 @@ const conversationResponse = await fetch(
       'Content-Type': 'application/json'
     },
     body: JSON.stringify({
-      source_id: `zattar_conv_${Date.now()}`,
+      source_id: `diegobarbosa_conv_${Date.now()}`,
       inbox_id: INBOX_ID,
       contact_id: chatwootContactId,
       status: 'open',
@@ -786,7 +786,7 @@ const messageResponse = await fetch(
 );
 
 console.log('Conversa criada:', chatwootConversationId);
-console.log('Contato vinculado ao Zattar:', chatwootContactId);
+console.log('Contato vinculado ao Diego Barbosa:', chatwootContactId);
 ```
 
 ---
@@ -818,7 +818,7 @@ CHATWOOT_PLATFORM_API_KEY=seu_platform_api_key
 
 1. ✅ Criar Client HTTP TypeScript (já implementado)
 2. ✅ Documentar API completa (**este documento**)
-3. ⏳ **Vincular usuários Zattar ↔ Chatwoot**
+3. ⏳ **Vincular usuários Diego Barbosa ↔ Chatwoot**
 4. ⏳ **Sincronizar histórico de conversas**
 5. ⏳ **Exibir conversas no perfil do cliente**
 6. ⏳ **Notificações em tempo real (Pub/Sub)**

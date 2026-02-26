@@ -388,9 +388,9 @@ npx tsx scripts/sincronizacao/processos/sincronizar-partes-processos.ts --help
 
 ## 📚 Documentação Adicional
 
-- [Arquitetura do Sistema](../docs/arquitetura-sistema.md)
-- [Guia de Desenvolvimento](../docs/guia-desenvolvimento.md)
-- [Feature-Sliced Design](../AGENTS.md)
+- [Arquitetura do Sistema](../docs/architecture/ARCHITECTURE.md)
+- [Guia de Desenvolvimento](../docs/internal/guides/guia-desenvolvimento.md)
+- [Feature-Sliced Design](../docs/architecture/AGENTS.md)
 - [OpenSpec](../openspec/project.md)
 
 ---

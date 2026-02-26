@@ -1,5 +1,5 @@
 -- Migration: Create conversas_chatwoot table for conversation tracking
--- Purpose: Track conversations between Zattar entities and Chatwoot contacts
+-- Purpose: Track conversations between Diego Barbosa entities and Chatwoot contacts
 -- Bi-directional sync with eventual consistency model
 
 -- =============================================================================

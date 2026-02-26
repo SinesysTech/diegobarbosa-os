@@ -22,14 +22,14 @@ O Sinesys possui uma **implementação parcial de um Design System** baseado em 
 
 - **Sistema de cores robusto em OKLCH** com suporte a light/dark mode
 - **Tokens semânticos bem definidos** seguindo padrão shadcn/ui
-- **Cores da marca Zattar** mapeadas (`--brand`, `--highlight`)
+- **Cores da marca Diego Barbosa** mapeadas (`--brand`, `--highlight`)
 - **Sidebar com identidade visual própria** (escura em ambos os temas)
 - **Tipografia personalizada** com `font-heading` (Montserrat) e `font-sans` (Inter)
 - **Documentação inline** excelente para agentes IA
 
 ```css
 /* Exemplo da fundação */
---primary: oklch(0.45 0.25 285); /* Zattar Purple */
+--primary: oklch(0.45 0.25 285); /* Brand Purple */
 --highlight: oklch(0.68 0.22 45); /* Action Orange */
 --font-heading: var(--font-montserrat);
 ```

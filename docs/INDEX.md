@@ -2,14 +2,25 @@
 
 ## 📚 Estrutura da Documentação
 
+### 🧭 Visão Geral
+
+- [README.md](./README.md) - Entrada principal da documentação
+- [ORGANIZACAO_PROJETO.md](./ORGANIZACAO_PROJETO.md) - Organização de pastas e convenções
+
 ### 🏗️ Arquitetura
+
 - [AGENTS.md](./architecture/AGENTS.md) - Guia para agentes de IA
 - [ARCHITECTURE.md](./architecture/ARCHITECTURE.md) - Arquitetura do sistema
 - [CLAUDE.md](./architecture/CLAUDE.md) - Configurações Claude
 - [STATUS.md](./architecture/STATUS.md) - Status do projeto
 - [DOCKER_BUILD_FIX.md](./architecture/DOCKER_BUILD_FIX.md) - Correções Docker
 
+### 🧩 Módulos
+
+- [modules/README.md](./modules/README.md) - Índice dos módulos em `src/features`
+
 ### 🔌 Integrações
+
 - [migration-guide.md](./integrations/migration-guide.md) - Guia completo de migração
 - [QUICK_START_INTEGRACOES.md](./integrations/QUICK_START_INTEGRACOES.md) - Início rápido
 - [README_INTEGRACOES.md](./integrations/README_INTEGRACOES.md) - Guia principal
@@ -17,11 +28,13 @@
 - [SUCESSO_MIGRATION_INTEGRACOES.md](./integrations/SUCESSO_MIGRATION_INTEGRACOES.md) - Relatório de sucesso
 
 ### 🗄️ Migrations
+
 - [APPLY_MIGRATION.md](./migrations/APPLY_MIGRATION.md) - Como aplicar migrations
 - [SUPABASE_MIGRATION_SUMMARY.md](./migrations/SUPABASE_MIGRATION_SUMMARY.md) - Resumo Supabase
 - [MIGRATION_DIFY_CHATFLOW.md](./migrations/MIGRATION_DIFY_CHATFLOW.md) - Migration Dify
 
 ### 🔍 Auditorias
+
 - [AUDITORIA_TIPOS_SCHEMAS.md](./audits/AUDITORIA_TIPOS_SCHEMAS.md) - Auditoria de tipos
 - [RELATORIO_CORRECOES_TIPOS.md](./audits/RELATORIO_CORRECOES_TIPOS.md) - Correções de tipos
 - [RELATORIO_FINAL_AUDITORIA.md](./audits/RELATORIO_FINAL_AUDITORIA.md) - Relatório final
@@ -29,30 +42,42 @@
 - [RESUMO_AUDITORIA_FINAL.md](./audits/RESUMO_AUDITORIA_FINAL.md) - Resumo final
 
 ### 🤖 Dify AI
+
 - [DIFY_API_REFERENCE.md](./dify/DIFY_API_REFERENCE.md) - Referência da API
 - [PLANO_CORRECAO_DIFY.md](./dify/PLANO_CORRECAO_DIFY.md) - Plano de correção
 - [PROGRESSO_CORRECAO_DIFY.md](./dify/PROGRESSO_CORRECAO_DIFY.md) - Progresso
 - [RELATORIO_FINAL_CORRECAO_DIFY.md](./dify/RELATORIO_FINAL_CORRECAO_DIFY.md) - Relatório final
 
 ### ✨ Features
+
 - [VERIFICACOES_ASSINATURA_DIGITAL.md](./features/VERIFICACOES_ASSINATURA_DIGITAL.md) - Assinatura digital
 
 ### 🔐 Segurança
+
 - [cors-configuration.md](./security/cors-configuration.md) - Configuração CORS
 - [security-headers.md](./security/security-headers.md) - Headers de segurança
+
+### 🛠️ Interno (Engenharia)
+
+- [internal/guides/guia-desenvolvimento.md](./internal/guides/guia-desenvolvimento.md) - Guia de desenvolvimento
+- [internal/guides/testing-guide.md](./internal/guides/testing-guide.md) - Estratégia de testes
+- [internal/troubleshooting/README.md](./internal/troubleshooting/README.md) - Troubleshooting técnico
 
 ## 🚀 Links Rápidos
 
 ### Para Desenvolvedores
+
 - [Guia de Arquitetura](./architecture/ARCHITECTURE.md)
 - [Guia para Agentes IA](./architecture/AGENTS.md)
 - [Status do Projeto](./architecture/STATUS.md)
 
 ### Para Integrações
+
 - [Quick Start Integrações](./integrations/QUICK_START_INTEGRACOES.md)
 - [Guia Completo](./integrations/migration-guide.md)
 
 ### Para Migrations
+
 - [Como Aplicar Migrations](./migrations/APPLY_MIGRATION.md)
 - [Resumo Supabase](./migrations/SUPABASE_MIGRATION_SUMMARY.md)
 
@@ -64,6 +89,5 @@
 
 ## 🔄 Última Atualização
 
-**Data:** 2026-02-16  
-**Versão:** 1.0.0
-
+**Data:** 2026-02-25  
+**Versão:** 1.1.0
