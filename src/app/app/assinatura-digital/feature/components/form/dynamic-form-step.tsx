@@ -55,20 +55,21 @@ export default function DynamicFormStep() {
    *
    * Transformações aplicadas:
    * 1. Aplicativo: Remove 'aplicativo', adiciona parte_contraria_id e parte_contraria_nome
-   * 2. Modalidade: Adiciona modalidade_nome (baseado no schema)
-   * 3. Situação: Remove 'situacao', adiciona flags ativo/bloqueado (V/F)
-   * 4. Booleanos: Converte acidenteTrabalho e adoecimentoTrabalho de boolean para "V"/"F"
+   * 2. PARTE_CONTRARIA_SEARCH: Normaliza dados auto-preenchidos para chaves padrão
+   * 3. Modalidade: Adiciona modalidade_nome (baseado no schema)
+   * 4. Situação: Remove 'situacao', adiciona flags ativo/bloqueado (V/F)
+   * 5. Booleanos: Converte acidenteTrabalho e adoecimentoTrabalho de boolean para "V"/"F"
    */
   const enrichFormData = (data: DynamicFormData, formSchema: DynamicFormSchema | null): DynamicFormData => {
     const enriched = { ...data };
 
     if (!formSchema) return enriched;
 
+    const allFields = formSchema.sections.flatMap(s => s.fields);
+
     // 1. Enriquecer aplicativo → parte_contraria
     if (data.aplicativo !== undefined) {
-      const aplicativoField = formSchema.sections
-        .flatMap(s => s.fields)
-        .find(f => f.id === 'aplicativo');
+      const aplicativoField = allFields.find(f => f.id === 'aplicativo');
 
       if (aplicativoField?.options) {
         const selectedOption = aplicativoField.options.find(opt => opt.value === data.aplicativo);
@@ -80,11 +81,44 @@ export default function DynamicFormStep() {
       }
     }
 
-    // 2. Enriquecer modalidade
+    // 2. Normalizar dados de PARTE_CONTRARIA_SEARCH para chaves padrão
+    // Campos com tipo parte_contraria_search usam entitySearch.autoFill para mapear
+    // campos da entidade (ex: nome, cpf) para campos do formulário (ex: nomeEmpresa).
+    // Aqui normalizamos esses campos para as chaves esperadas pelo backend (parte_contraria_*).
+    const parteContrariaSearchFields = allFields.filter(
+      f => f.type === 'parte_contraria_search' && f.entitySearch?.autoFill
+    );
+
+    for (const field of parteContrariaSearchFields) {
+      const autoFill = field.entitySearch!.autoFill!;
+      const fieldValue = data[field.id];
+
+      // O valor do campo de busca pode ser o ID da entidade
+      if (fieldValue && !enriched.parte_contraria_id) {
+        enriched.parte_contraria_id = fieldValue;
+      }
+
+      // Mapear campos auto-preenchidos para chaves padrão
+      for (const [entityField, formFieldId] of Object.entries(autoFill)) {
+        const value = data[formFieldId];
+        if (value !== undefined && value !== null && value !== '') {
+          const normalizedKey = entityField === 'nome' ? 'parte_contraria_nome'
+            : entityField === 'cpf' ? 'parte_contraria_cpf'
+            : entityField === 'cnpj' ? 'parte_contraria_cnpj'
+            : entityField === 'telefone' ? 'parte_contraria_telefone'
+            : entityField === 'email' || entityField === 'emails[0]' ? 'parte_contraria_email'
+            : null;
+
+          if (normalizedKey && !enriched[normalizedKey]) {
+            enriched[normalizedKey] = value;
+          }
+        }
+      }
+    }
+
+    // 3. Enriquecer modalidade
     if (data.modalidade !== undefined) {
-      const modalidadeField = formSchema.sections
-        .flatMap(s => s.fields)
-        .find(f => f.id === 'modalidade');
+      const modalidadeField = allFields.find(f => f.id === 'modalidade');
 
       if (modalidadeField?.options) {
         const selectedOption = modalidadeField.options.find(opt => opt.value === data.modalidade);
@@ -94,14 +128,14 @@ export default function DynamicFormStep() {
       }
     }
 
-    // 3. Flags ativo/bloqueado (baseado em situacao)
+    // 4. Flags ativo/bloqueado (baseado em situacao)
     if (data.situacao !== undefined) {
       enriched.ativo = data.situacao === 'V' ? 'V' : 'F';
       enriched.bloqueado = data.situacao === 'F' ? 'V' : 'F';
       delete enriched.situacao;
     }
 
-    // 4. Converter booleanos para V/F
+    // 5. Converter booleanos para V/F
     if (typeof data.acidenteTrabalho === 'boolean') {
       enriched.acidenteTrabalho = data.acidenteTrabalho ? 'V' : 'F';
     }
@@ -317,9 +351,26 @@ export default function DynamicFormStep() {
 
       // Handle errors
       if (!response.ok) {
-        // If route not implemented (404)
+        if (contentType?.includes('application/json')) {
+          const errorBody = await response.json();
+          const errorMessage = errorBody.error || errorBody.message || 'Erro ao salvar dados';
+
+          // 404 com body JSON = erro de negócio (ex: cliente não encontrado)
+          // 404 sem JSON = rota não implementada
+          if (response.status === 404) {
+            console.warn('[ASSINATURA_DIGITAL] form_action_submit: 404 com erro de negócio', {
+              formularioId: formularioIdValue,
+              error: errorMessage,
+            });
+          }
+
+          throw new Error(errorMessage);
+        }
+
+        // Resposta não-JSON (HTML do Next.js ou erro do servidor)
         if (response.status === 404) {
-          console.warn('[ASSINATURA_DIGITAL] form_action_submit: endpoint 404', {
+          // Rota realmente não existe (Next.js retorna HTML para 404)
+          console.warn('[ASSINATURA_DIGITAL] form_action_submit: endpoint 404 (rota não encontrada)', {
             formularioId: formularioIdValue,
           });
 
@@ -336,19 +387,14 @@ export default function DynamicFormStep() {
           return;
         }
 
-        if (contentType?.includes('application/json')) {
-          const error = await response.json();
-          throw new Error(error.error || error.message || 'Erro ao salvar dados');
-        } else {
-          // Resposta HTML (erro do servidor/n8n)
-          const text = await response.text();
-          console.error('[SALVAR-ACAO] Resposta HTML recebida:', {
-            status: response.status,
-            contentType,
-            preview: text.substring(0, 500),
-          });
-          throw new Error(`Erro do servidor (${response.status}): Resposta inválida. Verifique os logs.`);
-        }
+        // Outros erros com resposta HTML
+        const text = await response.text();
+        console.error('[SALVAR-ACAO] Resposta HTML recebida:', {
+          status: response.status,
+          contentType,
+          preview: text.substring(0, 500),
+        });
+        throw new Error(`Erro do servidor (${response.status}): Resposta inválida. Verifique os logs.`);
       }
 
       const result = await response.json();

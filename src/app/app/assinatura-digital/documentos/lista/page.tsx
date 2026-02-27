@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { Suspense } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { PageShell } from "@/components/shared/page-shell";
@@ -6,7 +7,7 @@ import { DocumentosTableWrapper } from "./client-page";
 
 export const dynamic = "force-dynamic";
 
-export const metadata = {
+export const metadata: Metadata = {
   title: "Documentos de Assinatura Digital | Diego Barbosa Soluções Jurídicas",
   description: "Lista de documentos enviados para assinatura digital",
 };
@@ -20,7 +21,7 @@ function DocumentosLoading() {
           <Skeleton key={i} className="h-24 w-full" />
         ))}
       </div>
-      <Skeleton className="h-[400px] w-full" />
+      <Skeleton className="h-100 w-full" />
     </div>
   );
 }

@@ -212,13 +212,15 @@ export interface FinalizePayload {
   formulario_id: number;
 
   // Dados completos acoplados a domain types (nome, endereço, CPF, partes contrárias)
-  /** Cliente completo para geração de PDF (inclui nome, CPF, endereço) */
+  /** Cliente completo para geração de PDF (inclui nome, CPF, telefone, endereço) */
   cliente_dados?: {
     id: number;
     nome: string;
     cpf?: string | null;
     cnpj?: string | null;
     email?: string | null;
+    celular?: string | null;
+    telefone?: string | null;
     endereco?: string;
   };
   /** Partes contrárias para contratos (nome, CPF/CNPJ) */
@@ -260,6 +262,12 @@ export interface FinalizeResult {
   assinatura_id: number;
   protocolo: string;
   pdf_url: string;
+  /** URL raw do Backblaze (bucket privado, para armazenar em arquivos.b2_url) */
+  pdf_raw_url: string;
+  /** Key do objeto no Backblaze (ex: assinatura-digital/pdfs/documento-xxx.pdf) */
+  pdf_key: string;
+  /** Tamanho do PDF em bytes */
+  pdf_size: number;
 }
 
 export interface PreviewResult {
