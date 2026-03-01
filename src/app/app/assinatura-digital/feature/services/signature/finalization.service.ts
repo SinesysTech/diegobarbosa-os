@@ -21,7 +21,7 @@ import {
   storePhotoImage,
   storeSignatureImage,
 } from "../storage.service";
-import { generatePresignedUrl } from "@/lib/storage/backblaze-b2.service";
+import { createPresignedUrl as generatePresignedUrl } from "@/lib/storage/supabase-storage.service";
 import { calculateHash } from "../integrity.service";
 import {
   getClienteBasico,
