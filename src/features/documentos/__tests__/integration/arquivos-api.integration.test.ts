@@ -19,7 +19,7 @@
 import { describe, it, expect, jest, beforeEach } from "@jest/globals";
 import * as arquivosRepo from "../../repositories/arquivos-repository";
 import * as pastasRepo from "../../repositories/pastas-repository";
-import * as b2Service from "../../services/b2-upload.service";
+import * as _b2Service from "../../services/b2-upload.service";
 import type {
   Arquivo,
   ArquivoComUsuario,

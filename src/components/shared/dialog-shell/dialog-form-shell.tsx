@@ -82,7 +82,7 @@ export function DialogFormShell({
   description,
   children,
   footer,
-  leftFooter,
+  leftFooter: _leftFooter,
   multiStep,
   maxWidth = "lg",
   className,

@@ -3,7 +3,6 @@
 import * as React from "react"
 import { useRouter } from "next/navigation"
 import { useTheme } from "next-themes"
-import { getPublicEnv } from '@/lib/env/public-env'
 import {
   BadgeCheck,
   Bell,

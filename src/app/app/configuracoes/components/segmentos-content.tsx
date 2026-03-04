@@ -24,12 +24,10 @@ import {
     X,
     FileX,
     Search,
-    Check,
     AlertTriangle,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { Empty, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty';
-import { Typography } from '@/components/ui/typography';
 import {
     AlertDialog,
     AlertDialogAction,
@@ -54,7 +52,7 @@ import {
     actionAtualizarSegmento,
     actionDeletarSegmento,
     type Segmento
-} from '@/features/contratos/actions/segmentos-actions';
+} from '@/features/contratos';
 
 // =============================================================================
 // TIPOS
@@ -447,8 +445,8 @@ export function SegmentosContent() {
                                         <TableHead>Nome</TableHead>
                                         <TableHead>Slug</TableHead>
                                         <TableHead>Descrição</TableHead>
-                                        <TableHead className="w-[100px]">Status</TableHead>
-                                        <TableHead className="w-[100px] text-right">Ações</TableHead>
+                                        <TableHead className="w-25">Status</TableHead>
+                                        <TableHead className="w-25 text-right">Ações</TableHead>
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
@@ -520,7 +518,7 @@ export function SegmentosContent() {
                             Deletar Segmento
                         </AlertDialogTitle>
                         <AlertDialogDescription>
-                            Tem certeza que deseja deletar o segmento <span className="font-medium text-foreground">"{deletingSegmento?.nome}"</span>?
+                            Tem certeza que deseja deletar o segmento <span className="font-medium text-foreground">&ldquo;{deletingSegmento?.nome}&rdquo;</span>?
                         </AlertDialogDescription>
                         <div className="bg-destructive/10 text-destructive text-sm p-3 rounded-md mt-2">
                             <p className="font-medium mb-1">Atenção!</p>

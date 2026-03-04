@@ -40,7 +40,7 @@ export function Mail({
   const isMobile = useIsMobile();
   const { selectedMail, messages, selectedFolder, searchQuery, setSearchQuery, serviceUnavailable, accounts, selectedAccountId, setSelectedAccountId } =
     useMailStore();
-  const currentAccount = accounts.find((a) => a.id === selectedAccountId) ?? accounts[0] ?? null;
+  const _currentAccount = accounts.find((a) => a.id === selectedAccountId) ?? accounts[0] ?? null;
   const [tab, setTab] = React.useState("all");
   const [searchInput, setSearchInput] = React.useState("");
 

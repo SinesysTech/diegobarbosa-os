@@ -25,9 +25,6 @@ import {
   upsertParteContrariaByCPF,
   upsertParteContrariaByCNPJ,
   saveParteContraria,
-  findParteContrariaByCPF,
-  findParteContrariaByCNPJ,
-  updateParteContraria,
   upsertCadastroPJE,
   buscarEntidadePorIdPessoaPJE,
   upsertTerceiroByCPF,
@@ -522,7 +519,7 @@ async function processarTerceiroSemDocumento(
 
   const result = await withRetry(
     async () => {
-      const createResult = await saveTerceiro(params as any);
+      const createResult = await saveTerceiro(params as Parameters<typeof saveTerceiro>[0]);
       if (!createResult.success) {
         throw new Error(createResult.error.message);
       }

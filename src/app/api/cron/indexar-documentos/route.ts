@@ -96,7 +96,7 @@ export async function POST(request: NextRequest) {
               metadataRecord && typeof metadataRecord.storage_key === "string"
                 ? metadataRecord.storage_key
                 : null;
-            const storageProviderRaw =
+            const _storageProviderRaw =
               metadataRecord && typeof metadataRecord.storage_provider === "string"
                 ? metadataRecord.storage_provider
                 : null;
@@ -113,7 +113,7 @@ export async function POST(request: NextRequest) {
                   "@/features/ai/services/extraction.service"
                 );
 
-                const storageProvider: "supabase" = "supabase";
+                const storageProvider = "supabase" as const;
 
                 const buffer = await downloadFile(storageProvider, storageKey);
                 texto = await extractText(buffer, contentType);

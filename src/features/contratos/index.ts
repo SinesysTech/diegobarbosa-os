@@ -88,6 +88,9 @@ export { fetchContratoCompleto } from './queries';
 // =============================================================================
 export type {
   ActionResult,
+  Segmento,
+  CreateSegmentoInput,
+  UpdateSegmentoInput,
 } from './actions';
 export {
   actionCriarContrato,
@@ -97,6 +100,11 @@ export {
   actionBuscarContratoCompleto,
   actionContarContratosPorStatus,
   actionContarContratosComEstatisticas,
+  // Segmentos
+  actionListarSegmentos,
+  actionCriarSegmento,
+  actionAtualizarSegmento,
+  actionDeletarSegmento,
 } from './actions';
 
 // =============================================================================
