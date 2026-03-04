@@ -519,7 +519,7 @@ async function processarTerceiroSemDocumento(
 
   const result = await withRetry(
     async () => {
-      const createResult = await saveTerceiro(params as Parameters<typeof saveTerceiro>[0]);
+      const createResult = await saveTerceiro(params as unknown as Parameters<typeof saveTerceiro>[0]);
       if (!createResult.success) {
         throw new Error(createResult.error.message);
       }

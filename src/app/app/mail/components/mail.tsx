@@ -109,10 +109,11 @@ export function Mail({
       </a>
 
       <ResizablePanelGroup
-        direction="horizontal"
+        orientation="horizontal"
         id={cookieID}
-        onLayout={(layout: number[]) => {
-          document.cookie = `${cookieID}=${JSON.stringify(layout)}; path=/;`;
+        onLayoutChange={(layout) => {
+          const arr = [layout["left-panel"] ?? 16, layout["middle-panel"] ?? 30, layout["right-panel"] ?? 54];
+          document.cookie = `${cookieID}=${JSON.stringify(arr)}; path=/;`;
         }}
         className="items-stretch">
         <ResizablePanel
@@ -123,7 +124,8 @@ export function Mail({
           defaultSize={defaultLayout[0]}
           minSize={15}
           maxSize={20}
-          onResize={(size: number) => {
+          onResize={(panelSize) => {
+            const size = panelSize.asPercentage;
             if (size < 14) {
               setIsCollapsed(true);
               document.cookie = `${collapsedCookieID}=${JSON.stringify(true)}`;

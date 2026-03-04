@@ -212,7 +212,7 @@ export async function getMessage(
         text,
         html,
         date: env.date?.toISOString() ?? new Date().toISOString(),
-        flags,
+        flags: flags as string[],
         folder,
       };
     } finally {
