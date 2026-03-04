@@ -1,12 +1,13 @@
 "use client";
 
-import { useCallback, useMemo, useState } from "react";
-import { Calendar as CalendarIcon, Trash2 } from "lucide-react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { Calendar as CalendarIcon, ExternalLink, Trash2 } from "lucide-react";
 import { format, isBefore } from "date-fns";
 import { ptBR } from "date-fns/locale/pt-BR";
 
 import type { CalendarEvent, EventColor } from "./";
 import { DefaultEndHour, DefaultStartHour, EndHour, StartHour } from "../constants";
+import { useUsuarios } from "@/features/usuarios";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
@@ -39,9 +40,13 @@ interface EventDialogProps {
   onClose: () => void;
   onSave: (event: CalendarEvent) => void;
   onDelete: (eventId: string) => void;
+  onNavigateToSource?: () => void;
 }
 
-export function EventDialog({ event, isOpen, readOnly = false, onClose, onSave, onDelete }: EventDialogProps) {
+export function EventDialog({ event, isOpen, readOnly = false, onClose, onSave, onDelete, onNavigateToSource }: EventDialogProps) {
+  // Fetch users for the responsável selector (only when dialog is open)
+  const { usuarios, isLoading: isLoadingUsuarios } = useUsuarios({ ativo: true, enabled: isOpen && !readOnly });
+
   // Helper functions
   const formatTimeForInput = useCallback((date: Date) => {
     const hours = date.getHours().toString().padStart(2, "0");
@@ -64,6 +69,7 @@ export function EventDialog({ event, isOpen, readOnly = false, onClose, onSave, 
         allDay: event.allDay || false,
         location: event.location || "",
         color: (event.color as EventColor) || "sky",
+        responsavelId: event.responsavelId ?? null,
       };
     }
     return {
@@ -76,16 +82,12 @@ export function EventDialog({ event, isOpen, readOnly = false, onClose, onSave, 
       allDay: false,
       location: "",
       color: "sky" as EventColor,
+      responsavelId: null as number | null,
     };
   }, [event, formatTimeForInput]);
 
   // Get initial form state based on event prop
   const initialState = useMemo(() => getInitialFormState(), [getInitialFormState]);
-
-  // Key for remount when event changes (used in parent component)
-  const _dialogKey = useMemo(() => {
-    return event?.id || "new";
-  }, [event?.id]);
 
   const [title, setTitle] = useState(initialState.title);
   const [description, setDescription] = useState(initialState.description);
@@ -96,9 +98,26 @@ export function EventDialog({ event, isOpen, readOnly = false, onClose, onSave, 
   const [allDay, setAllDay] = useState(initialState.allDay);
   const [location, setLocation] = useState(initialState.location);
   const [color, setColor] = useState<EventColor>(initialState.color);
+  const [responsavelId, setResponsavelId] = useState<number | null>(initialState.responsavelId);
   const [error, setError] = useState<string | null>(null);
   const [startDateOpen, setStartDateOpen] = useState(false);
   const [endDateOpen, setEndDateOpen] = useState(false);
+
+  // Sync form state when event prop changes (fixes stale state on event switch)
+  useEffect(() => {
+    const state = getInitialFormState();
+    setTitle(state.title);
+    setDescription(state.description);
+    setStartDate(state.startDate);
+    setEndDate(state.endDate);
+    setStartTime(state.startTime);
+    setEndTime(state.endTime);
+    setAllDay(state.allDay);
+    setLocation(state.location);
+    setColor(state.color);
+    setResponsavelId(state.responsavelId);
+    setError(null);
+  }, [getInitialFormState]);
 
   // Memoize time options so they're only calculated once
   const timeOptions = useMemo(() => {
@@ -163,7 +182,10 @@ export function EventDialog({ event, isOpen, readOnly = false, onClose, onSave, 
       end,
       allDay,
       location,
-      color
+      color,
+      source: event?.source || "agenda",
+      sourceEntityId: event?.sourceEntityId,
+      responsavelId,
     });
   };
 
@@ -193,8 +215,8 @@ export function EventDialog({ event, isOpen, readOnly = false, onClose, onSave, 
     {
       value: "amber",
       label: "\u00c2mbar",
-      bgClass: "bg-orange-400 data-[state=checked]:bg-orange-400",
-      borderClass: "border-orange-400 data-[state=checked]:border-orange-400"
+      bgClass: "bg-amber-400 data-[state=checked]:bg-amber-400",
+      borderClass: "border-amber-400 data-[state=checked]:border-amber-400"
     },
     {
       value: "violet",
@@ -226,9 +248,15 @@ export function EventDialog({ event, isOpen, readOnly = false, onClose, onSave, 
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="sm:max-w-106.25">
         <DialogHeader>
-          <DialogTitle>{event?.id ? "Editar Evento" : "Criar Evento"}</DialogTitle>
+          <DialogTitle>
+            {readOnly ? "Detalhes do Evento" : event?.id ? "Editar Evento" : "Criar Evento"}
+          </DialogTitle>
           <DialogDescription className="sr-only">
-            {event?.id ? "Edite os detalhes deste evento" : "Adicione um novo evento \u00e0 sua agenda"}
+            {readOnly
+              ? "Visualize os detalhes deste evento"
+              : event?.id
+                ? "Edite os detalhes deste evento"
+                : "Adicione um novo evento à sua agenda"}
           </DialogDescription>
         </DialogHeader>
         {error && (
@@ -415,6 +443,29 @@ export function EventDialog({ event, isOpen, readOnly = false, onClose, onSave, 
               onChange={(e) => setLocation(e.target.value)}
             />
           </div>
+          {!readOnly && (
+            <div className="*:not-first:mt-1.5">
+              <Label htmlFor="responsavel">Responsável</Label>
+              <Select
+                value={responsavelId ? String(responsavelId) : "none"}
+                onValueChange={(value) => setResponsavelId(value === "none" ? null : Number(value))}
+                disabled={isLoadingUsuarios}
+              >
+                <SelectTrigger id="responsavel">
+                  <SelectValue placeholder={isLoadingUsuarios ? "Carregando..." : "Selecione"} />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="none">Nenhum</SelectItem>
+                  {usuarios.map((u) => (
+                    <SelectItem key={u.id} value={String(u.id)}>
+                      {u.nomeExibicao || u.nomeCompleto}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          )}
+
           <fieldset className="space-y-4">
             <legend className="text-foreground text-sm leading-none font-medium">Cor</legend>
             <RadioGroup
@@ -442,6 +493,12 @@ export function EventDialog({ event, isOpen, readOnly = false, onClose, onSave, 
             </Button>
           )}
           <div className="flex flex-1 justify-end gap-2">
+            {readOnly && onNavigateToSource && (
+              <Button variant="outline" onClick={onNavigateToSource}>
+                <ExternalLink size={16} aria-hidden="true" />
+                Abrir
+              </Button>
+            )}
             <Button variant="outline" onClick={onClose}>
               {readOnly ? "Fechar" : "Cancelar"}
             </Button>
